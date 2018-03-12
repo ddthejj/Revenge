@@ -70,6 +70,14 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
+    <None Include="Levels\TestRooms\Test1.txt">
+      <Name>Test1</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Levels\TestRooms\Test2.txt">
+      <Name>Test2</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Compile Include="OrangeTile.png">
       <Name>OrangeTile</Name>
       <Importer>TextureImporter</Importer>

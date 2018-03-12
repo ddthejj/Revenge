@@ -116,6 +116,7 @@ namespace Revenge
         /// <param name="playerEntry">The point the player will enter the room into</param>
         public void BuildRoom(string roomPath, Point playerEntry)
         {
+
             if (File.Exists("Content\\Levels\\" + roomPath + ".txt"))
             {
                 using (StreamReader reader = new StreamReader("Content\\Levels\\" + roomPath + ".txt"))
