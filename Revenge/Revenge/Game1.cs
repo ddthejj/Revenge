@@ -40,14 +40,12 @@ namespace Revenge
         /// The sate of the keyboard and key presses on the previous frame.
         /// </summary>
         public static KeyboardState oldKey;
+
+        public static ContentManager contentManager;
         #endregion
 
         #region Player
 
-        /// <summary>
-        /// The player in the game, just used for testing currently
-        /// </summary>
-        Player testPlayer;
 
         #endregion
 
@@ -73,15 +71,6 @@ namespace Revenge
 
         #endregion
 
-        #region Rooms
-
-        /// <summary>
-        /// The initial test room, testing for collision, layering, interaction, and doors with tiles
-        /// </summary>
-        Room testRoom = new Room();
-
-        #endregion
-
         #endregion
 
         #region Methods
@@ -90,10 +79,12 @@ namespace Revenge
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-
+            contentManager = Content;
             graphics.PreferredBackBufferHeight = 900;
             graphics.PreferredBackBufferWidth = 900;
         }
+
+        public static ContentManager ContentManager { get { return contentManager; } }
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -125,38 +116,10 @@ namespace Revenge
             tileSet[(int)TileSet.InteractableTest].Texture = Content.Load<Texture2D>("BlueTile");
             #endregion
 
-            #region Player
-
-            // Sets up the test player
-            testPlayer = new Player("TEST");
-            testPlayer.Location = new Point(100, 100);
-            testPlayer.Texture = Content.Load<Texture2D>("PlayerDown1");
-            testPlayer.Activate();
-            // Tells the manager what the current player is
-            Manager.Player = testPlayer;
-
-            #endregion
-
-            #region Rooms
-
-            // Sets up the test room
-
-            // Sets up the room with the file path
-            testRoom.BuildRoom("TestRooms\\Test1", new Point(100, 100));
-            testRoom.Activate();
-
-            #endregion
-
             #region Manager
 
             //Sets up the room manager
-            Manager.CenterScreen = new Point(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
-            Manager.CurrentRoom = testRoom;
-            Manager.DialogueBox = new TextBox(new Rectangle(20, graphics.PreferredBackBufferHeight - 130, graphics.PreferredBackBufferWidth - 40, 110));
-            Manager.PauseMenu = new MenuBox(new Rectangle(50, 50, 150, 250),
-                                            new string[,] { { "Characters" }, { "Inventory" }, { "Equip" }, { "Exit" } },
-                                            new Vector2[,] { { new Vector2(40, 35) }, { new Vector2(40, 85) }, { new Vector2(40, 135) }, { new Vector2(40, 185) } }, 
-                                            new Box[,] { { null }, { null }, { null }, { null } });
+            Manager.Init();
 
             #endregion
 

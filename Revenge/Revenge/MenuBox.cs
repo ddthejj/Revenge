@@ -60,8 +60,9 @@ namespace Revenge
 
         #region Constructor
 
-        public MenuBox(Rectangle _rectangle, string[,] texts, Vector2[,] locations, Box[,] SubMenus) : base(_rectangle)
+        public MenuBox(Rectangle _rectangle, string[,] texts, Vector2[,] locations, Box[,] SubMenus, Box PreviousMenu) : base(_rectangle)
         {
+            previousMenu = PreviousMenu;
             selectableLocations = new MenuItem[texts.GetLength(0), texts.GetLength(1)];
 
            for (int i = 0; i < texts.GetLength(0); i++)
@@ -239,7 +240,7 @@ namespace Revenge
     {
         #region Properties
 
-
+        List<Character> party;
 
         #endregion
 
@@ -247,7 +248,7 @@ namespace Revenge
 
         public CharacterMenu (Rectangle _rectangle, Vector2[,] locations, string[,] texts ):base(_rectangle, texts, locations)
         {
-            
+            party = Manager.Party;
         }
 
         #endregion

@@ -65,7 +65,7 @@ namespace Revenge
         /// <summary>
         /// The current group of characters 
         /// </summary>
-        static Character[] party;
+        static List<Character> party;
 
         #region Door Properties
 
@@ -82,16 +82,16 @@ namespace Revenge
 
         #endregion
 
-        #region Methods
+        #region Get Set Properties
 
         /// <summary>
         /// The current player character
         /// </summary>
-        public static Player Player { get { return player; } set { player = value; } }
+        public static Player Player { get { return player; }  }
         /// <summary>
         /// The center of the screen
         /// </summary>
-        public static Point CenterScreen { get { return centerScreen; } set { centerScreen = value; } }
+        public static Point CenterScreen { get { return centerScreen; }  }
         /// <summary>
         /// Centers the current room on the player
         /// </summary>
@@ -99,19 +99,66 @@ namespace Revenge
         /// <summary>
         /// The current room being displayed
         /// </summary>
-        public static Room CurrentRoom { get { return currentRoom; } set { currentRoom = value; } }
+        public static Room CurrentRoom { get { return currentRoom; }  }
         /// <summary>
         /// The box at the bottom of the screen where text will be displayed
         /// </summary>
-        public static TextBox DialogueBox { get { return dialogueBox; } set { dialogueBox = value; } }
+        public static TextBox DialogueBox { get { return dialogueBox; }  }
         /// <summary>
         /// The menu that appears when the player pauses
         /// </summary>
-        public static MenuBox PauseMenu { get { return pauseMenu; } set { pauseMenu = value; } }
+        public static MenuBox PauseMenu { get { return pauseMenu; }  }
         /// <summary>
         /// The current group of characters
         /// </summary>
-        public static Character[] Party { get { return party; } set { party = value; } }
+        public static List<Character> Party { get { return party; }  }
+
+        #endregion
+
+        #region Methods
+
+        public static void Init()
+        {
+            #region Player
+            // Sets up the test player
+
+            /// <summary>
+            /// The player in the game, just used for testing currently
+            /// </summary>
+            Player testPlayer = new Player("TEST");
+            testPlayer.Location = new Point(100, 100);
+            testPlayer.Texture = Game1.ContentManager.Load<Texture2D>("PlayerDown1");
+            testPlayer.Activate();
+            player = testPlayer;
+
+            party = new List<Character>() { testPlayer };
+
+            #endregion
+
+            // Sets up the test room
+
+            /// <summary>
+            /// The initial test room, testing for collision, layering, interaction, and doors with tiles
+            /// </summary>
+            Room testRoom = new Room();
+            testRoom.BuildRoom("TestRooms\\Test1", new Point(100, 100));
+            testRoom.Activate();
+            currentRoom = testRoom;
+            centerScreen = new Point(Game1.graphics.PreferredBackBufferWidth / 2, Game1.graphics.PreferredBackBufferHeight / 2);
+
+
+            dialogueBox = new TextBox(new Rectangle(20, Game1.graphics.PreferredBackBufferHeight - 130, Game1.graphics.PreferredBackBufferWidth - 40, 110));
+            pauseMenu = new MenuBox(new Rectangle(50, 50, 150, 250),
+                                    new string[,] { { "Characters" }, { "Inventory" }, { "Equip" }, { "Exit" } },
+                                    new Vector2[,] { { new Vector2(40, 35) }, { new Vector2(40, 85) }, { new Vector2(40, 135) }, { new Vector2(40, 185) } },
+                                    new Box[,] { { null }, { null }, { null }, { null } },
+                                    null);
+        }
+
+        public static void MovePlayer(Point location)
+        {
+            player.Location = location;
+        }
 
         #region Fade
 

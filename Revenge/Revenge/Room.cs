@@ -199,8 +199,7 @@ namespace Revenge
                 }
             }
 
-            Manager.Player.Location = playerEntry;
-
+            Manager.MovePlayer(playerEntry);
         }
         /// <summary>
         /// Centers the room on the player
