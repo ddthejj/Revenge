@@ -1,8 +1,10 @@
 #define DEBUG
+//#undef DEBUG
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -97,23 +99,28 @@ namespace Revenge
             white = Content.Load<Texture2D>("White");
 
             #region TileSet
-            // Sets up the tile set for the game, maybe should be done via file io
+
+            /*
+            // Sets up the tile set for the game, now done through file io
 
             // This is a basic test tile for the ground.
-            tileSet[(int)TileSet.GroundTest] = new ProtoTile(32, 32);
+            tileSet[(int)TileSet.GroundTest] = new ProtoTile();
             tileSet[(int)TileSet.GroundTest].Texture = Content.Load<Texture2D>("BrownTile");
             // This is a basic test tile for collision on walls.
-            tileSet[(int)TileSet.WallTest] = new ProtoTile(32, 32, true);
+            tileSet[(int)TileSet.WallTest] = new ProtoTile(true);
             tileSet[(int)TileSet.WallTest].Texture = Content.Load<Texture2D>("RedTile");
             // This is a basic test tile for the layer sorting system.
-            tileSet[(int)TileSet.CeilingTest] = new ProtoTile(32, 32);
+            tileSet[(int)TileSet.CeilingTest] = new ProtoTile();
             tileSet[(int)TileSet.CeilingTest].Texture = Content.Load<Texture2D>("OrangeTile");
             // This is a basic test tile for doors.
-            tileSet[(int)TileSet.DoorTest] = new ProtoTile(32, 32, false, false, true);
+            tileSet[(int)TileSet.DoorTest] = new ProtoTile(false, false, true);
             tileSet[(int)TileSet.DoorTest].Texture = Content.Load<Texture2D>("GreenTile");
             // This is a basic test tile for interactability.
-            tileSet[(int)TileSet.InteractableTest] = new ProtoTile(32, 32, true, true);
+            tileSet[(int)TileSet.InteractableTest] = new ProtoTile(true, true);
             tileSet[(int)TileSet.InteractableTest].Texture = Content.Load<Texture2D>("BlueTile");
+            */
+
+            TileInit("TileContent");
             #endregion
 
             #region Manager
@@ -202,6 +209,27 @@ namespace Revenge
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);
+        }
+
+        protected void TileInit(string filePath)
+        {
+            if (File.Exists("Content\\" + filePath + ".txt"))
+            {
+                using (StreamReader reader = new StreamReader("Content\\" + filePath + ".txt"))
+                {
+                    int i = 0;
+                    while (!reader.EndOfStream)
+                    {
+                        string[] args = reader.ReadLine().Split(',');
+                        tileSet[i] = new ProtoTile(args[0] != "0", args[1] != "0", args[2] != "0", Convert.ToInt16(args[3]), Convert.ToInt16(args[4]));
+
+                        string name = reader.ReadLine();
+                        tileSet[i].Texture = Content.Load<Texture2D>(name);
+
+                        i++;
+                    }
+                }
+            }
         }
 
         #endregion

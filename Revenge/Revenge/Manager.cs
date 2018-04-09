@@ -45,7 +45,7 @@ namespace Revenge
         /// <summary>
         /// The current player character
         /// </summary>
-        static Player player;
+        static Player player = null;
         /// <summary>
         /// The center of the screen
         /// </summary>
@@ -53,15 +53,25 @@ namespace Revenge
         /// <summary>
         /// The current room the player is in
         /// </summary>
-        static Room currentRoom;
+        static Room currentRoom = null;
         /// <summary>
         /// The box at the bottom of the screen where text will be displayed
         /// </summary>
         static TextBox dialogueBox;
         /// <summary>
-        /// The menu that appears when the player pauses
+        /// The menus that appear when the player pauses
         /// </summary>
-        static MenuBox pauseMenu;
+        static MenuBox[] pauseMenus;
+
+        enum MenuOrder
+        {
+            MainPause,
+            CharacterMenu,
+            Inventory, 
+            Options,
+            MaxInt
+        }
+
         /// <summary>
         /// The current group of characters 
         /// </summary>
@@ -104,10 +114,12 @@ namespace Revenge
         /// The box at the bottom of the screen where text will be displayed
         /// </summary>
         public static TextBox DialogueBox { get { return dialogueBox; }  }
+
+        public static Box[] PauseMenus { get { return pauseMenus; } }
         /// <summary>
         /// The menu that appears when the player pauses
         /// </summary>
-        public static MenuBox PauseMenu { get { return pauseMenu; }  }
+        public static MenuBox PauseMenu { get { return pauseMenus[(int)MenuOrder.MainPause] as MenuBox; }  }
         /// <summary>
         /// The current group of characters
         /// </summary>
@@ -117,8 +129,12 @@ namespace Revenge
 
         #region Methods
 
+        /// <summary>
+        /// Initialize the manager
+        /// </summary>
         public static void Init()
         {
+
             #region Player
             // Sets up the test player
 
@@ -131,7 +147,7 @@ namespace Revenge
             testPlayer.Activate();
             player = testPlayer;
 
-            party = new List<Character>() { testPlayer };
+            party = new List<Character>() { testPlayer, new Player("JOHN CENA") };
 
             #endregion
 
@@ -146,13 +162,22 @@ namespace Revenge
             currentRoom = testRoom;
             centerScreen = new Point(Game1.graphics.PreferredBackBufferWidth / 2, Game1.graphics.PreferredBackBufferHeight / 2);
 
-
             dialogueBox = new TextBox(new Rectangle(20, Game1.graphics.PreferredBackBufferHeight - 130, Game1.graphics.PreferredBackBufferWidth - 40, 110));
-            pauseMenu = new MenuBox(new Rectangle(50, 50, 150, 250),
+
+            pauseMenus = new MenuBox[(int)MenuOrder.MaxInt];
+
+            pauseMenus[(int)MenuOrder.MainPause] = new MenuBox(new Rectangle(50, 50, 150, 250),
                                     new string[,] { { "Characters" }, { "Inventory" }, { "Equip" }, { "Exit" } },
                                     new Vector2[,] { { new Vector2(40, 35) }, { new Vector2(40, 85) }, { new Vector2(40, 135) }, { new Vector2(40, 185) } },
-                                    new Box[,] { { null }, { null }, { null }, { null } },
-                                    null);
+                                    new int [,] {
+                                                { (int) MenuOrder.CharacterMenu },
+                                                { -1 },
+                                                { -1 },
+                                                { -1 }
+                                               }
+                                    );
+            pauseMenus[(int)MenuOrder.CharacterMenu] = new CharacterMenu(new Rectangle(200, 50, 150, 250), 0);
+            //pauseMenus[(int)MenuOrder.Inventory]
         }
 
         public static void MovePlayer(Point location)
@@ -198,9 +223,10 @@ namespace Revenge
         /// <param name="j">The y location of the tile</param>
         public static void Interact(int i, int j)
         {
-            if (currentRoom.Tiles[1][i, j].Interactable)
+            if (currentRoom.Tiles[1][i, j] is InteractableTile)
             {
-                WriteText(currentRoom.Tiles[1][i, j].Text);
+                InteractableTile tile = currentRoom.Tiles[1][i, j] as InteractableTile;
+                WriteText(tile.Text);
             }
         }
         /// <summary>
@@ -226,6 +252,9 @@ namespace Revenge
         }
 
         #endregion
+
+        #region Menuing
+
         /// <summary>
         /// Opens the pause menu
         /// </summary>
@@ -234,18 +263,34 @@ namespace Revenge
             player.Freeze();
             currentRoom.Freeze();
 
-            pauseMenu.Activate();
+            pauseMenus[(int)MenuOrder.MainPause].Activate();
         }
         /// <summary>
         /// Closes the pause menu
         /// </summary>
-        public static void CloseMenu()
+        public static void CloseMenu(int previousMenu = -1, bool closeAllMenus = false)
         {
-            pauseMenu.Deactivate();
+            if (previousMenu != -1)
+            {
+                pauseMenus[previousMenu].Unfreeze();
+                if (closeAllMenus)
+                    CloseMenu(pauseMenus[previousMenu].PreviousMenu, true);
+            }
+            else
+            {
+                pauseMenus[(int)MenuOrder.MainPause].Deactivate();
 
-            player.Unfreeze();
-            currentRoom.Unfreeze();
+                player.Unfreeze();
+                currentRoom.Unfreeze();
+            }
         }
+
+        public static void NextMenu(int nextMenu)
+        {
+            pauseMenus[nextMenu].Activate();
+        }
+
+        #endregion
 
         #endregion
     }

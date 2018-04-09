@@ -78,6 +78,7 @@
     <Compile Include="Door.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameObject.cs" />
+    <Compile Include="Item.cs" />
     <Compile Include="KeyOptions.cs" />
     <Compile Include="Manager.cs" />
     <Compile Include="MenuBox.cs" />

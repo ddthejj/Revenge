@@ -13,27 +13,28 @@ namespace Revenge
 {
     public class MenuBox : Box
     {
-        protected class MenuItem
+        protected class MenuItem<type>
         {
             #region Properties
 
             string text;
             Vector2 location;
-            Box subMenu;
+            type subMenu;
 
             #endregion
 
             #region Constructor
 
-            public MenuItem(string _text, Vector2 _location, Box _subMenu = null) { text = _text; location = _location; subMenu = _subMenu; }
+            public MenuItem(string _text, Vector2 _location,  type _subMenu) { text = _text; location = _location; subMenu = _subMenu; }
 
+            //public MenuItem(string _text, Vector2 _location) { text = _text;  location = _location; subMenu = -1; }
             #endregion
 
             #region Methods
 
             public string Text { get { return text; } }
             public Vector2 Location { get { return location; } }
-            public Box SubMenu { get { return subMenu; } }
+            public type SubMenu { get { return subMenu; } }
 
             public void Draw()
             {
@@ -45,83 +46,40 @@ namespace Revenge
         
         #region Properties
 
-        MenuItem[,] selectableLocations;
+        protected MenuItem<int>[,] selectableLocations;
         Vector2 selected = new Vector2(0, 0), defaultSelected;
         Arrow arrow;
-        Box previousMenu;
+        int previousMenu;
 
         #endregion
 
         #region Get Set Properties
 
-
+        public int PreviousMenu { get { return previousMenu; } }
 
         #endregion
 
         #region Constructor
-
-        public MenuBox(Rectangle _rectangle, string[,] texts, Vector2[,] locations, Box[,] SubMenus, Box PreviousMenu) : base(_rectangle)
+        /// <summary>
+        /// Builds a menu and options with submenus
+        /// </summary>
+        /// <param name="_rectangle">The rectangle of the menu</param>
+        /// <param name="texts">The texts for the options</param>
+        /// <param name="locations">The locations of the options</param>
+        /// <param name="SubMenus">The submenus for the options</param>
+        /// <param name="PreviousMenu">The previous menu</param>
+        public MenuBox(Rectangle _rectangle, string[,] texts, Vector2[,] locations,  int[,] SubMenus, int PreviousMenu = -1) : base(_rectangle)
         {
             previousMenu = PreviousMenu;
-            selectableLocations = new MenuItem[texts.GetLength(0), texts.GetLength(1)];
 
-           for (int i = 0; i < texts.GetLength(0); i++)
-                for (int j = 0; j < texts.GetLength(1); j++)
-                {
-                    if (texts[i, j] != null)
-                        selectableLocations[i, j] = new MenuItem(texts[i, j], locations[i, j], SubMenus[i,j]);
-                    else
-                        selectableLocations[i, j] = null;
-                }
-
-            arrow = new Arrow(new Rectangle(0, 0, 10, 10));
-
-            for (int i = 0; i < selectableLocations.GetLength(0); i++)
-            {
-                for (int j = 0; j < selectableLocations.GetLength(1); j++)
-                {
-                    if (selectableLocations[i,j] != null)
-                    {
-                        arrow.Move((int)selectableLocations[i, j].Location.X + rectangle.X - 20, (int)selectableLocations[i, j].Location.Y + rectangle.Y + 7);
-                        selected = new Vector2(i, j);
-                        defaultSelected = new Vector2(i, j);
-                        goto Found;
-                    }
-                }
-            }
-            Found:;
+            CreateOptions(texts, locations,  SubMenus);
         }
-
-        protected MenuBox(Rectangle _rectangle, string[,] texts, Vector2[,] locations) : base(_rectangle)
-        {
-            selectableLocations = new MenuItem[texts.GetLength(0), texts.GetLength(1)];
-
-            for (int i = 0; i < texts.GetLength(0); i++)
-                for (int j = 0; j < texts.GetLength(1); j++)
-                {
-                    if (texts[i, j] != null)
-                        selectableLocations[i, j] = new MenuItem(texts[i, j], locations[i, j]);
-                    else
-                        selectableLocations[i, j] = null;
-                }
-
-            arrow = new Arrow(new Rectangle(0, 0, 10, 10));
-
-            for (int i = 0; i < selectableLocations.GetLength(0); i++)
-            {
-                for (int j = 0; j < selectableLocations.GetLength(1); j++)
-                {
-                    if (selectableLocations[i, j] != null)
-                    {
-                        arrow.Move((int)selectableLocations[i, j].Location.X + rectangle.X - 20, (int)selectableLocations[i, j].Location.Y + rectangle.Y + 7);
-                        selected = new Vector2(i, j);
-                        defaultSelected = new Vector2(i, j);
-                        goto Found;
-                    }
-                }
-            }
-            Found:;
-        }
+        /// <summary>
+        /// Constructor that is used by base classes that automatically place options
+        /// </summary>
+        /// <param name="_rectangle">The rectangle of the menu</param>
+        /// <param name="_previousMenu">The previous menu</param>
+        protected MenuBox(Rectangle _rectangle, int _previousMenu) : base(_rectangle) { previousMenu = _previousMenu; }
 
         #endregion  
 
@@ -129,21 +87,24 @@ namespace Revenge
 
         public override void Update()
         {
-            Choose();
+            SwitchSelected();
+            CheckClose();
         }
 
         public override void Draw()
         {
             base.Draw();
 
-            foreach (MenuItem item in selectableLocations)
+            foreach (MenuItem<int> item in selectableLocations)
             {
                 Game1.spriteBatch.DrawString(spriteFont, item.Text, new Vector2(item.Location.X + rectangle.Location.X, item.Location.Y + rectangle.Location.Y), Color.White);
             }
             arrow.Draw();
         }
-
-        void Choose()
+        /// <summary>
+        /// Lets you switch between the options on a menu.
+        /// </summary>
+        void SwitchSelected()
         {
             int maxX = selectableLocations.GetLength(1) - 1, maxY = selectableLocations.GetLength(0) - 1;
 
@@ -206,31 +167,119 @@ namespace Revenge
                 Select();
             }
         }
-
+        /// <summary>
+        /// Closes all open menus if the menu button is pressed
+        /// </summary>
+        protected void CheckClose()
+        {
+            if (KeyOptions.KeyPressed(KeyOptions.Menu))
+            {
+                Deactivate();
+                Manager.CloseMenu(previousMenu, true);
+            }
+        }
+        /// <summary>
+        /// Resets the menu back to its default state
+        /// </summary>
         public void Reset()
         {
             selected = defaultSelected;
+            arrow.Move((int)selectableLocations[(int)selected.Y, (int)selected.X].Location.X + rectangle.X - 20, (int)selectableLocations[(int)selected.Y, (int)selected.X].Location.Y + rectangle.Y + 7);
             arrow.Reset();
         }
-
+        /// <summary>
+        /// Opens the submenu of the selected option
+        /// </summary>
         protected virtual void Select()
         {
-            Box subMenu = selectableLocations[(int)selected.Y, (int)selected.X].SubMenu;
+            int subMenu = selectableLocations[(int)selected.Y, (int)selected.X].SubMenu;
             Freeze();
-            if (subMenu != null)
-                subMenu.Activate();
+            if (subMenu != -1)
+            {
+                Manager.NextMenu(subMenu);
+            }
             else
             {
-                Reset();
-
-                if (previousMenu != null)
-                {
-                    previousMenu.Activate();
-                    Deactivate();
-                }
-                else
-                    Manager.CloseMenu();
+                Manager.CloseMenu(previousMenu);
+                Deactivate();
             }
+        }
+        /// <summary>
+        /// Initially creates the options of the menu 
+        /// </summary>
+        /// <param name="texts">The texts for the options to display</param>
+        /// <param name="locations">The locations for the options to be placed at</param>
+        /// <param name="SubMenus">The submenus that the options lead to</param>
+        protected void CreateOptions(string[,] texts, Vector2[,] locations,  int[,] SubMenus)
+        {
+            selectableLocations = new MenuItem<int>[texts.GetLength(0), texts.GetLength(1)];
+
+            for (int i = 0; i < texts.GetLength(0); i++)
+                for (int j = 0; j < texts.GetLength(1); j++)
+                {
+                    if (texts[i, j] != null)
+                        selectableLocations[i, j] = new MenuItem<int>(texts[i, j], locations[i, j],  SubMenus[i, j]);
+                    else
+                        selectableLocations[i, j] = null;
+                }
+
+            arrow = new Arrow(new Rectangle(0, 0, 10, 10));
+
+            for (int i = 0; i < selectableLocations.GetLength(0); i++)
+            {
+                for (int j = 0; j < selectableLocations.GetLength(1); j++)
+                {
+                    if (selectableLocations[i, j] != null)
+                    {
+                        arrow.Move((int)selectableLocations[i, j].Location.X + rectangle.X - 20, (int)selectableLocations[i, j].Location.Y + rectangle.Y + 7);
+                        selected = new Vector2(i, j);
+                        defaultSelected = new Vector2(i, j);
+                        goto Found;
+                    }
+                }
+            }
+            Found:;
+        }
+        /// <summary>
+        /// Initially createsthe options of the menu with no submenus
+        /// </summary>
+        /// <param name="texts">The texts for the options to display</param>
+        /// <param name="locations">The locations for the options to be placed at</param>
+        protected void CreateOptions(string[,] texts, Vector2[,] locations)
+        {
+            selectableLocations = new MenuItem<int>[texts.GetLength(0), texts.GetLength(1)];
+
+            for (int i = 0; i < texts.GetLength(0); i++)
+                for (int j = 0; j < texts.GetLength(1); j++)
+                {
+                    if (texts[i, j] != null)
+                        selectableLocations[i, j] = new MenuItem<int>(texts[i, j], locations[i, j], -1);
+                    else
+                        selectableLocations[i, j] = null;
+                }
+
+            arrow = new Arrow(new Rectangle(0, 0, 10, 10));
+
+            for (int i = 0; i < selectableLocations.GetLength(0); i++)
+            {
+                for (int j = 0; j < selectableLocations.GetLength(1); j++)
+                {
+                    if (selectableLocations[i, j] != null)
+                    {
+                        arrow.Move((int)selectableLocations[i, j].Location.X + rectangle.X - 20, (int)selectableLocations[i, j].Location.Y + rectangle.Y + 7);
+                        selected = new Vector2(i, j);
+                        defaultSelected = new Vector2(i, j);
+                        goto Found;
+                    }
+                }
+            }
+            Found:;
+        }
+
+        public override void Deactivate()
+        {
+            base.Deactivate();
+            Reset();
         }
 
         #endregion 
@@ -246,9 +295,20 @@ namespace Revenge
 
         #region Constructor
 
-        public CharacterMenu (Rectangle _rectangle, Vector2[,] locations, string[,] texts ):base(_rectangle, texts, locations)
+        public CharacterMenu (Rectangle _rectangle, int _previousMenu ) : base(_rectangle, _previousMenu)
         {
             party = Manager.Party;
+
+            string[,] characters = new string[party.Count(), 1];
+            Vector2[,] locations = new Vector2[party.Count(), 1];
+
+            for (int i = 0; i < party.Count(); i++)
+            {
+                characters[i, 0] = party[i].Name;
+                locations[i, 0] = new Vector2(40, 35 + (50 * i));
+            }
+
+            CreateOptions(characters, locations);
         }
 
         #endregion
@@ -261,10 +321,25 @@ namespace Revenge
 
         #region Methods
 
+        public override void Activate()
+        {
+            base.Activate();
+            Init();
+        }
+
+        void Init()
+        {
+            party = Manager.Party;
+
+        }
+
+        /*
         protected override void Select()
         {
 
         }
+        */
+
 
         #endregion
     }

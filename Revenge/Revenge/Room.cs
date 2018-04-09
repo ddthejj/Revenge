@@ -144,11 +144,10 @@ namespace Revenge
                     reader.ReadLine();
 
                     #endregion
-
-                    int width, height;
+                    
                     string[] dimensions = reader.ReadLine().Split(',');
                     reader.ReadLine();
-                    width = Convert.ToInt32(dimensions[0]); height = Convert.ToInt32(dimensions[1]);
+                    int width = Convert.ToInt32(dimensions[0]), height = Convert.ToInt32(dimensions[1]);
                     float layer = .75F;
 
                     int x = 0, y = 0;
@@ -169,19 +168,20 @@ namespace Revenge
                             {
                                 if (line[j] != "-1")
                                 {
+                                        if (Convert.ToInt16(line[j]) == 4)
+                                        { }
                                     if (Game1.tileSet[Convert.ToInt32(line[j])].IsDoor)
                                     {
                                         layers[l][i, j] = new Door(Game1.tileSet[Convert.ToInt32(line[j])], new Point(x, y), layer, doorInfo[doorCount].RoomPath, doorInfo[doorCount].PlayerEntry);
                                         doorCount++;
                                     }
-                                    else
-                                        layers[l][i, j] = new Tile(Game1.tileSet[Convert.ToInt32(line[j])], new Point(x, y), layer);
-
-                                    if (layers[l][i, j].Interactable)
+                                    else if (Game1.tileSet[Convert.ToInt32(line[j])].Interactable)
                                     {
-                                        layers[l][i, j].Text = textInfo[textCount];
+                                        layers[l][i, j] = new InteractableTile(Game1.tileSet[Convert.ToInt32(line[j])], new Point(x, y), layer, textInfo[textCount]);
                                         textCount++;
                                     }
+                                    else
+                                        layers[l][i, j] = new Tile(Game1.tileSet[Convert.ToInt32(line[j])], new Point(x, y), layer);
                                 }
                                 else
                                     layers[l][i, j] = new Tile(new Point(x, y));

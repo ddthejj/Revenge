@@ -19,14 +19,6 @@ namespace Revenge
         /// Whether or not the tile has walls
         /// </summary>
         bool collidable;
-        /// <summary>
-        /// Wheter or not you can talk to the tile
-        /// </summary>
-        bool interactable;
-        /// <summary>
-        /// The text that interactable tiles have (should they bee their own class?)
-        /// </summary>
-        string[] text;
 
         /// <summary>
         /// The order that properties get passed into the tile
@@ -35,7 +27,6 @@ namespace Revenge
         {
             Texture,
             Collidable,
-            Interactable,
             Max_Int
         }
 
@@ -47,14 +38,6 @@ namespace Revenge
         /// Whether or not the tile is solid
         /// </summary>
         public bool Collidable { get { return collidable; } }
-        /// <summary>
-        /// Whether or not the player can talk to the tile
-        /// </summary>
-        public bool Interactable { get { return interactable; } }
-        /// <summary>
-        /// The text attatched to interactable tiles
-        /// </summary>
-        public string[] Text { get { return text; } set { text = value; } }
 
         #endregion
 
@@ -70,11 +53,8 @@ namespace Revenge
         /// <param name="_height">The height of the tile.</param>
         /// <param name="_width">The width of the tile.</param>
         /// <param name="_collidable">Whether or not the player can collide with the tile</param>
-        /// <param name="_door">Whether or not the tile is a door</param>
-        /// <param name="_interactable">Whether or not the tile can be "spoken to"</param>
-        /// <param name="_text">The text for the tile if it is interactable</param>
-        public Tile(short _height = 32, short _width = 32, bool _collidable = false, bool _interactable = false, string[] _text = null) : base(0f, 0, 0, _height, _width)
-        { collidable = _collidable; interactable = _interactable; text = _text; }
+        public Tile(short _height = 32, short _width = 32, bool _collidable = false) : base(0f, 0, 0, _height, _width)
+        { collidable = _collidable; }
         /// <summary>
         /// Constructs a tile based on a prototype tile
         /// </summary>
@@ -82,7 +62,7 @@ namespace Revenge
         /// <param name="location">The location of the new tile</param>
         /// <param name="_layer">The layer to place the tile on</param>
         public Tile(ProtoTile that, Point location, float _layer) : base(new Rectangle(location.X, location.Y, that.Width, that.Height), _layer)
-        { texture = that.Texture; collidable = that.Collidable; interactable = that.Interactable; }
+        { texture = that.Texture; collidable = that.Collidable; }
         /// <summary>
         /// Creates an empty tile
         /// </summary>
@@ -127,13 +107,17 @@ namespace Revenge
 
     public class ProtoTile
     {
+        #region Properties
+
         int width, height;
         bool collidable;
         bool interactable;
         bool door;
         Texture2D texture;
 
-        public ProtoTile(short _height = 32, short _width = 32, bool _collidable = false, bool _interactable = false, bool _door = false) { collidable = _collidable; interactable = _interactable; door = _door; width = _width; height = _height; }
+        #endregion
+
+        #region Get Set Properties
 
         public Texture2D Texture { get { return texture; } set { texture = value; } }
         public bool Collidable { get { return collidable; } }
@@ -141,5 +125,36 @@ namespace Revenge
         public bool IsDoor { get { return door; } }
         public int Width { get { return width; } }
         public int Height { get { return height; } }
+
+        #endregion
+
+        #region Constructor
+
+        public ProtoTile(bool _collidable = false, bool _interactable = false, bool _door = false, short _height = 32, short _width = 32) { collidable = _collidable; interactable = _interactable; door = _door; width = _width; height = _height; }
+
+        #endregion
+    }
+
+
+    public class InteractableTile : Tile
+    {
+        #region Properties
+
+        string[] text;
+
+        #endregion
+
+        #region Get Set Properties
+
+        public string[] Text { get { return text; } }
+
+        #endregion
+
+        #region Constructor
+
+        public InteractableTile(ProtoTile that, Point location, float layer, string[] _text) : base(that, location, layer) { text = _text; }
+
+        #endregion
+
     }
 }
