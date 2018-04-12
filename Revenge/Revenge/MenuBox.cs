@@ -11,21 +11,22 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Revenge
 {
-    public class MenuBox : Box
+    public abstract class MenuBox : Box
     {
-        protected class MenuItem<type>
+
+        protected class MenuItem
         {
             #region Properties
 
             string text;
             Vector2 location;
-            type subMenu;
+            int subMenu;
 
             #endregion
 
             #region Constructor
 
-            public MenuItem(string _text, Vector2 _location,  type _subMenu) { text = _text; location = _location; subMenu = _subMenu; }
+            public MenuItem(string _text, Vector2 _location, int _subMenu) { text = _text; location = _location; subMenu = _subMenu; }
 
             //public MenuItem(string _text, Vector2 _location) { text = _text;  location = _location; subMenu = -1; }
             #endregion
@@ -34,7 +35,7 @@ namespace Revenge
 
             public string Text { get { return text; } }
             public Vector2 Location { get { return location; } }
-            public type SubMenu { get { return subMenu; } }
+            public int SubMenu { get { return subMenu; } }
 
             public void Draw()
             {
@@ -43,13 +44,13 @@ namespace Revenge
 
             #endregion
         }
-        
+
         #region Properties
 
-        protected MenuItem<int>[,] selectableLocations;
-        Vector2 selected = new Vector2(0, 0), defaultSelected;
-        Arrow arrow;
-        int previousMenu;
+        protected MenuItem[,] selectableLocations;
+        protected Vector2 selected = new Vector2(0, 0), defaultSelected;
+        protected Arrow arrow;
+        protected int previousMenu;
 
         #endregion
 
@@ -68,11 +69,11 @@ namespace Revenge
         /// <param name="locations">The locations of the options</param>
         /// <param name="SubMenus">The submenus for the options</param>
         /// <param name="PreviousMenu">The previous menu</param>
-        public MenuBox(Rectangle _rectangle, string[,] texts, Vector2[,] locations,  int[,] SubMenus, int PreviousMenu = -1) : base(_rectangle)
+        public MenuBox(Rectangle _rectangle, string[,] texts, Vector2[,] locations, int[,] SubMenus, int PreviousMenu = -1) : base(_rectangle)
         {
             previousMenu = PreviousMenu;
 
-            CreateOptions(texts, locations,  SubMenus);
+            CreateOptions(texts, locations, SubMenus);
         }
         /// <summary>
         /// Constructor that is used by base classes that automatically place options
@@ -95,7 +96,7 @@ namespace Revenge
         {
             base.Draw();
 
-            foreach (MenuItem<int> item in selectableLocations)
+            foreach (MenuItem item in selectableLocations)
             {
                 Game1.spriteBatch.DrawString(spriteFont, item.Text, new Vector2(item.Location.X + rectangle.Location.X, item.Location.Y + rectangle.Location.Y), Color.White);
             }
@@ -190,35 +191,22 @@ namespace Revenge
         /// <summary>
         /// Opens the submenu of the selected option
         /// </summary>
-        protected virtual void Select()
-        {
-            int subMenu = selectableLocations[(int)selected.Y, (int)selected.X].SubMenu;
-            Freeze();
-            if (subMenu != -1)
-            {
-                Manager.NextMenu(subMenu);
-            }
-            else
-            {
-                Manager.CloseMenu(previousMenu);
-                Deactivate();
-            }
-        }
+        protected abstract void Select();
         /// <summary>
         /// Initially creates the options of the menu 
         /// </summary>
         /// <param name="texts">The texts for the options to display</param>
         /// <param name="locations">The locations for the options to be placed at</param>
         /// <param name="SubMenus">The submenus that the options lead to</param>
-        protected void CreateOptions(string[,] texts, Vector2[,] locations,  int[,] SubMenus)
+        protected virtual void CreateOptions(string[,] texts, Vector2[,] locations, int[,] SubMenus)
         {
-            selectableLocations = new MenuItem<int>[texts.GetLength(0), texts.GetLength(1)];
+            selectableLocations = new MenuItem[texts.GetLength(0), texts.GetLength(1)];
 
             for (int i = 0; i < texts.GetLength(0); i++)
                 for (int j = 0; j < texts.GetLength(1); j++)
                 {
                     if (texts[i, j] != null)
-                        selectableLocations[i, j] = new MenuItem<int>(texts[i, j], locations[i, j],  SubMenus[i, j]);
+                        selectableLocations[i, j] = new MenuItem(texts[i, j], locations[i, j],  SubMenus[i, j]);
                     else
                         selectableLocations[i, j] = null;
                 }
@@ -245,15 +233,15 @@ namespace Revenge
         /// </summary>
         /// <param name="texts">The texts for the options to display</param>
         /// <param name="locations">The locations for the options to be placed at</param>
-        protected void CreateOptions(string[,] texts, Vector2[,] locations)
+        protected virtual void CreateOptions(string[,] texts, Vector2[,] locations)
         {
-            selectableLocations = new MenuItem<int>[texts.GetLength(0), texts.GetLength(1)];
+            selectableLocations = new MenuItem[texts.GetLength(0), texts.GetLength(1)];
 
             for (int i = 0; i < texts.GetLength(0); i++)
                 for (int j = 0; j < texts.GetLength(1); j++)
                 {
                     if (texts[i, j] != null)
-                        selectableLocations[i, j] = new MenuItem<int>(texts[i, j], locations[i, j], -1);
+                        selectableLocations[i, j] = new MenuItem(texts[i, j], locations[i, j], -1);
                     else
                         selectableLocations[i, j] = null;
                 }
@@ -285,11 +273,59 @@ namespace Revenge
         #endregion 
     }
 
+    public class MainMenu : MenuBox
+    {
+        #region Properties
+
+
+        #endregion
+
+        #region Get Set Properties
+
+
+
+        #endregion
+
+        #region Constructor
+
+        public MainMenu(Rectangle _rectangle, string[,] texts, Vector2[,] locations, int[,] SubMenus, int PreviousMenu = -1) : base(_rectangle, texts, locations, SubMenus, PreviousMenu)
+        {
+
+        }
+
+        #endregion
+
+            #region Methods
+
+        protected override void Select()
+        {
+            int subMenu = selectableLocations[(int)selected.Y, (int)selected.X].SubMenu;
+            Freeze();
+            if (subMenu != -1)
+            {
+                Manager.NextMenu(subMenu);
+            }
+            else
+            {
+                Manager.CloseMenu(previousMenu);
+                Deactivate();
+            }
+        }
+
+        #endregion
+    }
+
     public class CharacterMenu : MenuBox
     {
         #region Properties
 
         List<Character> party;
+
+        #endregion
+
+        #region Get Set Properties
+
+
 
         #endregion
 
@@ -301,21 +337,17 @@ namespace Revenge
 
             string[,] characters = new string[party.Count(), 1];
             Vector2[,] locations = new Vector2[party.Count(), 1];
+            int[,] selections = new int[party.Count(), 1];
 
             for (int i = 0; i < party.Count(); i++)
             {
                 characters[i, 0] = party[i].Name;
                 locations[i, 0] = new Vector2(40, 35 + (50 * i));
+                selections[i, 0] = i;
             }
 
-            CreateOptions(characters, locations);
+            CreateOptions(characters, locations, selections);
         }
-
-        #endregion
-
-        #region Get Set Properties
-
-
 
         #endregion
 
@@ -330,17 +362,57 @@ namespace Revenge
         void Init()
         {
             party = Manager.Party;
-
         }
-
-        /*
+        
         protected override void Select()
         {
+            int whichCharacter = selectableLocations[(int)selected.Y, (int)selected.X].SubMenu;
+            Freeze();
+            if (whichCharacter != -1)
+            {
+                CharacterDetailsMenu dets = new CharacterDetailsMenu(party[whichCharacter], (int)Manager.MenuOrder.CharacterMenu, rectangle);
 
+            }
+            else
+            {
+                Manager.CloseMenu(previousMenu);
+                Deactivate();
+            }
         }
-        */
-
 
         #endregion
+
+        class CharacterDetailsMenu : MenuBox
+        {
+            #region Properties
+
+
+
+            #endregion
+
+            #region Get Set Properties
+
+
+
+            #endregion
+
+            #region Constructor
+
+            public CharacterDetailsMenu(Character selectedCharacter, int characterMenu, Rectangle characterMenuRectangle) :base(new Rectangle(characterMenuRectangle.Right, characterMenuRectangle.Top, 200, 200), characterMenu)
+            {
+                
+            }
+
+            #endregion
+
+            #region Methods
+
+            protected override void Select()
+            {
+                
+            }
+
+            #endregion
+        }
     }
 }

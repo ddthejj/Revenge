@@ -63,12 +63,13 @@ namespace Revenge
         /// </summary>
         static MenuBox[] pauseMenus;
 
-        enum MenuOrder
+        public enum MenuOrder
         {
             MainPause,
             CharacterMenu,
             Inventory, 
             Options,
+            CharacterDetails,
             MaxInt
         }
 
@@ -166,7 +167,7 @@ namespace Revenge
 
             pauseMenus = new MenuBox[(int)MenuOrder.MaxInt];
 
-            pauseMenus[(int)MenuOrder.MainPause] = new MenuBox(new Rectangle(50, 50, 150, 250),
+            pauseMenus[(int)MenuOrder.MainPause] = new MainMenu(new Rectangle(50, 50, 150, 250),
                                     new string[,] { { "Characters" }, { "Inventory" }, { "Equip" }, { "Exit" } },
                                     new Vector2[,] { { new Vector2(40, 35) }, { new Vector2(40, 85) }, { new Vector2(40, 135) }, { new Vector2(40, 185) } },
                                     new int [,] {
@@ -177,7 +178,7 @@ namespace Revenge
                                                }
                                     );
             pauseMenus[(int)MenuOrder.CharacterMenu] = new CharacterMenu(new Rectangle(200, 50, 150, 250), 0);
-            //pauseMenus[(int)MenuOrder.Inventory]
+            //pauseMenus[(int)MenuOrder.Inventory] 
         }
 
         public static void MovePlayer(Point location)
