@@ -13,12 +13,13 @@ namespace Revenge
 {
     public static class KeyOptions
     {
-        public static Keys Up = Keys.W;
-        public static Keys Down = Keys.S;
-        public static Keys Left = Keys.A;
-        public static Keys Right = Keys.D;
-        public static Keys Menu = Keys.E;
-        public static Keys Interact = Keys.Space;
+        public static Keys Up = Keys.Up;
+        public static Keys Down = Keys.Down;
+        public static Keys Left = Keys.Left;
+        public static Keys Right = Keys.Right;
+        public static Keys Select = Keys.Z;
+        public static Keys Back = Keys.X;
+        public static Keys Menu = Keys.C;
 
         public static bool KeyPressed(Keys key)
         {

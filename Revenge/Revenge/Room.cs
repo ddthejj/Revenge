@@ -58,7 +58,7 @@ namespace Revenge
             /// <param name="entry">Where to put the player in the new room</param>
             public DoorInfo(string path, Point entry) { RoomPath = path; PlayerEntry = entry; }
         }
-    
+
         /// <summary>
         /// The layers of tiles of a room
         /// </summary>
@@ -76,7 +76,7 @@ namespace Revenge
 
         #region Constructor
 
-        public Room() :base(0) { }
+        public Room() : base(0) { }
 
         /// <summary>
         /// Creates a room with a path to its int array and an entry point for the player
@@ -144,7 +144,7 @@ namespace Revenge
                     reader.ReadLine();
 
                     #endregion
-                    
+
                     string[] dimensions = reader.ReadLine().Split(',');
                     reader.ReadLine();
                     int width = Convert.ToInt32(dimensions[0]), height = Convert.ToInt32(dimensions[1]);
@@ -168,8 +168,8 @@ namespace Revenge
                             {
                                 if (line[j] != "-1")
                                 {
-                                        if (Convert.ToInt16(line[j]) == 4)
-                                        { }
+                                    if (Convert.ToInt16(line[j]) == 4)
+                                    { }
                                     if (Game1.tileSet[Convert.ToInt32(line[j])].IsDoor)
                                     {
                                         layers[l][i, j] = new Door(Game1.tileSet[Convert.ToInt32(line[j])], new Point(x, y), layer, doorInfo[doorCount].RoomPath, doorInfo[doorCount].PlayerEntry);

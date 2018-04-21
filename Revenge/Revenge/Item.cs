@@ -10,7 +10,7 @@ namespace Revenge
         #region Properties
 
         string name;
-        Tile groundSprite;
+        ItemGround groundSprite;
 
         #endregion
 
@@ -22,7 +22,7 @@ namespace Revenge
 
         #region Constructor
 
-        public Item(string _name)
+        public Item(string _name = "ERROR")
         {
             name = _name;
             //groundSprite = new InteractableTile();
@@ -35,32 +35,33 @@ namespace Revenge
 
 
         #endregion
+
+        private class ItemGround : Tile
+        {
+            #region Properties
+
+
+
+            #endregion
+
+            #region Get Set Properties
+
+
+
+            #endregion
+
+            #region Constructor
+
+
+
+            #endregion
+
+            #region Methods
+
+
+
+            #endregion
+        }
     }
 
-    public class ItemGround : Tile
-    {
-        #region Properties
-
-
-
-        #endregion
-
-        #region Get Set Properties
-
-
-
-        #endregion
-
-        #region Constructor
-
-
-
-        #endregion
-
-        #region Methods
-
-
-
-        #endregion
-    }
 }

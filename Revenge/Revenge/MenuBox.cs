@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Revenge
 {
-    public abstract class MenuBox : Box
+    public class MenuBox : Box
     {
 
         protected class MenuItem
@@ -28,7 +28,7 @@ namespace Revenge
 
             public MenuItem(string _text, Vector2 _location, int _subMenu) { text = _text; location = _location; subMenu = _subMenu; }
 
-            //public MenuItem(string _text, Vector2 _location) { text = _text;  location = _location; subMenu = -1; }
+            public MenuItem(string _text, Vector2 _location) { text = _text; location = _location; subMenu = -1; }
             #endregion
 
             #region Methods
@@ -47,10 +47,19 @@ namespace Revenge
 
         #region Properties
 
-        protected MenuItem[,] selectableLocations;
+        public enum BoxType
+        {
+            BaseMenu,
+            CharactersMenu,
+            InventoryMenu
+        }
+
+        protected MenuItem[,] selectableLocations = new MenuItem[,] { };
+        protected MenuItem[] nonSelectableLocations = new MenuItem[] { };
         protected Vector2 selected = new Vector2(0, 0), defaultSelected;
         protected Arrow arrow;
         protected int previousMenu;
+        protected BoxType boxType = BoxType.BaseMenu;
 
         #endregion
 
@@ -69,12 +78,22 @@ namespace Revenge
         /// <param name="locations">The locations of the options</param>
         /// <param name="SubMenus">The submenus for the options</param>
         /// <param name="PreviousMenu">The previous menu</param>
-        public MenuBox(Rectangle _rectangle, string[,] texts, Vector2[,] locations, int[,] SubMenus, int PreviousMenu = -1) : base(_rectangle)
+        public MenuBox(Rectangle _rectangle, string[,] texts, Vector2[,] locations, int[,] SubMenus, int _previousMenu = -1, BoxType _boxType = BoxType.BaseMenu) : base(_rectangle)
         {
-            previousMenu = PreviousMenu;
+            previousMenu = _previousMenu; boxType = _boxType;
 
             CreateOptions(texts, locations, SubMenus);
         }
+
+
+        public MenuBox(Rectangle _rectangle, string[] texts, Vector2[] locations, int _previousMenu = -1, BoxType _boxType = BoxType.BaseMenu) : base(_rectangle)
+        {
+            previousMenu = _previousMenu; boxType = _boxType;
+
+            CreateStaticOptions(texts, locations);
+        }
+
+
         /// <summary>
         /// Constructor that is used by base classes that automatically place options
         /// </summary>
@@ -100,13 +119,25 @@ namespace Revenge
             {
                 Game1.spriteBatch.DrawString(spriteFont, item.Text, new Vector2(item.Location.X + rectangle.Location.X, item.Location.Y + rectangle.Location.Y), Color.White);
             }
-            arrow.Draw();
+            foreach (MenuItem item in nonSelectableLocations)
+            {
+                Game1.spriteBatch.DrawString(spriteFont, item.Text, new Vector2(item.Location.X + rectangle.Location.X, item.Location.Y + rectangle.Location.Y), Color.White);
+            }
+            if (arrow != null)
+                arrow.Draw();
         }
         /// <summary>
         /// Lets you switch between the options on a menu.
         /// </summary>
         void SwitchSelected()
         {
+            if (selectableLocations.GetLength(1) <= selected.X || selectableLocations.GetLength(0) <= selected.Y)
+            {
+                if (arrow != null)
+                    arrow.Deactivate();
+                return;
+            }
+
             int maxX = selectableLocations.GetLength(1) - 1, maxY = selectableLocations.GetLength(0) - 1;
 
             if (KeyOptions.KeyPressed(KeyOptions.Up))
@@ -163,7 +194,7 @@ namespace Revenge
             }
 
 
-            if (KeyOptions.KeyPressed(KeyOptions.Interact))
+            if (KeyOptions.KeyPressed(KeyOptions.Select))
             {
                 Select();
             }
@@ -171,12 +202,18 @@ namespace Revenge
         /// <summary>
         /// Closes all open menus if the menu button is pressed
         /// </summary>
-        protected void CheckClose()
+        public void CheckClose()
         {
             if (KeyOptions.KeyPressed(KeyOptions.Menu))
             {
                 Deactivate();
                 Manager.CloseMenu(previousMenu, true);
+            }
+
+            if (KeyOptions.KeyPressed(KeyOptions.Back))
+            {
+                Deactivate();
+                Manager.CloseMenu(previousMenu, false);
             }
         }
         /// <summary>
@@ -185,13 +222,33 @@ namespace Revenge
         public void Reset()
         {
             selected = defaultSelected;
-            arrow.Move((int)selectableLocations[(int)selected.Y, (int)selected.X].Location.X + rectangle.X - 20, (int)selectableLocations[(int)selected.Y, (int)selected.X].Location.Y + rectangle.Y + 7);
-            arrow.Reset();
+            if (arrow != null)
+            {
+                if (selectableLocations.GetLength(1) > selected.X && selectableLocations.GetLength(0) > selected.Y)
+                {
+                    arrow.Move((int)selectableLocations[(int)selected.Y, (int)selected.X].Location.X + rectangle.X - 20, (int)selectableLocations[(int)selected.Y, (int)selected.X].Location.Y + rectangle.Y + 7);
+                    arrow.Reset();
+                }
+            }
         }
         /// <summary>
         /// Opens the submenu of the selected option
         /// </summary>
-        protected abstract void Select();
+        protected virtual void Select()
+        {
+            int subMenu = selectableLocations[(int)selected.Y, (int)selected.X].SubMenu;
+            Freeze();
+
+            if (subMenu != -1)
+            {
+                Manager.NextMenu(subMenu, boxType);
+            }
+            else
+            {
+                Manager.CloseMenu(previousMenu);
+                Deactivate();
+            }
+        }
         /// <summary>
         /// Initially creates the options of the menu 
         /// </summary>
@@ -206,7 +263,7 @@ namespace Revenge
                 for (int j = 0; j < texts.GetLength(1); j++)
                 {
                     if (texts[i, j] != null)
-                        selectableLocations[i, j] = new MenuItem(texts[i, j], locations[i, j],  SubMenus[i, j]);
+                        selectableLocations[i, j] = new MenuItem(texts[i, j], locations[i, j], SubMenus[i, j]);
                     else
                         selectableLocations[i, j] = null;
                 }
@@ -264,6 +321,16 @@ namespace Revenge
             Found:;
         }
 
+        protected virtual void CreateStaticOptions(string[] texts, Vector2[] locations)
+        {
+            nonSelectableLocations = new MenuItem[texts.Length];
+
+            for (int i = 0; i < texts.Length; i++)
+            {
+                nonSelectableLocations[i] = new MenuItem(texts[i], locations[i]);
+            }
+        }
+
         public override void Deactivate()
         {
             base.Deactivate();
@@ -273,146 +340,238 @@ namespace Revenge
         #endregion 
     }
 
-    public class MainMenu : MenuBox
-    {
-        #region Properties
+    //public class MainMenu : MenuBox
+    //{
+    //    #region Properties
 
 
-        #endregion
+    //    #endregion
 
-        #region Get Set Properties
-
-
-
-        #endregion
-
-        #region Constructor
-
-        public MainMenu(Rectangle _rectangle, string[,] texts, Vector2[,] locations, int[,] SubMenus, int PreviousMenu = -1) : base(_rectangle, texts, locations, SubMenus, PreviousMenu)
-        {
-
-        }
-
-        #endregion
-
-            #region Methods
-
-        protected override void Select()
-        {
-            int subMenu = selectableLocations[(int)selected.Y, (int)selected.X].SubMenu;
-            Freeze();
-            if (subMenu != -1)
-            {
-                Manager.NextMenu(subMenu);
-            }
-            else
-            {
-                Manager.CloseMenu(previousMenu);
-                Deactivate();
-            }
-        }
-
-        #endregion
-    }
-
-    public class CharacterMenu : MenuBox
-    {
-        #region Properties
-
-        List<Character> party;
-
-        #endregion
-
-        #region Get Set Properties
+    //    #region Get Set Properties
 
 
 
-        #endregion
+    //    #endregion
 
-        #region Constructor
+    //    #region Constructor
 
-        public CharacterMenu (Rectangle _rectangle, int _previousMenu ) : base(_rectangle, _previousMenu)
-        {
-            party = Manager.Party;
+    //    public MainMenu(Rectangle _rectangle, string[,] texts, Vector2[,] locations, int[,] SubMenus, int PreviousMenu = -1) : base(_rectangle, texts, locations, SubMenus, PreviousMenu)
+    //    {
 
-            string[,] characters = new string[party.Count(), 1];
-            Vector2[,] locations = new Vector2[party.Count(), 1];
-            int[,] selections = new int[party.Count(), 1];
+    //    }
 
-            for (int i = 0; i < party.Count(); i++)
-            {
-                characters[i, 0] = party[i].Name;
-                locations[i, 0] = new Vector2(40, 35 + (50 * i));
-                selections[i, 0] = i;
-            }
+    //    #endregion
 
-            CreateOptions(characters, locations, selections);
-        }
+    //    #region Methods
 
-        #endregion
+    //    protected override void Select()
+    //    {
+    //        int subMenu = selectableLocations[(int)selected.Y, (int)selected.X].SubMenu;
+    //        Freeze();
+    //        if (subMenu != -1)
+    //        {
+    //            Manager.NextMenu(subMenu);
+    //        }
+    //        else
+    //        {
+    //            Manager.CloseMenu(previousMenu);
+    //            Deactivate();
+    //        }
+    //    }
 
-        #region Methods
+    //    #endregion
+    //}
 
-        public override void Activate()
-        {
-            base.Activate();
-            Init();
-        }
 
-        void Init()
-        {
-            party = Manager.Party;
-        }
-        
-        protected override void Select()
-        {
-            int whichCharacter = selectableLocations[(int)selected.Y, (int)selected.X].SubMenu;
-            Freeze();
-            if (whichCharacter != -1)
-            {
-                CharacterDetailsMenu dets = new CharacterDetailsMenu(party[whichCharacter], (int)Manager.MenuOrder.CharacterMenu, rectangle);
+    //public class CharacterMenu : MenuBox
+    //{
+    //    #region Properties
 
-            }
-            else
-            {
-                Manager.CloseMenu(previousMenu);
-                Deactivate();
-            }
-        }
+    //    List<Character> party;
 
-        #endregion
+    //    #endregion
 
-        class CharacterDetailsMenu : MenuBox
-        {
-            #region Properties
+    //    #region Get Set Properties
 
 
 
-            #endregion
+    //    #endregion
 
-            #region Get Set Properties
+    //    #region Constructor
+
+    //    public CharacterMenu(Rectangle _rectangle, int _previousMenu) : base(_rectangle, _previousMenu)
+    //    {
+    //        party = Manager.Party;
+
+    //        string[,] characters = new string[party.Count() + 1, 1];
+    //        Vector2[,] locations = new Vector2[party.Count() + 1, 1];
+    //        int[,] selections = new int[party.Count() + 1, 1];
+
+    //        for (int i = 0; i < party.Count(); i++)
+    //        {
+    //            characters[i, 0] = party[i].Name;
+    //            locations[i, 0] = new Vector2(40, 35 + (50 * i));
+    //            selections[i, 0] = i;
+    //        }
+
+    //        characters[party.Count(), 0] = "Cancel";
+    //        locations[party.Count(), 0] = new Vector2(40, 35 + (50 * party.Count()));
+    //        selections[party.Count(), 0] = -1;
+
+    //        rectangle.Height = 100 + (50 * party.Count());
+
+    //        CreateOptions(characters, locations, selections);
+    //    }
+
+    //    #endregion
+
+    //    #region Methods
+
+    //    public override void Activate()
+    //    {
+    //        base.Activate();
+    //        party = Manager.Party;
+    //    }
+
+    //    protected override void Select()
+    //    {
+    //        int whichCharacter = selectableLocations[(int)selected.Y, (int)selected.X].SubMenu;
+    //        Freeze();
+    //        if (whichCharacter != -1)
+    //        {
+    //            CharacterDetailsMenu dets = new CharacterDetailsMenu(party[whichCharacter], (int)Manager.MenuOrder.CharacterMenu, rectangle);
+    //            dets.Activate();
+    //        }
+    //        else
+    //        {
+    //            Manager.CloseMenu(previousMenu);
+    //            Deactivate();
+    //        }
+    //    }
+
+    //    #endregion
+
+    //    class CharacterDetailsMenu : MenuBox
+    //    {
+    //        #region Properties
 
 
 
-            #endregion
+    //        #endregion
 
-            #region Constructor
+    //        #region Get Set Properties
 
-            public CharacterDetailsMenu(Character selectedCharacter, int characterMenu, Rectangle characterMenuRectangle) :base(new Rectangle(characterMenuRectangle.Right, characterMenuRectangle.Top, 200, 200), characterMenu)
-            {
-                
-            }
 
-            #endregion
 
-            #region Methods
+    //        #endregion
 
-            protected override void Select()
-            {
-                
-            }
+    //        #region Constructor
 
-            #endregion
-        }
-    }
+    //        public CharacterDetailsMenu(Character character, int characterMenu, Rectangle characterMenuRectangle) : base(new Rectangle(characterMenuRectangle.Right, characterMenuRectangle.Top, 400, 270), characterMenu)
+    //        {
+    //            Item[] equipArray = character.EquipArray;
+    //            string[] equipNames = new string[equipArray.Length];
+
+    //            for (int i = 0; i < equipArray.Length; i++)
+    //            {
+    //                if (equipArray[i] != null)
+    //                    equipNames[i] = equipArray[i].Name;
+    //                else
+    //                    equipNames[i] = "None";
+    //            }
+
+    //            string[] texts = { character.Name, (character.Harmony.ToString() + ':' + character.Chaos.ToString()),
+    //                "HP", character.BaseHitPoints.ToString(), character.EffectiveHitPoints.ToString(), "MP", character.BaseMagicPoints.ToString(), character.EffectiveMagicPoints.ToString(),
+    //                "AT", character.BaseAttack.ToString(), character.EffectiveAttack.ToString(), "DF", character.BaseDefense.ToString(),character.EffectiveDefense.ToString(),
+    //                "MG", character.BaseMagic.ToString(), character.EffectiveMagic.ToString(), "MD", character.BaseMagicDefense.ToString(), character.EffectiveMagicDefense.ToString(),
+    //                "DX", character.BaseDexterity.ToString(), character.EffectiveDexterity.ToString(), "SK", character.BaseSkill.ToString(), character.EffectiveSkill.ToString(),
+    //                "Weapon", equipNames[0], equipNames[1], "Armor", equipNames[2], equipNames[3], equipNames[4], equipNames[5]};
+
+    //            Vector2[] locations = { new Vector2(30, 30), new Vector2(200, 30),
+    //                new Vector2(40, 60), new Vector2(80, 60), new Vector2(110, 60), new Vector2(40, 80), new Vector2(80, 80), new Vector2(110, 80),
+    //                new Vector2(40, 100), new Vector2(80, 100), new Vector2(110, 100), new Vector2(40, 120), new Vector2(80, 120), new Vector2(110, 120),
+    //                new Vector2(40, 140), new Vector2(80, 140), new Vector2(110, 140), new Vector2(40, 160), new Vector2(80, 160), new Vector2(110, 160),
+    //                new Vector2(40, 180), new Vector2(80, 180), new Vector2(110, 180), new Vector2(40, 200), new Vector2(80, 200), new Vector2(110, 200),
+    //                new Vector2(150, 75), new Vector2(220, 75), new Vector2(220, 95),
+    //                new Vector2(150, 125), new Vector2(220, 125), new Vector2(220, 145), new Vector2(220, 165), new Vector2(220, 185)
+    //            };
+
+    //            string[,] cancel = new string[,] { { "Cancel" } };
+    //            Vector2[,] cancelLocation = new Vector2[,] { { new Vector2(310, 220) } };
+
+    //            CreateOptions(cancel, cancelLocation);
+    //            CreateStaticOptions(texts, locations);
+    //        }
+
+    //        #endregion
+
+    //        #region Methods
+
+    //        protected override void Select()
+    //        {
+    //            Manager.CloseMenu(previousMenu);
+    //            Deactivate();
+    //        }
+
+    //        #endregion
+    //    }
+    //}
+
+    //public class InventoryMenu : MenuBox
+    //{
+    //    #region Properties
+
+
+
+    //    #endregion
+
+    //    #region Get Set Properties
+
+
+
+    //    #endregion
+
+    //    #region Constructor
+
+    //    public InventoryMenu(Rectangle _rectangle, int _previousMenu) : base(_rectangle, _previousMenu)
+    //    {
+    //        List<Item> inventory = Manager.Inventory;
+
+    //        string[] itemNamesRaw = new string[inventory.Count()];
+    //        for (int i = 0; i < itemNamesRaw.Length; i++)
+    //        {
+    //            itemNamesRaw[i] = inventory[i].Name;
+    //        }
+
+    //        int itemsPerColumn = (int)Math.Ceiling((double)itemNamesRaw.Length / 3.0);
+
+    //        string[,] itemNames = new string[itemsPerColumn, 3];
+    //        Vector2[,] itemLocations = new Vector2[itemsPerColumn, 3];
+
+    //        int row = 0;
+    //        for (int i = 0; i < itemNamesRaw.Length; i++)
+    //        {
+    //            int column = i % 3;
+
+    //            itemNames[row, column] = itemNamesRaw[i];
+    //            itemLocations[row, column] = new Vector2(35 + (50 * row), 35 + (75 * column));
+
+    //            if (column == 2)
+    //                row++;
+    //        }
+
+    //        CreateOptions(itemNames, itemLocations);
+    //    }
+
+    //    #endregion
+
+    //    #region Methods
+
+    //    protected override void Select()
+    //    {
+
+    //    }
+
+    //    #endregion
+    //}
 }

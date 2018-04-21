@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Revenge", "Revenge\Revenge\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevengeContent", "Revenge\RevengeContent\RevengeContent.contentproj", "{5670A075-D049-47A4-AB05-056B704B41BE}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "COA_Lab4", "..\..\Documents\Arduino\COA_Lab4\COA_Lab4.vcxproj", "{C5F80730-F44F-4478-BDAE-6634EFC2CA88}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -21,10 +19,6 @@ Global
 		{3020EB26-8831-4D6F-82B7-A1235BFF087A}.Release|x86.Build.0 = Release|x86
 		{5670A075-D049-47A4-AB05-056B704B41BE}.Debug|x86.ActiveCfg = Debug|x86
 		{5670A075-D049-47A4-AB05-056B704B41BE}.Release|x86.ActiveCfg = Release|x86
-		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|x86.ActiveCfg = Debug|Win32
-		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|x86.Build.0 = Debug|Win32
-		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|x86.ActiveCfg = Release|Win32
-		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

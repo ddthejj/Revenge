@@ -118,6 +118,12 @@ namespace Revenge
             Manager.update += Update;
         }
 
+        public void CenterOn(Point point)
+        {
+            rectangle.X = point.X - rectangle.Width / 2;
+            rectangle.Y = point.Y - rectangle.Height / 2;
+        }
+
         #endregion
     }
 }

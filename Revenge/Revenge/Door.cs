@@ -23,7 +23,7 @@ namespace Revenge
         /// <summary>
         /// The point to enter the next room at
         /// </summary>
-        Point entryPoint = new Point(0,0);
+        Point entryPoint = new Point(0, 0);
 
         #endregion
 

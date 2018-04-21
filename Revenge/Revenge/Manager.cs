@@ -62,12 +62,14 @@ namespace Revenge
         /// The menus that appear when the player pauses
         /// </summary>
         static MenuBox[] pauseMenus;
-
+        /// <summary>
+        /// The order of the menus
+        /// </summary>
         public enum MenuOrder
         {
             MainPause,
             CharacterMenu,
-            Inventory, 
+            Inventory,
             Options,
             CharacterDetails,
             MaxInt
@@ -77,6 +79,10 @@ namespace Revenge
         /// The current group of characters 
         /// </summary>
         static List<Character> party;
+        /// <summary>
+        /// The inventory of the party
+        /// </summary>
+        static List<Item> inventory = new List<Item>();
 
         #region Door Properties
 
@@ -98,11 +104,11 @@ namespace Revenge
         /// <summary>
         /// The current player character
         /// </summary>
-        public static Player Player { get { return player; }  }
+        public static Player Player { get { return player; } }
         /// <summary>
         /// The center of the screen
         /// </summary>
-        public static Point CenterScreen { get { return centerScreen; }  }
+        public static Point CenterScreen { get { return centerScreen; } }
         /// <summary>
         /// Centers the current room on the player
         /// </summary>
@@ -110,22 +116,23 @@ namespace Revenge
         /// <summary>
         /// The current room being displayed
         /// </summary>
-        public static Room CurrentRoom { get { return currentRoom; }  }
+        public static Room CurrentRoom { get { return currentRoom; } }
         /// <summary>
         /// The box at the bottom of the screen where text will be displayed
         /// </summary>
-        public static TextBox DialogueBox { get { return dialogueBox; }  }
-
-        public static Box[] PauseMenus { get { return pauseMenus; } }
+        public static TextBox DialogueBox { get { return dialogueBox; } }
         /// <summary>
         /// The menu that appears when the player pauses
         /// </summary>
-        public static MenuBox PauseMenu { get { return pauseMenus[(int)MenuOrder.MainPause] as MenuBox; }  }
+        public static MenuBox PauseMenu { get { return pauseMenus[(int)MenuOrder.MainPause]; } }
         /// <summary>
         /// The current group of characters
         /// </summary>
-        public static List<Character> Party { get { return party; }  }
-
+        public static List<Character> Party { get { return Party; } }
+        /// <summary>
+        /// The inventory of the party
+        /// </summary>
+        public static List<Item> Inventory { get { return inventory; } }
         #endregion
 
         #region Methods
@@ -167,17 +174,16 @@ namespace Revenge
 
             pauseMenus = new MenuBox[(int)MenuOrder.MaxInt];
 
-            pauseMenus[(int)MenuOrder.MainPause] = new MainMenu(new Rectangle(50, 50, 150, 250),
+            pauseMenus[(int)MenuOrder.MainPause] = new MenuBox(new Rectangle(50, 50, 150, 250),
                                     new string[,] { { "Characters" }, { "Inventory" }, { "Equip" }, { "Exit" } },
                                     new Vector2[,] { { new Vector2(40, 35) }, { new Vector2(40, 85) }, { new Vector2(40, 135) }, { new Vector2(40, 185) } },
-                                    new int [,] {
+                                    new int[,] {
                                                 { (int) MenuOrder.CharacterMenu },
-                                                { -1 },
+                                                { (int) MenuOrder.Inventory },
                                                 { -1 },
                                                 { -1 }
                                                }
                                     );
-            pauseMenus[(int)MenuOrder.CharacterMenu] = new CharacterMenu(new Rectangle(200, 50, 150, 250), 0);
             //pauseMenus[(int)MenuOrder.Inventory] 
         }
 
@@ -238,7 +244,7 @@ namespace Revenge
         {
             player.Freeze();
             currentRoom.Freeze();
-            
+
             dialogueBox.Start(text);
         }
         /// <summary>
@@ -275,7 +281,7 @@ namespace Revenge
             {
                 pauseMenus[previousMenu].Unfreeze();
                 if (closeAllMenus)
-                    CloseMenu(pauseMenus[previousMenu].PreviousMenu, true);
+                    pauseMenus[previousMenu].CheckClose();
             }
             else
             {
@@ -286,12 +292,107 @@ namespace Revenge
             }
         }
 
-        public static void NextMenu(int nextMenu)
+        public static void NextMenu(int nextMenu, MenuBox.BoxType boxType)
         {
-            pauseMenus[nextMenu].Activate();
+            if (boxType == MenuBox.BoxType.BaseMenu)
+            {
+                if (nextMenu == (int)MenuOrder.CharacterMenu)
+                {
+                    string[,] characters = new string[party.Count(), 1];
+                    Vector2[,] locations = new Vector2[party.Count(), 1];
+                    int[,] selections = new int[party.Count() + 1, 1];
+
+                    for (int i = 0; i < party.Count(); i++)
+                    {
+                        characters[i, 0] = party[i].Name;
+                        locations[i, 0] = new Vector2(40, 35 + (50 * i));
+                        selections[i, 0] = i;
+                    }
+
+                    Rectangle rectangle = new Rectangle(pauseMenus[(int)MenuOrder.MainPause].Rectangle.Right, pauseMenus[(int)MenuOrder.MainPause].Rectangle.Top, 150, (50 + (50 * party.Count())));
+
+                    pauseMenus[(int)MenuOrder.CharacterMenu] = new MenuBox(rectangle, characters, locations, selections, (int)MenuOrder.MainPause, MenuBox.BoxType.CharactersMenu);
+                }
+                else if (nextMenu == (int)MenuOrder.Inventory)
+                {
+                    string[] itemNamesRaw = new string[inventory.Count()];
+                    for (int i = 0; i < itemNamesRaw.Length; i++)
+                    {
+                        itemNamesRaw[i] = inventory[i].Name;
+                    }
+
+                    int itemsPerColumn = (int)Math.Ceiling((double)itemNamesRaw.Length / 3.0);
+
+                    string[,] itemNames = new string[itemsPerColumn, 3];
+                    Vector2[,] itemLocations = new Vector2[itemsPerColumn, 3];
+
+                    int row = 0;
+                    for (int i = 0; i < itemNamesRaw.Length; i++)
+                    {
+                        int column = i % 3;
+
+                        itemNames[row, column] = itemNamesRaw[i];
+                        itemLocations[row, column] = new Vector2(35 + (50 * row), 35 + (75 * column));
+
+                        if (column == 2)
+                            row++;
+                    }
+
+                    Rectangle rectangle = new Rectangle(pauseMenus[(int)MenuOrder.MainPause].Rectangle.Right, pauseMenus[(int)MenuOrder.MainPause].Rectangle.Top, 300, 300);
+
+                    pauseMenus[(int)MenuOrder.Inventory] = new MenuBox(rectangle, itemNames, itemLocations, new int[,] { }, (int)MenuOrder.MainPause, MenuBox.BoxType.InventoryMenu);
+                }
+                pauseMenus[nextMenu].Activate();
+            }
+            else if (boxType == MenuBox.BoxType.CharactersMenu)
+            {
+                Character character = party[nextMenu];
+
+                Item[] equipArray = character.EquipArray;
+                string[] equipNames = new string[equipArray.Length];
+
+                for (int i = 0; i < equipArray.Length; i++)
+                {
+                    if (equipArray[i] != null)
+                        equipNames[i] = equipArray[i].Name;
+                    else
+                        equipNames[i] = "None";
+                }
+
+                string[] texts = { character.Name, (character.Harmony.ToString() + ':' + character.Chaos.ToString()),
+                    "HP", character.BaseHitPoints.ToString(), character.EffectiveHitPoints.ToString(), "MP", character.BaseMagicPoints.ToString(), character.EffectiveMagicPoints.ToString(),
+                    "AT", character.BaseAttack.ToString(), character.EffectiveAttack.ToString(), "DF", character.BaseDefense.ToString(),character.EffectiveDefense.ToString(),
+                    "MG", character.BaseMagic.ToString(), character.EffectiveMagic.ToString(), "MD", character.BaseMagicDefense.ToString(), character.EffectiveMagicDefense.ToString(),
+                    "DX", character.BaseDexterity.ToString(), character.EffectiveDexterity.ToString(), "SK", character.BaseSkill.ToString(), character.EffectiveSkill.ToString(),
+                    "Weapon", equipNames[0], equipNames[1], "Armor", equipNames[2], equipNames[3], equipNames[4], equipNames[5]};
+
+                Vector2[] locations = { new Vector2(30, 30), new Vector2(200, 30),
+                    new Vector2(40, 60), new Vector2(80, 60), new Vector2(110, 60), new Vector2(40, 80), new Vector2(80, 80), new Vector2(110, 80),
+                    new Vector2(40, 100), new Vector2(80, 100), new Vector2(110, 100), new Vector2(40, 120), new Vector2(80, 120), new Vector2(110, 120),
+                    new Vector2(40, 140), new Vector2(80, 140), new Vector2(110, 140), new Vector2(40, 160), new Vector2(80, 160), new Vector2(110, 160),
+                    new Vector2(40, 180), new Vector2(80, 180), new Vector2(110, 180), new Vector2(40, 200), new Vector2(80, 200), new Vector2(110, 200),
+                    new Vector2(150, 75), new Vector2(220, 75), new Vector2(220, 95),
+                    new Vector2(150, 125), new Vector2(220, 125), new Vector2(220, 145), new Vector2(220, 165), new Vector2(220, 185)
+                };
+                pauseMenus[(int)MenuOrder.CharacterDetails] = new MenuBox(new Rectangle(pauseMenus[(int)MenuOrder.CharacterMenu].Rectangle.Right, pauseMenus[(int)MenuOrder.CharacterMenu].Rectangle.Top, 400, 270),
+                                                                          texts, locations, (int)MenuOrder.CharacterMenu);
+                pauseMenus[(int)MenuOrder.CharacterDetails].Activate();
+            }
+        }
+
+        public static void MenuSelect(int menuToOpen)
+        {
+
         }
 
         #endregion
+
+        public static int CenterTextHorizontal(Rectangle rectangle, string text, SpriteFont font)
+        {
+            int length = (int)font.MeasureString(text).X;
+
+            return (rectangle.Width / 2 - length / 2);
+        }
 
         #endregion
     }

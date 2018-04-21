@@ -51,7 +51,7 @@ namespace Revenge
             int jOffset = 0;
             bool collideUp = false, collideDown = false, collideLeft = false, collideRight = false;
 
-            
+
             #region Up Tiles
             // Finds the tiles above the player
 
@@ -245,7 +245,7 @@ namespace Revenge
         }
         public void Interact()
         {
-            if (KeyOptions.KeyPressed(KeyOptions.Interact))
+            if (KeyOptions.KeyPressed(KeyOptions.Select))
             {
                 Point interactPoint = new Point(rectangle.Center.X, rectangle.Center.Y);
 

@@ -66,7 +66,7 @@ namespace Revenge
 
         public TextBox(Rectangle rectangle) : base(rectangle)
         {
-            arrow = new Arrow(new Rectangle(rectangle.Right - 30, rectangle.Bottom - 30, 7, 7), true, (float)(Math.PI/2));
+            arrow = new Arrow(new Rectangle(rectangle.Right - 30, rectangle.Bottom - 30, 7, 7), true, (float)(Math.PI / 2));
         }
 
         #endregion
@@ -136,7 +136,7 @@ namespace Revenge
                     if (!arrow.Enabled)
                         arrow.Activate();
 
-                    if (KeyOptions.KeyPressed(KeyOptions.Interact))
+                    if (KeyOptions.KeyPressed(KeyOptions.Select))
                     {
                         arrow.Deactivate();
                         arrow.Reset();
@@ -163,7 +163,7 @@ namespace Revenge
                 if (!arrow.Enabled)
                     arrow.Activate();
 
-                if (KeyOptions.KeyPressed(KeyOptions.Interact))
+                if (KeyOptions.KeyPressed(KeyOptions.Select))
                 {
                     currentText.Clear();
                     whichLine = 0;

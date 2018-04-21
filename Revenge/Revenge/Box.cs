@@ -43,7 +43,7 @@ namespace Revenge
 
             #region Get Set Properties
 
-            public void Move(int x, int y) { rectangle.Location = new Point(x, y);}
+            public void Move(int x, int y) { rectangle.Location = new Point(x, y); }
 
             #endregion
 
@@ -85,7 +85,7 @@ namespace Revenge
 
             public void Draw()
             {
-                Game1.spriteBatch.Draw(texture, rectangle, null, Color.White * transparency, rotation, new Vector2(0,0), SpriteEffects.None, layer);
+                Game1.spriteBatch.Draw(texture, rectangle, null, Color.White * transparency, rotation, new Vector2(0, 0), SpriteEffects.None, layer);
             }
 
             public void Reset()
@@ -105,7 +105,7 @@ namespace Revenge
 
         #region Constructor
 
-        public Box(Rectangle _rectangle) : base(_rectangle, 0.1f){ }
+        public Box(Rectangle _rectangle) : base(_rectangle, 0.1f) { }
 
 
         #endregion
