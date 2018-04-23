@@ -18,7 +18,13 @@ namespace Revenge
 
         public delegate void VoidDelegate();
 
+        /// <summary>
+        /// Holds all the drawing events
+        /// </summary>
         public static event VoidDelegate draw;
+        /// <summary>
+        /// Holds all the updating events
+        /// </summary>
         public static event VoidDelegate update;
 
         /// <summary>
@@ -184,9 +190,16 @@ namespace Revenge
                                                 { -1 }
                                                }
                                     );
+            pauseMenus[(int)MenuOrder.CharacterMenu] = new MenuBox(MenuBox.BoxType.CharactersMenu);
+            pauseMenus[(int)MenuOrder.Inventory] = new MenuBox(MenuBox.BoxType.InventoryMenu);
+            pauseMenus[(int)MenuOrder.CharacterDetails] = new MenuBox();
             //pauseMenus[(int)MenuOrder.Inventory] 
         }
 
+        /// <summary>
+        /// Moves the current player
+        /// </summary>
+        /// <param name="location"></param>
         public static void MovePlayer(Point location)
         {
             player.Location = location;
@@ -291,12 +304,16 @@ namespace Revenge
                 currentRoom.Unfreeze();
             }
         }
-
-        public static void NextMenu(int nextMenu, MenuBox.BoxType boxType)
+        /// <summary>
+        /// Opens a menu based on the previous menu and an int
+        /// </summary>
+        /// <param name="selection">The option selected from the previous menu</param>
+        /// <param name="boxType">The type of menu box calling the function</param>
+        public static void NextMenu(int selection, MenuBox.BoxType boxType)
         {
             if (boxType == MenuBox.BoxType.BaseMenu)
             {
-                if (nextMenu == (int)MenuOrder.CharacterMenu)
+                if (selection == (int)MenuOrder.CharacterMenu)
                 {
                     string[,] characters = new string[party.Count(), 1];
                     Vector2[,] locations = new Vector2[party.Count(), 1];
@@ -311,9 +328,9 @@ namespace Revenge
 
                     Rectangle rectangle = new Rectangle(pauseMenus[(int)MenuOrder.MainPause].Rectangle.Right, pauseMenus[(int)MenuOrder.MainPause].Rectangle.Top, 150, (50 + (50 * party.Count())));
 
-                    pauseMenus[(int)MenuOrder.CharacterMenu] = new MenuBox(rectangle, characters, locations, selections, (int)MenuOrder.MainPause, MenuBox.BoxType.CharactersMenu);
+                    pauseMenus[(int)MenuOrder.CharacterMenu].Init(rectangle, characters, locations, selections, (int)MenuOrder.MainPause);
                 }
-                else if (nextMenu == (int)MenuOrder.Inventory)
+                else if (selection == (int)MenuOrder.Inventory)
                 {
                     string[] itemNamesRaw = new string[inventory.Count()];
                     for (int i = 0; i < itemNamesRaw.Length; i++)
@@ -340,13 +357,13 @@ namespace Revenge
 
                     Rectangle rectangle = new Rectangle(pauseMenus[(int)MenuOrder.MainPause].Rectangle.Right, pauseMenus[(int)MenuOrder.MainPause].Rectangle.Top, 300, 300);
 
-                    pauseMenus[(int)MenuOrder.Inventory] = new MenuBox(rectangle, itemNames, itemLocations, new int[,] { }, (int)MenuOrder.MainPause, MenuBox.BoxType.InventoryMenu);
+                    pauseMenus[(int)MenuOrder.Inventory].Init(rectangle, itemNames, itemLocations, new int[,] { }, (int)MenuOrder.MainPause);
                 }
-                pauseMenus[nextMenu].Activate();
+                pauseMenus[selection].Activate();
             }
             else if (boxType == MenuBox.BoxType.CharactersMenu)
             {
-                Character character = party[nextMenu];
+                Character character = party[selection];
 
                 Item[] equipArray = character.EquipArray;
                 string[] equipNames = new string[equipArray.Length];
@@ -374,19 +391,21 @@ namespace Revenge
                     new Vector2(150, 75), new Vector2(220, 75), new Vector2(220, 95),
                     new Vector2(150, 125), new Vector2(220, 125), new Vector2(220, 145), new Vector2(220, 165), new Vector2(220, 185)
                 };
-                pauseMenus[(int)MenuOrder.CharacterDetails] = new MenuBox(new Rectangle(pauseMenus[(int)MenuOrder.CharacterMenu].Rectangle.Right, pauseMenus[(int)MenuOrder.CharacterMenu].Rectangle.Top, 400, 270),
+                pauseMenus[(int)MenuOrder.CharacterDetails].Init(new Rectangle(pauseMenus[(int)MenuOrder.CharacterMenu].Rectangle.Right, pauseMenus[(int)MenuOrder.CharacterMenu].Rectangle.Top, 400, 270),
                                                                           texts, locations, (int)MenuOrder.CharacterMenu);
                 pauseMenus[(int)MenuOrder.CharacterDetails].Activate();
             }
         }
 
-        public static void MenuSelect(int menuToOpen)
-        {
-
-        }
-
         #endregion
 
+        /// <summary>
+        /// Centers text horizontally
+        /// </summary>
+        /// <param name="rectangle">The text is within</param>
+        /// <param name="text">The string to center</param>
+        /// <param name="font">The font the string is using</param>
+        /// <returns></returns>
         public static int CenterTextHorizontal(Rectangle rectangle, string text, SpriteFont font)
         {
             int length = (int)font.MeasureString(text).X;

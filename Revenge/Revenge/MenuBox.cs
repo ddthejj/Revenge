@@ -18,25 +18,51 @@ namespace Revenge
         {
             #region Properties
 
+            /// <summary>
+            /// The text that the menu item contains
+            /// </summary>
             string text;
+            /// <summary>
+            /// The location to write the item's text at
+            /// </summary>
             Vector2 location;
-            int subMenu;
+            /// <summary>
+            /// The number to return to the manager when something is selected
+            /// </summary>
+            int option;
 
             #endregion
 
             #region Constructor
 
-            public MenuItem(string _text, Vector2 _location, int _subMenu) { text = _text; location = _location; subMenu = _subMenu; }
+            /// <summary>
+            /// Builds a menu option and assigns all values
+            /// </summary>
+            /// <param name="_text">The text that the menu item contains</param>
+            /// <param name="_location">The location to write the text at</param>
+            /// <param name="_option">The number to return to the manager when something is selected</param>
+            public MenuItem(string _text, Vector2 _location, int _option = -1) { text = _text; location = _location; option = _option; }
 
-            public MenuItem(string _text, Vector2 _location) { text = _text; location = _location; subMenu = -1; }
             #endregion
 
             #region Methods
 
+            /// <summary>
+            /// The text that the menu item contains
+            /// </summary>
             public string Text { get { return text; } }
+            /// <summary>
+            /// The location to write the item's text at
+            /// </summary>
             public Vector2 Location { get { return location; } }
-            public int SubMenu { get { return subMenu; } }
+            /// <summary>
+            /// The number to return to the manager when something is selected
+            /// </summary>
+            public int SubMenu { get { return option; } }
 
+            /// <summary>
+            /// Draws the menu item
+            /// </summary>
             public void Draw()
             {
                 Game1.spriteBatch.DrawString(spriteFont, text, location, Color.White);
@@ -47,6 +73,9 @@ namespace Revenge
 
         #region Properties
 
+        /// <summary>
+        /// The type of menu that the menu is
+        /// </summary>
         public enum BoxType
         {
             BaseMenu,
@@ -54,52 +83,111 @@ namespace Revenge
             InventoryMenu
         }
 
+        /// <summary>
+        /// The options that the player can choose from on the menu
+        /// </summary>
         protected MenuItem[,] selectableLocations = new MenuItem[,] { };
+        /// <summary>
+        /// The static text that the player can't choose from on the menu
+        /// </summary>
         protected MenuItem[] nonSelectableLocations = new MenuItem[] { };
-        protected Vector2 selected = new Vector2(0, 0), defaultSelected;
+        /// <summary>
+        /// The currently selected location
+        /// </summary>
+        protected Vector2 selected = new Vector2(0, 0);
+        /// <summary>
+        /// The location of the first option on the menu
+        /// </summary>
+        protected Vector2 defaultSelected;
+        /// <summary>
+        /// The arrow that displays what the use has selected
+        /// </summary>
         protected Arrow arrow;
+        /// <summary>
+        /// The menu that opened this menu
+        /// </summary>
         protected int previousMenu;
+        /// <summary>
+        /// The type of menu that this is
+        /// </summary>
         protected BoxType boxType = BoxType.BaseMenu;
 
         #endregion
 
         #region Get Set Properties
 
+        /// <summary>
+        /// The menu that opened this menu
+        /// </summary>
         public int PreviousMenu { get { return previousMenu; } }
 
         #endregion
 
         #region Constructor
         /// <summary>
-        /// Builds a menu and options with submenus
+        /// Constructs a menu box with only selectable options
         /// </summary>
-        /// <param name="_rectangle">The rectangle of the menu</param>
-        /// <param name="texts">The texts for the options</param>
-        /// <param name="locations">The locations of the options</param>
-        /// <param name="SubMenus">The submenus for the options</param>
-        /// <param name="PreviousMenu">The previous menu</param>
+        /// <param name="_rectangle">The rectangle of the box</param>
+        /// <param name="texts">The 2D array of options for the box to display</param>
+        /// <param name="locations">Where to write each of the options</param>
+        /// <param name="SubMenus">The int that each of the options holds</param>
+        /// <param name="_previousMenu">The menu that opened this one</param>
+        /// <param name="_boxType">The type of box that this is</param>
         public MenuBox(Rectangle _rectangle, string[,] texts, Vector2[,] locations, int[,] SubMenus, int _previousMenu = -1, BoxType _boxType = BoxType.BaseMenu) : base(_rectangle)
         {
             previousMenu = _previousMenu; boxType = _boxType;
 
             CreateOptions(texts, locations, SubMenus);
         }
-
-
+        /// <summary>
+        /// Constructs a menu box witn only non selectable options
+        /// </summary>
+        /// <param name="_rectangle">The rectangle of the box</param>
+        /// <param name="texts">The array of options for the box to display</param>
+        /// <param name="locations">Where to write each of the options</param>
+        /// <param name="_previousMenu">The menu that opened this one</param>
+        /// <param name="_boxType">The type of box that this is</param>
         public MenuBox(Rectangle _rectangle, string[] texts, Vector2[] locations, int _previousMenu = -1, BoxType _boxType = BoxType.BaseMenu) : base(_rectangle)
         {
             previousMenu = _previousMenu; boxType = _boxType;
 
             CreateStaticOptions(texts, locations);
         }
-
-
         /// <summary>
-        /// Constructor that is used by base classes that automatically place options
+        /// Constructs a menu box that will have to be initialized later
         /// </summary>
-        /// <param name="_rectangle">The rectangle of the menu</param>
-        /// <param name="_previousMenu">The previous menu</param>
-        protected MenuBox(Rectangle _rectangle, int _previousMenu) : base(_rectangle) { previousMenu = _previousMenu; }
+        /// <param name="_boxType">The type of box that this is</param>
+        public MenuBox(BoxType _boxType = BoxType.BaseMenu) : base(new Rectangle(0,0,0,0))
+        {
+            boxType = _boxType;
+        }
+        /// <summary>
+        /// Recreates a box without destroying it
+        /// </summary>
+        /// <param name="_rectangle">The rectangle of the box</param>
+        /// <param name="texts">The array of options for the box to display</param>
+        /// <param name="locations">Where to write each of the options</param>
+        /// <param name="submenus">The int that each of the options holds</param>
+        /// <param name="_previousMenu">The menu that opened this one</param>
+        public void Init(Rectangle _rectangle, string[,] texts, Vector2[,] locations, int[,] submenus, int _previousMenu = -1)
+        {
+            rectangle = _rectangle; previousMenu = _previousMenu;
+            CreateOptions(texts, locations, submenus);
+        }
+
+        public void Init(Rectangle _rectangle, string[] texts, Vector2[] locations, int _previousMenu = -1)
+        {
+            rectangle = _rectangle; previousMenu = _previousMenu;
+            CreateStaticOptions(texts, locations);
+        }
+
+        public void Init(Rectangle _rectangle, string[,] texts, Vector2[,] locations, int[,] submenus, string[] staticText, Vector2[] staticLocations, int _previousMenu = -1)
+        {
+            rectangle = _rectangle; previousMenu = _previousMenu;
+            CreateOptions(texts, locations, submenus);
+            CreateStaticOptions(staticText, staticLocations);
+        }
+
 
         #endregion  
 
