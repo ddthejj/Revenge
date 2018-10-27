@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Renderer.h"
 #include <d2d1.h>
 #include <wincodec.h>
@@ -255,6 +255,7 @@ bool Renderer::End()
 
 	for (int i = 0; i < draws.size(); i++)
 	{
+
 		ObjectDraw* object = draws[i];
 
 		if (object->rotation == ObjectDraw::NONE)
@@ -324,30 +325,85 @@ bool Renderer::End()
 
 			if (SUCCEEDED(res))
 			{
+				D2D1_RECT_F newSource = D2D1::RectF(0, 0, 0, 0);
+				D2D1_RECT_F source = object->source;
+				float width = (float)originalBitmap->GetSize().width;
+				float height = (float)originalBitmap->GetSize().height;
+				float sourceHeight = (source.bottom - source.top);
+				float sourceWidth = (source.right - source.left);
+
+				// x′= xcosθ − ysinθ
+				// y′ = ycosθ + xsinθ
 				switch (object->rotation)
 				{
 				case ObjectDraw::HORIZONTAL:
 					res = rotator->Initialize(frame, WICBitmapTransformFlipHorizontal);
+					newSource.left = width - source.left - sourceWidth;
+					newSource.right = newSource.left + sourceWidth;
+					newSource.top = source.top;
+					newSource.bottom = source.bottom;
 					break;
 				case ObjectDraw::VERTICAL:
 					res = rotator->Initialize(frame, WICBitmapTransformFlipVertical);
+					newSource.left = source.left;
+					newSource.right = source.right;
+					newSource.top = height - source.top - sourceHeight;
+					newSource.bottom = newSource.bottom + sourceHeight;
 					break;
 				case ObjectDraw::ROT_90:
 					res = rotator->Initialize(frame, WICBitmapTransformRotate90);
+					//x′=5+(x−5)cos(φ)−(y−10)sin(φ)
+					//y′=10+(x−5)sin(φ)+(y−10)cos(φ)
+					newSource.left = height - source.bottom;
+					newSource.right = height - source.top;
+					newSource.top = source.left;
+					newSource.bottom = source.right;
 					break;
 				case ObjectDraw::ROT_90_VERTICAL:
 					res = rotator->Initialize(frame, (WICBitmapTransformOptions)(WICBitmapTransformRotate90 | WICBitmapTransformFlipVertical));
+					newSource.left = source.left;
+					newSource.right = source.right;
+					newSource.top = height - source.top - (source.bottom - source.top);
+					newSource.bottom = newSource.bottom + (source.bottom - source.top);
+					source = D2D1::RectF(newSource.left, newSource.top, newSource.right, newSource.bottom);
+					newSource.left = height - source.bottom;
+					newSource.right = height - source.top;
+					newSource.top = source.left;
+					newSource.bottom = source.right;
 					break;
 				case ObjectDraw::ROT_180:
 					res = rotator->Initialize(frame, WICBitmapTransformRotate180);
+					newSource.left = width - source.left - (source.right - source.left);
+					newSource.right = newSource.left + (source.right - source.left);
+					newSource.top = height - source.top - (source.bottom - source.top);
+					newSource.bottom = newSource.bottom + (source.bottom - source.top);
 					break;
 				case ObjectDraw::ROT_270:
 					res = rotator->Initialize(frame, WICBitmapTransformRotate270);
+					newSource.left = source.top;
+					newSource.right = source.bottom;
+					newSource.top = width - source.right;
+					newSource.bottom = width - source.left;
 					break;
 				case ObjectDraw::ROT_270_VERTICAL:
 					res = rotator->Initialize(frame, (WICBitmapTransformOptions)(WICBitmapTransformRotate270 | WICBitmapTransformFlipVertical));
+					newSource.left = source.left;
+					newSource.right = source.right;
+					newSource.top = height - source.top - (source.bottom - source.top);
+					newSource.bottom = newSource.bottom + (source.bottom - source.top);
+					source = D2D1::RectF(newSource.left, newSource.top, newSource.right, newSource.bottom);
+					newSource.left = source.top;
+					newSource.right = source.bottom;
+					newSource.top = width - source.right;
+					newSource.bottom = width - source.left;
 					break;
 				}
+
+				newSource.left = round(newSource.left);
+				newSource.right = round(newSource.right);
+				newSource.top = round(newSource.top);
+				newSource.bottom = round(newSource.bottom);
+
 				if (SUCCEEDED(res))
 					res = converter->Initialize(
 						rotator,
@@ -368,7 +424,7 @@ bool Renderer::End()
 					object->destination,
 					object->opacity,
 					D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR,
-					object->source
+					newSource
 				);
 			}
 
@@ -412,7 +468,7 @@ int Renderer::LoadContent(const wchar_t* filePath, float height, float width)
 		IID_PPV_ARGS(&imageFactory)
 	);
 	hr = LoadBitmapFromFile(renderTarget, imageFactory, filePath,
-		(UINT)height, (UINT)width, &bitmaps.at(index));
+		(UINT)width, (UINT)height, &bitmaps.at(index));
 
 	
 	SafeRelease(&imageFactory);

@@ -27,7 +27,7 @@ bool Manager::fadingOut = false;
 Door* Manager::doorHit = nullptr;
 
 Sprite* Manager::fadeRectangle = nullptr;
-MenuBox* Manager::menu = new MenuBox(0, 0, 200, 200);
+MenuBox* Manager::menu = nullptr;
 
 ProtoTile* Manager::GetProtoTile(int index)
 {
@@ -107,12 +107,11 @@ void Manager::Init(HWND hwnd)
 	spriteBatch = new SpriteBatch(hwnd);
 	// textures
 	textures[TEX_BLACK] = spriteBatch->Load(L"../Black.png", 32, 32);
-	textures[TEX_MENUCORNER] = spriteBatch->Load(L"../TextBoxCorner.png", 10, 10);
-	textures[TEX_MENUBORDER] = spriteBatch->Load(L"../TextBoxBorder.png", 10, 10);
+	textures[TEX_MENU] = spriteBatch->Load(L"../TextBox.png", 10, 10 * 3);
 	textures[TEX_BROWNFLOOR]  = spriteBatch->Load(L"../BrownTile.png", 32, 32);
 	textures[TEX_REDWALL] = spriteBatch->Load(L"../RedTile.png", 32, 32);
 	textures[TEX_GREENDOOR] = spriteBatch->Load(L"../GreenTile.png", 32, 32);
-	textures[TEX_PLAYER_DOWN_1] = spriteBatch->Load(L"../Player_Spritesheet.png", 32 * 4, 32 * 4);
+	textures[TEX_PLAYER] = spriteBatch->Load(L"../Player_Spritesheet.png", 32 * 4, 32 * 4);
 	// prototype tiles
 	protoTiles[TILE_BROWNFLOOR] = new ProtoTile(textures[TEX_BROWNFLOOR], 32, 32);
 	protoTiles[TILE_REDWALL] = new ProtoTile(textures[TEX_REDWALL], 32, 32, true);
@@ -127,12 +126,12 @@ void Manager::Init(HWND hwnd)
 	currentMap = maps[0];
 	currentMap->Activate();
 	// test player
-	currentPlayer = new Player(240, 240, 32, 32, textures[TEX_PLAYER_DOWN_1], .6f);
+	currentPlayer = new Player(240, 240, 32, 32, textures[TEX_PLAYER], .6f);
 	currentPlayer->Activate();
 	// fade rectangle
 	fadeRectangle = new Sprite(0, 0, WIDTH, HEIGHT, textures[TEX_BLACK], 1.f, 0.f);
 
-	MenuBox::SetMenuTextures(textures[TEX_MENUBORDER], textures[TEX_MENUCORNER], textures[TEX_BLACK]);	
+	menu = new MenuBox(0, 0, 200, 200, textures[TEX_MENU]);
 	menu->Activate();
 }
 

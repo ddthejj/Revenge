@@ -30,11 +30,28 @@ void SpriteBatch::Begin()
 void SpriteBatch::Draw(Texture* texture, MyRectangle* rectangle, MyRectangle* source, float opacity, float layer, int rot)
 {
 	if (!source)
-		renderer->Draw(texture->ID(), ((WIDTH / 2.0f) - camera[0]) + rectangle->X(), ((HEIGHT / 2.0f) - camera[1]) + rectangle->Y(), (int)rectangle->Width(), (int)rectangle->Height(), opacity, layer, rot);
+		renderer->Draw(texture->ID(),
+			((WIDTH / 2.0f) - camera[0]) + rectangle->X(), ((HEIGHT / 2.0f) - camera[1]) + rectangle->Y(), (int)rectangle->Width(), (int)rectangle->Height(),
+			0.f, 0.f, texture->Width(), texture->Height(),
+			opacity, layer, rot);
 	else
 		renderer->Draw(texture->ID(),
 			((WIDTH / 2.0f) - camera[0]) + rectangle->X(), ((HEIGHT / 2.0f) - camera[1]) + rectangle->Y(), (int)rectangle->Width(), (int)rectangle->Height(),
-			source->X(), source->Y(), source->Height(), source->Width(),
+			source->X(), source->Y(), (int)source->Height(), (int)source->Width(),
+			opacity, layer, rot);
+}
+
+void SpriteBatch::DrawUI(Texture* texture, MyRectangle* rectangle, MyRectangle* source, float opacity, float layer, int rot)
+{
+	if (!source)
+		renderer->Draw(texture->ID(), 
+			rectangle->X(), rectangle->Y(), (int)rectangle->Width(), (int)rectangle->Height(), 
+			0.f, 0.f, texture->Width(), texture->Height(),
+			opacity, layer, rot);
+	else
+		renderer->Draw(texture->ID(),
+			rectangle->X(), rectangle->Y(), (int)rectangle->Width(), (int)rectangle->Height(),
+			source->X(), source->Y(), (int)source->Width(), (int)source->Height(),
 			opacity, layer, rot);
 }
 
