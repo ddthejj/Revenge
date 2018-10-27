@@ -31,12 +31,12 @@ void SpriteBatch::Draw(Texture* texture, MyRectangle* rectangle, MyRectangle* so
 {
 	if (!source)
 		renderer->Draw(texture->ID(),
-			((WIDTH / 2.0f) - camera[0]) + rectangle->X(), ((HEIGHT / 2.0f) - camera[1]) + rectangle->Y(), (int)rectangle->Width(), (int)rectangle->Height(),
-			0.f, 0.f, texture->Width(), texture->Height(),
+		((WIDTH / 2.0f) - camera[0]) + rectangle->X(), ((HEIGHT / 2.0f) - camera[1]) + rectangle->Y(), (int)rectangle->Width(), (int)rectangle->Height(),
+			0.f, 0.f, (int)texture->Width(), (int)texture->Height(),
 			opacity, layer, rot);
 	else
 		renderer->Draw(texture->ID(),
-			((WIDTH / 2.0f) - camera[0]) + rectangle->X(), ((HEIGHT / 2.0f) - camera[1]) + rectangle->Y(), (int)rectangle->Width(), (int)rectangle->Height(),
+		((WIDTH / 2.0f) - camera[0]) + rectangle->X(), ((HEIGHT / 2.0f) - camera[1]) + rectangle->Y(), (int)rectangle->Width(), (int)rectangle->Height(),
 			source->X(), source->Y(), (int)source->Height(), (int)source->Width(),
 			opacity, layer, rot);
 }
@@ -44,15 +44,20 @@ void SpriteBatch::Draw(Texture* texture, MyRectangle* rectangle, MyRectangle* so
 void SpriteBatch::DrawUI(Texture* texture, MyRectangle* rectangle, MyRectangle* source, float opacity, float layer, int rot)
 {
 	if (!source)
-		renderer->Draw(texture->ID(), 
-			rectangle->X(), rectangle->Y(), (int)rectangle->Width(), (int)rectangle->Height(), 
-			0.f, 0.f, texture->Width(), texture->Height(),
+		renderer->Draw(texture->ID(),
+			rectangle->X(), rectangle->Y(), (int)rectangle->Width(), (int)rectangle->Height(),
+			0.f, 0.f, (int)texture->Width(), (int)texture->Height(),
 			opacity, layer, rot);
 	else
 		renderer->Draw(texture->ID(),
 			rectangle->X(), rectangle->Y(), (int)rectangle->Width(), (int)rectangle->Height(),
 			source->X(), source->Y(), (int)source->Width(), (int)source->Height(),
 			opacity, layer, rot);
+}
+
+void SpriteBatch::WriteText(const wchar_t * text, MyRectangle * rectangle, float layer)
+{
+	renderer->Write(text, rectangle->X(), rectangle->Y(), rectangle->Height(), rectangle->Width(), layer);
 }
 
 void SpriteBatch::End()

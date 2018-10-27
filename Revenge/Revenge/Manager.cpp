@@ -108,7 +108,7 @@ void Manager::Init(HWND hwnd)
 	// textures
 	textures[TEX_BLACK] = spriteBatch->Load(L"../Black.png", 32, 32);
 	textures[TEX_MENU] = spriteBatch->Load(L"../TextBox.png", 10, 10 * 3);
-	textures[TEX_BROWNFLOOR]  = spriteBatch->Load(L"../BrownTile.png", 32, 32);
+	textures[TEX_BROWNFLOOR] = spriteBatch->Load(L"../BrownTile.png", 32, 32);
 	textures[TEX_REDWALL] = spriteBatch->Load(L"../RedTile.png", 32, 32);
 	textures[TEX_GREENDOOR] = spriteBatch->Load(L"../GreenTile.png", 32, 32);
 	textures[TEX_PLAYER] = spriteBatch->Load(L"../Player_Spritesheet.png", 32 * 4, 32 * 4);
@@ -291,4 +291,3 @@ void Manager::Draw()
 
 	//delete test;
 }
-	

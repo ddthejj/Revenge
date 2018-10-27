@@ -26,7 +26,7 @@ void Character::Draw(SpriteBatch* spriteBatch)
 #pragma region Player Character
 Player::Player(float x, float y, float height, float width, Texture* _texture, float _layer) : Character(x, y, height, width, _texture, _layer)
 {
-	
+
 }
 
 Player::~Player()
@@ -127,11 +127,11 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, Room* 
 					{
 						collided = true;
 						rectangle->SetY(testing->GetRectangle()->Bottom() + 1);
-						goto COLLIDEDUP;	
+						goto COLLIDEDUP;
 					}
 			}
 		}
-		COLLIDEDUP:
+	COLLIDEDUP:
 
 		if (!collided)
 		{
@@ -161,7 +161,7 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, Room* 
 				if (!testing)
 					continue;
 
-				if (testing ->Collidable())
+				if (testing->Collidable())
 					if (testing->GetRectangle()->Intersects(futureRectangle))
 					{
 						collided = true;
