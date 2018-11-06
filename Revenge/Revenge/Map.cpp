@@ -22,7 +22,7 @@ Map::Map(const char * filepath, unsigned int _roomCount)
 
 Map::~Map()
 {
-	for (int i = 0; i < roomCount; i++)
+	for (unsigned int i = 0; i < roomCount; i++)
 	{
 		delete rooms[i];
 	}

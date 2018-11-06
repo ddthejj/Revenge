@@ -17,5 +17,8 @@ public:
 	virtual void Deactivate() { active = false; frozen = false; }
 	virtual void Freeze() { frozen = true; }
 	virtual void Unfreeze() { frozen = false; }
+
+	bool IsActive() { return active; }
+	bool IsFrozen() { return frozen; }
 };
 

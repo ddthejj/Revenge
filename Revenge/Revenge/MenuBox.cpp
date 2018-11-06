@@ -12,6 +12,14 @@ MenuBox::~MenuBox()
 {
 }
 
+
+void MenuBox::Open(MenuBox* _previousMenu)
+{
+	previousMenu = _previousMenu;
+	Sprite::Activate();
+}
+
+
 void MenuBox::Update()
 {
 

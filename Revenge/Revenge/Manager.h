@@ -51,6 +51,7 @@ public:
 
 	static char keyOptions[KEY_MAX];
 	static bool keys[KEY_MAX];
+	static bool previousKeys[KEY_MAX];
 
 private:
 	static SpriteBatch* spriteBatch;
@@ -67,7 +68,6 @@ private:
 	static float fadeOpacity;
 	static Door* doorHit;
 	static Sprite* fadeRectangle;
-	static MenuBox* menu;
 
 	static void TransitionRoom();
 
@@ -75,8 +75,12 @@ public:
 
 	static ProtoTile* GetProtoTile(int index);
 	static Room* GetRoom(int index);
-	static Player* GetCurrentPlayer();
+	static Player* GetCurrentPlayer() { return currentPlayer; }
 	static Room* GetCurrentRoom();
+	static Texture* GetTexture(int index) { return textures[index]; }
+	static bool IsKeyDown(KEYS index) { return keys[index]; }
+	static bool IsPreviousKeyDown(KEYS index) { return previousKeys[index]; }
+	static bool IsKeyPressed(KEYS index);
 
 	static void MoveMouse(HWND hwnd, LPARAM lParam);
 	static void PressKey(WPARAM wParam);
@@ -92,6 +96,8 @@ public:
 
 	static void CenterCamera(float x, float y);
 	static void HitDoor(Door* hit);
+	static void FreezeScene();
+	static void UnfreezeScene();
 
 	static void Update();
 	static void Draw();

@@ -28,7 +28,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	_CrtSetBreakAlloc(-1);
 #endif
 	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	
+
 	HWND hWnd;
 	WNDCLASSEX wc;
 	ZeroMemory(&wc, sizeof(WNDCLASSEX));
@@ -42,18 +42,18 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 
 	RegisterClassEx(&wc);
 
-	RECT wr = { 0, 0, 500, 400 };
+	RECT wr = { 0, 0, WIDTH, HEIGHT };
 	AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, FALSE);
 
 	hWnd = CreateWindowEx(
-		NULL, 
-		L"WindowClass1", 
-		L"Revenge",
-		WS_OVERLAPPEDWINDOW, 
-		300, 300, (int)WIDTH, (int)HEIGHT,
-		NULL, 
 		NULL,
-		hInstance, 
+		L"WindowClass1",
+		L"Revenge",
+		WS_OVERLAPPEDWINDOW,
+		300, 150, wr.left + wr.right, wr.top + wr.bottom,
+		NULL,
+		NULL,
+		hInstance,
 		NULL);
 
 	ShowWindow(hWnd, nCmdShow);
@@ -61,7 +61,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	MSG msg;
 
 	Manager::Init(hWnd);
-	SetCapture(hWnd);
 
 	float lastUpdate = 0.0f;
 
@@ -101,33 +100,30 @@ LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, 
 
 	switch (message)
 	{
-	//Window is activated or deactivated
+		//Window is activated or deactivated
 	case WM_ACTIVATE:
 		switch (wParam)
 		{
-		//Window is activated
+			//Window is activated
 		case WA_ACTIVE:
-		//Start capturing the mouse
-			SetCapture(hWnd);
+			//Start capturing the mouse
 			break;
-		//Window is deactivated
+			//Window is deactivated
 		case WA_INACTIVE:
-		//Stop capturing the mouse
-			ReleaseCapture();
+			//Stop capturing the mouse
 			break;
 		}
 		break;
-	//Window is destroyed
+		//Window is destroyed
 	case WM_DESTROY:
-		ReleaseCapture();
 		PostQuitMessage(0);
-		break; 
-	//Mouse movement is detected
+		break;
+		//Mouse movement is detected
 	case WM_MOUSEMOVE:
-			if (hWnd == GetForegroundWindow())
-				Manager::MoveMouse(hWnd, lParam);
-			break;
-	//Key is pressed down
+		if (hWnd == GetForegroundWindow())
+			Manager::MoveMouse(hWnd, lParam);
+		break;
+		//Key is pressed down
 	case WM_KEYDOWN:
 		if (hWnd != GetForegroundWindow())
 			break;
@@ -141,7 +137,7 @@ LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, 
 			break;
 		}
 		break;
-	//Key is released
+		//Key is released
 	case WM_KEYUP:
 		Manager::ReleaseKey(wParam);
 		break;

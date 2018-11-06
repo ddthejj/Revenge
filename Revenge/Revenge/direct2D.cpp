@@ -464,6 +464,7 @@ Renderer::~Renderer()
 		SafeRelease(&bitmaps[i]);
 	}
 	bitmaps.clear();
+	filenames.clear();
 
 	RemoveFontResource(L"APPLE_KID.TTF");
 	SafeRelease(&textBrush);

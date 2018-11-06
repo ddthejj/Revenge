@@ -7,6 +7,7 @@
 #include "Character.h"
 #include "Map.h"
 #include "MenuBox.h"
+#include "MenuManager.h"
 
 SpriteBatch* Manager::spriteBatch = nullptr;
 Texture* Manager::textures[TEX_MAX];
@@ -20,6 +21,7 @@ Map* Manager::currentMap;
 Player* Manager::currentPlayer;
 
 bool Manager::keys[KEY_MAX];
+bool Manager::previousKeys[KEY_MAX];
 char Manager::keyOptions[KEY_MAX];
 
 bool Manager::fadingIn = false;
@@ -27,7 +29,6 @@ bool Manager::fadingOut = false;
 Door* Manager::doorHit = nullptr;
 
 Sprite* Manager::fadeRectangle = nullptr;
-MenuBox* Manager::menu = nullptr;
 
 ProtoTile* Manager::GetProtoTile(int index)
 {
@@ -35,11 +36,6 @@ ProtoTile* Manager::GetProtoTile(int index)
 		return protoTiles[index];
 	else
 		return nullptr;
-}
-
-Player* Manager::GetCurrentPlayer()
-{
-	return currentPlayer;
 }
 
 Room * Manager::GetCurrentRoom()
@@ -50,6 +46,14 @@ Room * Manager::GetCurrentRoom()
 Room* Manager::GetRoom(int index)
 {
 	return currentMap->GetRoom(index);
+}
+
+bool Manager::IsKeyPressed(KEYS index)
+{
+	if (keys[index] == true && previousKeys[index] == false)
+		return true;
+
+	return false;
 }
 
 
@@ -70,12 +74,10 @@ void Manager::PressKey(WPARAM wParam)
 		keys[KEY_RIGHT] = true;
 	else if (wParam == keyOptions[KEY_MENU])
 		keys[KEY_MENU] = true;
-
 }
 
 void Manager::ReleaseKey(WPARAM wParam)
 {
-
 	if (wParam == keyOptions[KEY_UP])
 		keys[KEY_UP] = false;
 	else if (wParam == keyOptions[KEY_DOWN])
@@ -131,14 +133,13 @@ void Manager::Init(HWND hwnd)
 	// fade rectangle
 	fadeRectangle = new Sprite(0, 0, WIDTH, HEIGHT, textures[TEX_BLACK], 1.f, 0.f);
 
-	menu = new MenuBox(0, 0, 200, 200, textures[TEX_MENU]);
-	menu->Activate();
+	MenuManager::Init();
 }
 
 void Manager::Clean()
 {
 	// menu
-	delete menu;
+	MenuManager::Clean();
 	// fade rectangle
 	delete fadeRectangle;
 	// test player
@@ -262,9 +263,22 @@ void Manager::TransitionRoom()
 
 }
 
+void Manager::FreezeScene()
+{
+	currentMap->Freeze();
+	currentPlayer->Freeze();
+}
+
+void Manager::UnfreezeScene()
+{
+	currentPlayer->Unfreeze();
+	currentMap->Unfreeze();
+}
 
 void Manager::Update()
 {
+	MenuManager::Update();
+
 	if (fadingIn || fadingOut)
 		TransitionRoom();
 
@@ -274,6 +288,9 @@ void Manager::Update()
 		tile->Update();
 	}
 	CenterCamera(currentPlayer->GetRectangle()->CenterX(), currentPlayer->GetRectangle()->CenterY());
+
+	for (int i = 0; i < KEY_MAX; i++)
+		previousKeys[i] = keys[i];
 }
 
 void Manager::Draw()
