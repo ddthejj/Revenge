@@ -18,11 +18,12 @@
 #define TILE_HEIGHT 32.0f
 #define ROOM_FADE_SPEED	1.f / 30.f
 
+template <typename T>
 struct Point
 {
-	float x = 0.f, y = 0.f;
+	T x = 0, y = 0;
 
 	Point() = default;
-	Point(float _x, float _y) { x = _x; y = _y; }
+	Point(T _x, T _y) { x = _x; y = _y; }
 };
 

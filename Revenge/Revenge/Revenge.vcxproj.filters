@@ -19,29 +19,17 @@
     <Filter Include="Mapping">
       <UniqueIdentifier>{50c16e10-75e0-4d8f-a59c-01efa2af13e1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Basic Types">
+      <UniqueIdentifier>{ff3f6ee2-b1b9-47ff-bd22-e6ebd54455e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers">
+      <UniqueIdentifier>{fcf34dec-9333-4723-82f5-94bc8765fcc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Essentials">
+      <UniqueIdentifier>{edc34036-fe98-41d8-8b5d-e1cf52b56d67}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Manager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Rectangle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Sprite.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Character.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MenuBox.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MenuManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SpriteBatch.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
@@ -60,32 +48,29 @@
     <ClCompile Include="Map.cpp">
       <Filter>Mapping</Filter>
     </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>Basic Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Rectangle.cpp">
+      <Filter>Basic Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Basic Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuBox.cpp">
+      <Filter>Basic Types</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Essentials</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Manager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="defines.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Rectangle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Sprite.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Character.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MenuBox.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MenuManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Rendering</Filter>
     </ClInclude>
@@ -100,6 +85,30 @@
     </ClInclude>
     <ClInclude Include="Room.h">
       <Filter>Mapping</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Basic Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Basic Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>Basic Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Rectangle.h">
+      <Filter>Basic Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Manager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuBox.h">
+      <Filter>Basic Types</Filter>
+    </ClInclude>
+    <ClInclude Include="defines.h">
+      <Filter>Essentials</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

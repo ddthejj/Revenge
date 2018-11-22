@@ -5,6 +5,8 @@ class MenuBox;
 class SpriteBatch;
 class Texture;
 class Sprite;
+template <typename T>
+struct Point;
 
 enum MENUS
 {
@@ -29,6 +31,7 @@ public:
 	static void OpenMenu(MENUS index);
 	static void CloseMenu();
 	static void CloseAllMenus();
+	static void SetCursorPos(Point<float> pos);
 	
 	static void Update(float delta_time);
 };

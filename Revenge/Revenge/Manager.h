@@ -18,6 +18,9 @@ class MenuBox;
 class Manager
 {
 public:
+
+#pragma region ENUMS 
+
 	enum TILES
 	{
 		TILE_BROWNFLOOR,
@@ -30,6 +33,7 @@ public:
 	{
 		TEX_BLACK,
 		TEX_MENU,
+		TEX_ARROW,
 		TEX_BROWNFLOOR,
 		TEX_REDWALL,
 		TEX_GREENDOOR,
@@ -47,6 +51,8 @@ public:
 		KEY_INTERACT,
 		KEY_MAX
 	};
+
+#pragma endregion
 
 	static char keyOptions[KEY_MAX];
 	static bool keys[KEY_MAX];

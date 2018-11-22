@@ -9,7 +9,7 @@ protected:
 
 	char name[32];
 	float mvmntSpeed = 3.f;
-	MyRectangle* sourceRectangle = new MyRectangle(0, 0, 32, 32);
+	//MyRectangle* sourceRectangle = new MyRectangle(0, 0, 32, 32);
 
 	WayFacing wayFacing = DOWN;
 	float animTimer = 0;

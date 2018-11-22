@@ -3,6 +3,9 @@
 #include <string>
 #include <vector>
 
+template <typename T>
+struct Point;
+
 class MenuBox : public Sprite
 {
 	friend class MenuManager;
@@ -17,8 +20,10 @@ class MenuBox : public Sprite
 		MenuOption(char* _text, int _option, float _x, float _y) { text = std::string(_text); option = _option; x = _x; y = _y; }
 	};
 
-	std::vector<MenuOption> options;
-	int optionAt;
+	//std::vector<MenuOption> options;
+	MenuOption** options;
+	int optionsWidth = 0, optionsHeight = 0;
+	Point<int>* optionAt;
 
 protected:
 
@@ -30,11 +35,12 @@ public:
 	~MenuBox();
 
 	void Open(MenuBox* _previousMenu);
-	void ChangeOptions(char** texts, int* options, float** positions, int count);
+	void ChangeOptions(char** texts, int* option, Point<float>* positions, Point<int>* layout, int sizeX, int sizeY);
 	void Resize(float x, float y, float height, float width);
 	void Move(float x, float y);
 
-	int ChooseOption() { return optionAt; }
+	int ChooseOption();
+	void MoveSelected(int key);
 	//int
 
 	virtual void Draw(SpriteBatch* spriteBatch);

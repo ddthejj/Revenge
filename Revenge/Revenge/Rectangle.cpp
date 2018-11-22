@@ -3,21 +3,27 @@
 
 MyRectangle::MyRectangle()
 {
-	location = new Point();
+	location = new Point<float>();
 	height = 0; width = 0;
 }
 
 MyRectangle::MyRectangle(float _x, float _y, float _height, float _width)
 {
-	location->x = _x;
-	location->y = _y;
+	location = new Point<float>(_x, _y);
 	height = _height;
 	width = _width;
 }
 
-MyRectangle::MyRectangle(Point location, float height, float width)
+MyRectangle::MyRectangle(Point<float> location, float height, float width)
 {
 	MyRectangle(location.x, location.y, height, width);
+}
+
+MyRectangle::MyRectangle(const MyRectangle& that)
+{
+	location = new Point<float>(that.X(), that.Y());
+	height = that.height;
+	width = that.width;
 }
 
 MyRectangle::~MyRectangle()
@@ -37,6 +43,7 @@ float MyRectangle::CenterY() const { return location->y + (height / 2.f); }
 
 void MyRectangle::SetX(float _x) { location->x = _x; }
 void MyRectangle::SetY(float _y) { location->y = _y; }
+void MyRectangle::SetLocation(Point<float> _location) { *location = _location; }
 
 void MyRectangle::MoveX(float offset) { location->x += offset; }
 void MyRectangle::MoveY(float offset) { location->y += offset; }

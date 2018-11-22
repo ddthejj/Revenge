@@ -8,14 +8,14 @@
 #include "SpriteBatch.h"
 
 #pragma region Character
-Character::Character(float x, float y, float height, float width, Texture* _texture, float _layer) : Sprite(x, y, height, width, _texture, _layer)
+Character::Character(float x, float y, float height, float width, Texture* _texture, float _layer) : Sprite(x, y, height, width, 0, 0, 32, 32, _texture, _layer)
 {
 
 }
 
 Character::~Character()
 {
-	delete sourceRectangle;
+
 }
 
 void Character::Draw(SpriteBatch* spriteBatch)
