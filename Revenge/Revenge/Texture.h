@@ -20,9 +20,9 @@ class Texture
 
 public:
 
-	Texture();
+	Texture() {}
 	Texture(int id, float _height, float _width) { textureID = id; height = _height; width = _width; }
-	~Texture();
+	~Texture() {}
 
 	float Width() { return width; }
 	float Height() { return height; }

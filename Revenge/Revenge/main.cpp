@@ -3,7 +3,6 @@
 #include "Manager.h"
 #include <time.h>
 
-
 // MEMORY LEAK
 #ifdef _DEBUG
 struct MemLeak
@@ -23,6 +22,9 @@ LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, 
 
 int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
+
+	const float FPS = 60.f;
+
 #ifdef _DEBUG
 	MemLeak leaks;
 	_CrtSetBreakAlloc(-1);
@@ -42,7 +44,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 
 	RegisterClassEx(&wc);
 
-	RECT wr = { 0, 0, WIDTH, HEIGHT };
+	RECT wr = { 0, 0, (LONG)WIDTH, (LONG)HEIGHT };
 	AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, FALSE);
 
 	hWnd = CreateWindowEx(
@@ -62,7 +64,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 
 	Manager::Init(hWnd);
 
-	float lastUpdate = 0.0f;
+	clock_t lastUpdate = clock();
 
 	//Game Loop
 	while (true)
@@ -77,12 +79,12 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 		}
 		else
 		{
-			float ts = ((float)clock() - lastUpdate) * 1000;
-			if (ts >= 16.6666666666666)
+			clock_t ts = clock() - lastUpdate;
+			if (((float)ts / CLOCKS_PER_SEC) >= (1.f / FPS))
 			{
-				lastUpdate = float(clock());
+				lastUpdate = clock();
 
-				Manager::Update();
+				Manager::Update((float)ts);
 				Manager::Draw();
 			}
 		}

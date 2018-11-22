@@ -1,22 +1,24 @@
+#include "defines.h"
 #include "MenuManager.h"
 #include "Manager.h"
 #include "MenuBox.h"
 #include "SpriteBatch.h"
 #include "Texture.h"
+#include "Sprite.h"
 
 MenuBox** MenuManager::menuList = new MenuBox*[MENU_MAX];
 MenuBox* MenuManager::activeMenu = nullptr;
 Texture* MenuManager::menuTex = nullptr;
-
+Sprite* MenuManager::arrow = nullptr;
 
 void MenuManager::Init()
 {
 	menuTex = Manager::GetTexture(Manager::TEX_MENU);
 
-	menuList[MENU_BASE] = new MenuBox(50, 50, 200, 200, menuTex);
-	menuList[MENU_CHARACTER] = new MenuBox(250, 50, 100, 100, menuTex);
-	menuList[MENU_INVENTORY] = new MenuBox(250, 50, 100, 100, menuTex);
-	menuList[MENU_MAGIC] = new MenuBox(250, 50, 100, 100, menuTex);
+	menuList[MENU_BASE] = new MenuBox(50, 50, 200, 200, menuTex, "../Assets/Menus/Menu_Base.txt");
+	menuList[MENU_CHARACTER] = new MenuBox(250, 50, 100, 100, menuTex, "../Assets/Menus/Menu_Character.txt");
+	menuList[MENU_INVENTORY] = new MenuBox(250, 50, 100, 100, menuTex, "../Assets/Menus/Menu_Inventory.txt");
+	menuList[MENU_OPTIONS] = new MenuBox(250, 50, 100, 100, menuTex, "../Assets/Menus/Menu_Options.txt");
 }
 
 void MenuManager::Clean()
@@ -39,6 +41,22 @@ void MenuManager::OpenMenu(MENUS index)
 
 	if (activeMenu)
 		activeMenu->Freeze();
+
+	switch (index)
+	{
+	case MENU_BASE:
+		break;
+	case MENU_CHARACTER:
+
+		break;
+	case MENU_INVENTORY:
+
+		break;
+	case MENU_OPTIONS:
+
+		break;
+	}
+
 	menuList[index]->Open(activeMenu);
 	activeMenu = menuList[index];
 	activeMenu->Activate();
@@ -68,19 +86,45 @@ void MenuManager::CloseAllMenus()
 	Manager::UnfreezeScene();
 }
 
-void MenuManager::Update()
+void MenuManager::Update(float delta_time)
 {
-	if (Manager::IsKeyPressed(Manager::KEY_MENU))
+	if (!activeMenu)
 	{
-		if (!activeMenu)
+		if (Manager::IsKeyPressed(Manager::KEY_MENU))
 		{
 			Manager::FreezeScene();
 			OpenMenu(MENU_BASE);
 		}
-		else
+	}
+	else
+	{
+		if (Manager::IsKeyPressed(Manager::KEY_MENU))
 		{
 			Manager::UnfreezeScene();
 			CloseAllMenus();
+		}
+		else if (Manager::IsKeyPressed(Manager::KEY_INTERACT))
+		{
+			int option = activeMenu->ChooseOption();
+			if (option == MENUS::MENU_PREVIOUS)
+				OpenMenu((MENUS)option);
+			
+			if (activeMenu == menuList[MENU_BASE])
+			{
+				OpenMenu((MENUS)option);
+			}
+			else if (activeMenu == menuList[MENU_CHARACTER])
+			{
+
+			}
+			else if (activeMenu == menuList[MENU_INVENTORY])
+			{
+
+			}
+			else if (activeMenu == menuList[MENU_OPTIONS])
+			{
+
+			}
 		}
 	}
 }

@@ -1,3 +1,4 @@
+#include "defines.h"
 #include "Room.h"
 #include "Tile.h"
 #include "Manager.h"

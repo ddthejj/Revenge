@@ -18,3 +18,11 @@
 #define TILE_HEIGHT 32.0f
 #define ROOM_FADE_SPEED	1.f / 30.f
 
+struct Point
+{
+	float x = 0.f, y = 0.f;
+
+	Point() = default;
+	Point(float _x, float _y) { x = _x; y = _y; }
+};
+

@@ -1,6 +1,4 @@
 #pragma once
-#include "defines.h"
-
 #include <Windows.h>
 #include <vector>
 
@@ -46,6 +44,7 @@ public:
 		KEY_LEFT,
 		KEY_RIGHT,
 		KEY_MENU,
+		KEY_INTERACT,
 		KEY_MAX
 	};
 
@@ -99,7 +98,7 @@ public:
 	static void FreezeScene();
 	static void UnfreezeScene();
 
-	static void Update();
+	static void Update(float delta_time);
 	static void Draw();
 };
 

@@ -1,4 +1,5 @@
 #pragma once
+#include "defines.h"
 #include "Manager.h"
 #include "SpriteBatch.h"
 #include "Texture.h"
@@ -63,37 +64,35 @@ void Manager::MoveMouse(HWND hwnd, LPARAM lParam)
 
 void Manager::PressKey(WPARAM wParam)
 {
-
-	if (wParam == keyOptions[KEY_UP])
-		keys[KEY_UP] = true;
-	else if (wParam == keyOptions[KEY_DOWN])
-		keys[KEY_DOWN] = true;
-	else if (wParam == keyOptions[KEY_LEFT])
-		keys[KEY_LEFT] = true;
-	else if (wParam == keyOptions[KEY_RIGHT])
-		keys[KEY_RIGHT] = true;
-	else if (wParam == keyOptions[KEY_MENU])
-		keys[KEY_MENU] = true;
+	for (int key = 0; key < KEY_MAX; key++)
+	{
+		if (wParam == keyOptions[key])
+		{
+			keys[key] = true;
+			break;
+		}
+	}
 }
 
 void Manager::ReleaseKey(WPARAM wParam)
 {
-	if (wParam == keyOptions[KEY_UP])
-		keys[KEY_UP] = false;
-	else if (wParam == keyOptions[KEY_DOWN])
-		keys[KEY_DOWN] = false;
-	else if (wParam == keyOptions[KEY_LEFT])
-		keys[KEY_LEFT] = false;
-	else if (wParam == keyOptions[KEY_RIGHT])
-		keys[KEY_RIGHT] = false;
-	else if (wParam == keyOptions[KEY_MENU])
-		keys[KEY_MENU] = false;
+	for (int key = 0; key < KEY_MAX; key++)
+	{
+		if (wParam == keyOptions[key])
+		{
+			keys[key] = false;
+			break;
+		}
+	}
 }
 
 void Manager::ResizeWindow(HWND hWnd)
 {
 	if (spriteBatch)
 		spriteBatch->Resize(hWnd);
+
+	RECT rc;
+	GetClientRect(hWnd, &rc);
 }
 
 
@@ -105,15 +104,16 @@ void Manager::Init(HWND hwnd)
 	keyOptions[KEY_LEFT] = 'A';
 	keyOptions[KEY_RIGHT] = 'D';
 	keyOptions[KEY_MENU] = 'E';
+	keyOptions[KEY_INTERACT] = VK_SPACE;
 	// spritebatch
 	spriteBatch = new SpriteBatch(hwnd);
 	// textures
-	textures[TEX_BLACK] = spriteBatch->Load(L"../Black.png", 32, 32);
-	textures[TEX_MENU] = spriteBatch->Load(L"../TextBox.png", 10, 10 * 3);
-	textures[TEX_BROWNFLOOR] = spriteBatch->Load(L"../BrownTile.png", 32, 32);
-	textures[TEX_REDWALL] = spriteBatch->Load(L"../RedTile.png", 32, 32);
-	textures[TEX_GREENDOOR] = spriteBatch->Load(L"../GreenTile.png", 32, 32);
-	textures[TEX_PLAYER] = spriteBatch->Load(L"../Player_Spritesheet.png", 32 * 4, 32 * 4);
+	textures[TEX_BLACK] = spriteBatch->Load(L"../Assets/TestTextures/Black.png", 32, 32);
+	textures[TEX_MENU] = spriteBatch->Load(L"../Assets/TestTextures/TextBox.png", 10, 10 * 3);
+	textures[TEX_BROWNFLOOR] = spriteBatch->Load(L"../Assets/TestTextures/BrownTile.png", 32, 32);
+	textures[TEX_REDWALL] = spriteBatch->Load(L"../Assets/TestTextures/RedTile.png", 32, 32);
+	textures[TEX_GREENDOOR] = spriteBatch->Load(L"../Assets/TestTextures/GreenTile.png", 32, 32);
+	textures[TEX_PLAYER] = spriteBatch->Load(L"../Assets/TestTextures/Player_Spritesheet.png", 32 * 4, 32 * 4);
 	// prototype tiles
 	protoTiles[TILE_BROWNFLOOR] = new ProtoTile(textures[TEX_BROWNFLOOR], 32, 32);
 	protoTiles[TILE_REDWALL] = new ProtoTile(textures[TEX_REDWALL], 32, 32, true);
@@ -124,7 +124,7 @@ void Manager::Init(HWND hwnd)
 	//rooms.push_back(new Room("../RoomData/TestRoom/TestRoom1.txt"));
 	//currentMap = rooms[0];
 	//currentMap->Activate();
-	maps.push_back(new Map("../RoomData/TestRoom/TestRoom", 2));
+	maps.push_back(new Map("../Assets/RoomData/TestRoom/TestRoom", 2));
 	currentMap = maps[0];
 	currentMap->Activate();
 	// test player
@@ -275,17 +275,17 @@ void Manager::UnfreezeScene()
 	currentMap->Unfreeze();
 }
 
-void Manager::Update()
+void Manager::Update(float delta_time)
 {
-	MenuManager::Update();
+	MenuManager::Update(delta_time);
 
 	if (fadingIn || fadingOut)
 		TransitionRoom();
 
 	for (std::vector<Sprite*>::iterator it = UpdateList.begin(); it != UpdateList.end(); ++it)
 	{
-		Sprite* tile = (*it);
-		tile->Update();
+		Sprite* sprite = (*it);
+		sprite->Update();
 	}
 	CenterCamera(currentPlayer->GetRectangle()->CenterX(), currentPlayer->GetRectangle()->CenterY());
 

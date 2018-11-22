@@ -12,7 +12,7 @@ enum MENUS
 	MENU_BASE,
 	MENU_CHARACTER,
 	MENU_INVENTORY,
-	MENU_MAGIC,
+	MENU_OPTIONS,
 	MENU_MAX
 };
 
@@ -30,6 +30,6 @@ public:
 	static void CloseMenu();
 	static void CloseAllMenus();
 	
-	static void Update();
+	static void Update(float delta_time);
 };
 

@@ -1,3 +1,4 @@
+#include "defines.h"
 #include "Map.h"
 #include "Room.h"
 #include <string>

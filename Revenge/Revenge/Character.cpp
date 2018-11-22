@@ -1,3 +1,4 @@
+#include "defines.h"
 #include "Character.h"
 #include "SpriteBatch.h"
 #include "Texture.h"
@@ -136,7 +137,12 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, Room* 
 		if (!collided)
 		{
 			rectangle->MoveY(-mvmntSpeed);
+			//if (!*right && !*left)
 			wayFacing = UP;
+		}
+		else
+		{
+			*up = false;
 		}
 
 	}
@@ -175,7 +181,12 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, Room* 
 		if (!collided)
 		{
 			rectangle->MoveY(mvmntSpeed);
+			//if (!*right && !*left)
 			wayFacing = DOWN;
+		}
+		else
+		{
+			*down = false;
 		}
 	}
 #pragma endregion
@@ -213,7 +224,12 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, Room* 
 		if (!collided)
 		{
 			rectangle->MoveX(-mvmntSpeed);
+			//if (!*up && !*down)
 			wayFacing = LEFT;
+		}
+		else
+		{
+			*left = false;
 		}
 	}
 #pragma endregion
@@ -251,7 +267,12 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, Room* 
 		if (!collided)
 		{
 			rectangle->MoveX(mvmntSpeed);
+			//if (!*up && !*down)
 			wayFacing = RIGHT;
+		}
+		else
+		{
+			*right = false;
 		}
 	}
 #pragma endregion

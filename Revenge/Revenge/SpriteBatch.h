@@ -11,6 +11,7 @@ class SpriteBatch
 {
 	Renderer* renderer;
 	float camera[2];
+	int windowWidth = (int)WIDTH, windowHeight = (int)HEIGHT;
 
 public:
 	SpriteBatch(native_handle hwnd);
@@ -21,7 +22,7 @@ public:
 	void Draw(Texture* texture, MyRectangle* rectangle, float opacity, float layer, int rot = 0) { Draw(texture, rectangle, nullptr, opacity, layer, rot); }
 	void DrawUI(Texture* texture, MyRectangle* rectangle, MyRectangle* source, float opacity, float layer, int rot = 0);
 	void DrawUI(Texture* texture, MyRectangle* rectangle, float opacity, float layer, int rot = 0) { DrawUI(texture, rectangle, nullptr, opacity, layer, rot); }
-	void WriteText(const wchar_t* text, MyRectangle* rectangle, float layer);
+	void WriteText(const char* text, MyRectangle* rectangle, float layer);
 	void End();
 	void MoveCamera(float x, float y);
 	void SetCamera(float x, float y);

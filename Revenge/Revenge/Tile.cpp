@@ -1,3 +1,4 @@
+#include "defines.h"
 #include "Tile.h"
 #include "SpriteBatch.h"
 #include "Manager.h"

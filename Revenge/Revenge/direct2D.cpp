@@ -1,10 +1,13 @@
 ﻿#pragma once
+#include "defines.h"
 #include "Renderer.h"
 #include <d2d1.h>
 #include <dwrite_3.h>
 #include <wincodec.h>
 #include <vector>
 #include <algorithm>
+#include <string>
+#include <stringapiset.h>
 
 #pragma comment(lib, "d2d1.lib")
 #pragma comment(lib, "Dwrite.lib")
@@ -18,24 +21,109 @@ template <class T> void SafeRelease(T **ppT)
 	}
 }
 
-ID2D1Factory* factory = NULL;
-ID2D1HwndRenderTarget* renderTarget = NULL;
-IDWriteFactory5* writeFactory = NULL;
-IDWriteTextFormat* textFormat = NULL;
-ID2D1SolidColorBrush* textBrush = NULL;
+#pragma region Structs
 
-struct ToDraw
+struct Renderer::Impl_Elements
 {
-	float layer;
-	virtual void Draw() = 0;
+	ID2D1Factory* factory = NULL;
+	ID2D1HwndRenderTarget* renderTarget = NULL;
+	IDWriteFactory5* writeFactory = NULL;
+	IDWriteTextFormat* textFormat = NULL;
+	ID2D1SolidColorBrush* textBrush = NULL;
+
+	std::vector<ID2D1Bitmap*> bitmaps;
+	std::vector<PCWSTR> filenames;
+	std::vector<Renderer::ToDraw*> draws;
+
+	Impl_Elements(HWND hwnd)
+	{
+		HRESULT res;
+
+		res = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &factory);
+
+		D2D1_PIXEL_FORMAT pixelFormat = D2D1::PixelFormat(
+			DXGI_FORMAT_B8G8R8A8_UNORM,
+			D2D1_ALPHA_MODE_PREMULTIPLIED
+		);
+		D2D1_RENDER_TARGET_PROPERTIES rtp =
+			D2D1::RenderTargetProperties(
+				D2D1_RENDER_TARGET_TYPE_DEFAULT,
+				D2D1::PixelFormat(
+					DXGI_FORMAT_UNKNOWN,
+					D2D1_ALPHA_MODE_PREMULTIPLIED
+				)
+			);
+
+		RECT rc;
+		GetClientRect(hwnd, &rc);
+		res = factory->CreateHwndRenderTarget(
+			rtp,
+			D2D1::HwndRenderTargetProperties(hwnd, D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top)),
+			&renderTarget
+		);
+
+		res = DWriteCreateFactory(
+			DWRITE_FACTORY_TYPE_SHARED,
+			__uuidof(IDWriteFactory5),
+			reinterpret_cast<IUnknown**>(&writeFactory)
+		);
+
+		IDWriteFontSetBuilder1* fontSetBuilder;
+		res = writeFactory->CreateFontSetBuilder(&fontSetBuilder);
+		IDWriteFontFile* fontFile;
+		res = writeFactory->CreateFontFileReference(
+			L"../Assets/Fonts/APPLE_KID.TTF",
+			nullptr,
+			&fontFile
+		);
+		res = fontSetBuilder->AddFontFile(fontFile);
+		IDWriteFontSet* fontSet;
+		fontSetBuilder->CreateFontSet(&fontSet);
+		IDWriteFontCollection1* fontCollection;
+		writeFactory->CreateFontCollectionFromFontSet(fontSet, &fontCollection);
+
+
+		res = writeFactory->CreateTextFormat(
+			L"Apple Kid",
+			fontCollection,
+			DWRITE_FONT_WEIGHT_NORMAL,
+			DWRITE_FONT_STYLE_NORMAL,
+			DWRITE_FONT_STRETCH_NORMAL,
+			20.f,
+			L"en-us",
+			&textFormat
+		);
+
+		textFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_JUSTIFIED);
+		textFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+
+		renderTarget->CreateSolidColorBrush(
+			D2D1::ColorF(D2D1::ColorF::White),
+			&textBrush
+		);
+
+		SafeRelease(&fontCollection);
+		SafeRelease(&fontSet);
+		SafeRelease(&fontFile);
+		SafeRelease(&fontSetBuilder);
+	}
+
+	~Impl_Elements() { Clear(); }
+	void Clear();
+	bool Begin();
+	bool End();
+
+	void Draw(ObjectDraw* object);
+	void Draw(TextDraw* text);
 };
 
-std::vector<ID2D1Bitmap*> bitmaps;
-std::vector<PCWSTR> filenames;
-std::vector<ToDraw*> draws;
+struct Renderer::ToDraw
+{
+	float layer;
+	virtual void Draw(Impl_Elements* elements) = 0;
+};
 
-
-struct ObjectDraw : public ToDraw
+struct Renderer::ObjectDraw : public Renderer::ToDraw
 {
 	enum ROTATIONS
 	{
@@ -59,206 +147,25 @@ struct ObjectDraw : public ToDraw
 		textureID = _textureID; destination = _destination; opacity = _opacity; source = _source; layer = _layer; rotation = (ROTATIONS)rot;
 	}
 
-	void Draw()
+	void Draw(Impl_Elements* elements)
 	{
-		ObjectDraw* object = this;
-
-		if (object->rotation == ObjectDraw::NONE)
-		{
-			renderTarget->DrawBitmap(
-				bitmaps[object->textureID],
-				object->destination,
-				object->opacity,
-				D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR,
-				object->source
-			);
-		}
-		else
-		{
-			HRESULT res;
-
-			ID2D1Bitmap* originalBitmap = bitmaps[object->textureID];
-			ID2D1Bitmap* rotatedBitmap = NULL;
-			//(bitmaps[object->textureID]);
-
-			// get the frame
-			IWICImagingFactory* imagingfactory = NULL;
-			IWICFormatConverter* converter = NULL;
-			IWICBitmapFrameDecode* frame = NULL;
-			IWICBitmapDecoder* decoder = NULL;
-			IWICBitmapFlipRotator* rotator = NULL;
-
-			res = CoCreateInstance(
-				CLSID_WICImagingFactory,
-				NULL,
-				CLSCTX_INPROC_SERVER,
-				IID_PPV_ARGS(&imagingfactory)
-			);
-
-			if (SUCCEEDED(res))
-			{
-				D2D1_SIZE_U origsize;
-				origsize.width = (UINT32)originalBitmap->GetSize().width;
-				origsize.height = (UINT32)originalBitmap->GetSize().height;
-
-				D2D1_BITMAP_PROPERTIES origproperties;
-				origproperties.pixelFormat = originalBitmap->GetPixelFormat();
-				originalBitmap->GetDpi(&origproperties.dpiX, &origproperties.dpiY);
-
-				renderTarget->CreateBitmap(origsize, origproperties, &originalBitmap);
-			}
-
-			if (SUCCEEDED(res))
-				res = imagingfactory->CreateDecoderFromFilename(
-					filenames[object->textureID],
-					NULL,
-					GENERIC_READ,
-					WICDecodeMetadataCacheOnLoad,
-					&decoder
-				);
-
-			if (SUCCEEDED(res))
-				res = decoder->GetFrame(0, &frame);
-
-			if (SUCCEEDED(res))
-				res = imagingfactory->CreateFormatConverter(&converter);
-
-			if (SUCCEEDED(res))
-			{
-				imagingfactory->CreateBitmapFlipRotator(&rotator);
-			}
-
-			if (SUCCEEDED(res))
-			{
-				D2D1_RECT_F newSource = D2D1::RectF(0, 0, 0, 0);
-				D2D1_RECT_F source = object->source;
-				float width = (float)originalBitmap->GetSize().width;
-				float height = (float)originalBitmap->GetSize().height;
-				float sourceHeight = (source.bottom - source.top);
-				float sourceWidth = (source.right - source.left);
-
-				// x′= xcosθ − ysinθ
-				// y′ = ycosθ + xsinθ
-				switch (object->rotation)
-				{
-				case ObjectDraw::HORIZONTAL:
-					res = rotator->Initialize(frame, WICBitmapTransformFlipHorizontal);
-					newSource.left = width - source.left - sourceWidth;
-					newSource.right = newSource.left + sourceWidth;
-					newSource.top = source.top;
-					newSource.bottom = source.bottom;
-					break;
-				case ObjectDraw::VERTICAL:
-					res = rotator->Initialize(frame, WICBitmapTransformFlipVertical);
-					newSource.left = source.left;
-					newSource.right = source.right;
-					newSource.top = height - source.top - sourceHeight;
-					newSource.bottom = newSource.bottom + sourceHeight;
-					break;
-				case ObjectDraw::ROT_90:
-					res = rotator->Initialize(frame, WICBitmapTransformRotate90);
-					newSource.left = height - source.bottom;
-					newSource.right = height - source.top;
-					newSource.top = source.left;
-					newSource.bottom = source.right;
-					break;
-				case ObjectDraw::ROT_90_VERTICAL:
-					res = rotator->Initialize(frame, (WICBitmapTransformOptions)(WICBitmapTransformRotate90 | WICBitmapTransformFlipVertical));
-					newSource.left = source.left;
-					newSource.right = source.right;
-					newSource.top = height - source.top - (source.bottom - source.top);
-					newSource.bottom = newSource.bottom + (source.bottom - source.top);
-					source = D2D1::RectF(newSource.left, newSource.top, newSource.right, newSource.bottom);
-					newSource.left = height - source.bottom;
-					newSource.right = height - source.top;
-					newSource.top = source.left;
-					newSource.bottom = source.right;
-					break;
-				case ObjectDraw::ROT_180:
-					res = rotator->Initialize(frame, WICBitmapTransformRotate180);
-					newSource.left = width - source.left - (source.right - source.left);
-					newSource.right = newSource.left + (source.right - source.left);
-					newSource.top = height - source.top - (source.bottom - source.top);
-					newSource.bottom = newSource.bottom + (source.bottom - source.top);
-					break;
-				case ObjectDraw::ROT_270:
-					res = rotator->Initialize(frame, WICBitmapTransformRotate270);
-					newSource.left = source.top;
-					newSource.right = source.bottom;
-					newSource.top = width - source.right;
-					newSource.bottom = width - source.left;
-					break;
-				case ObjectDraw::ROT_270_VERTICAL:
-					res = rotator->Initialize(frame, (WICBitmapTransformOptions)(WICBitmapTransformRotate270 | WICBitmapTransformFlipVertical));
-					newSource.left = source.left;
-					newSource.right = source.right;
-					newSource.top = height - source.top - (source.bottom - source.top);
-					newSource.bottom = newSource.bottom + (source.bottom - source.top);
-					source = D2D1::RectF(newSource.left, newSource.top, newSource.right, newSource.bottom);
-					newSource.left = source.top;
-					newSource.right = source.bottom;
-					newSource.top = width - source.right;
-					newSource.bottom = width - source.left;
-					break;
-				}
-
-				newSource.left = round(newSource.left);
-				newSource.right = round(newSource.right);
-				newSource.top = round(newSource.top);
-				newSource.bottom = round(newSource.bottom);
-
-				if (SUCCEEDED(res))
-					res = converter->Initialize(
-						rotator,
-						GUID_WICPixelFormat32bppPBGRA,
-						WICBitmapDitherTypeNone,
-						NULL,
-						0.f,
-						WICBitmapPaletteTypeMedianCut
-					);
-
-				res = renderTarget->CreateBitmapFromWicBitmap(
-					converter,
-					&rotatedBitmap
-				);
-
-				renderTarget->DrawBitmap(
-					rotatedBitmap,
-					object->destination,
-					object->opacity,
-					D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR,
-					newSource
-				);
-			}
-
-			SafeRelease(&rotatedBitmap);
-			SafeRelease(&imagingfactory);
-			SafeRelease(&converter);
-			SafeRelease(&frame);
-			SafeRelease(&decoder);
-			SafeRelease(&rotator);
-		}
+		elements->Draw(this);
 	}
 };
 
-struct TextDraw : public ToDraw
+struct Renderer::TextDraw : public Renderer::ToDraw
 {
-	const wchar_t* text;
+	std::string text;
 	D2D1_RECT_F destination;
 
-	TextDraw(const wchar_t* _text, D2D1_RECT_F _destination, float _layer) { text = _text; destination = _destination; layer = _layer; }
-	void Draw()
+	TextDraw(std::string _text, D2D1_RECT_F _destination, float _layer) { text = _text; destination = _destination; layer = _layer; }
+	void Draw(Impl_Elements* elements)
 	{
-		renderTarget->DrawTextW(
-			text,
-			(UINT32)wcslen(text),
-			textFormat,
-			destination,
-			textBrush
-		);
+		elements->Draw(this);
 	}
 };
 
+#pragma endregion
 
 HRESULT LoadBitmapFromFile(
 	ID2D1RenderTarget *pRenderTarget,
@@ -385,101 +292,18 @@ HRESULT LoadBitmapFromFile(
 
 Renderer::Renderer(HWND hwnd)
 {
-	HRESULT res;
-
-	res = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &factory);
-
-	D2D1_PIXEL_FORMAT pixelFormat = D2D1::PixelFormat(
-		DXGI_FORMAT_B8G8R8A8_UNORM,
-		D2D1_ALPHA_MODE_PREMULTIPLIED
-	);
-	D2D1_RENDER_TARGET_PROPERTIES rtp =
-		D2D1::RenderTargetProperties(
-			D2D1_RENDER_TARGET_TYPE_DEFAULT,
-			D2D1::PixelFormat(
-				DXGI_FORMAT_UNKNOWN,
-				D2D1_ALPHA_MODE_PREMULTIPLIED
-			)
-		);
-
-	RECT rc;
-	GetClientRect(hwnd, &rc);
-	res = factory->CreateHwndRenderTarget(
-		rtp,
-		D2D1::HwndRenderTargetProperties(hwnd, D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top)),
-		&renderTarget
-	);
-
-	res = DWriteCreateFactory(
-		DWRITE_FACTORY_TYPE_SHARED,
-		__uuidof(IDWriteFactory5),
-		reinterpret_cast<IUnknown**>(&writeFactory)
-	);
-
-	IDWriteFontSetBuilder1* fontSetBuilder;
-	res = writeFactory->CreateFontSetBuilder(&fontSetBuilder);
-	IDWriteFontFile* fontFile;
-	res = writeFactory->CreateFontFileReference(
-		L"../APPLE_KID.TTF",
-		nullptr,
-		&fontFile
-	);
-	res = fontSetBuilder->AddFontFile(fontFile);
-	IDWriteFontSet* fontSet;
-	fontSetBuilder->CreateFontSet(&fontSet);
-	IDWriteFontCollection1* fontCollection;
-	writeFactory->CreateFontCollectionFromFontSet(fontSet, &fontCollection);
-
-
-	res = writeFactory->CreateTextFormat(
-		L"Apple Kid",
-		fontCollection,
-		DWRITE_FONT_WEIGHT_NORMAL,
-		DWRITE_FONT_STYLE_NORMAL,
-		DWRITE_FONT_STRETCH_NORMAL,
-		20.f,
-		L"en-us",
-		&textFormat
-	);
-
-	textFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_JUSTIFIED);
-	textFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
-
-	renderTarget->CreateSolidColorBrush(
-		D2D1::ColorF(D2D1::ColorF::White),
-		&textBrush
-	);
-
-	SafeRelease(&fontCollection);
-	SafeRelease(&fontSet);
-	SafeRelease(&fontFile);
-	SafeRelease(&fontSetBuilder);
+	elements = new Impl_Elements(hwnd);
 }
 
 Renderer::~Renderer()
 {
 	//SafeRelease(&imageFactory);
-	for (int i = 0; i < bitmaps.size(); i++)
-	{
-		SafeRelease(&bitmaps[i]);
-	}
-	bitmaps.clear();
-	filenames.clear();
-
-	RemoveFontResource(L"APPLE_KID.TTF");
-	SafeRelease(&textBrush);
-	SafeRelease(&writeFactory);
-	SafeRelease(&textFormat);
-	SafeRelease(&renderTarget);
-	SafeRelease(&factory);
+	delete elements;
 }
 
 bool Renderer::Begin()
 {
-	renderTarget->BeginDraw();
-	renderTarget->Clear(D2D1::ColorF(0, 0, 0, 0));//D2D1::ColorF::Black));
-
-	return true;
+	return elements->Begin();
 }
 
 bool Renderer::Draw(unsigned int textureID,
@@ -487,10 +311,10 @@ bool Renderer::Draw(unsigned int textureID,
 	float x_S, float y_S, int width_S, int height_S,
 	float opacity, float layer, int rot)
 {
-	if (textureID >= bitmaps.size())
+	if (textureID >= elements->bitmaps.size())
 		return false;
 
-	draws.push_back(
+	elements->draws.push_back(
 		new ObjectDraw(
 			textureID,
 			D2D1::RectF(x, y, x + width, y + height),
@@ -503,10 +327,10 @@ bool Renderer::Draw(unsigned int textureID,
 	return true;
 }
 
-bool Renderer::Write(const wchar_t* text, float x, float y, float width, float height, float layer)
+bool Renderer::Write(const char* text, float x, float y, float width, float height, float layer)
 {
-	draws.push_back(
-		new TextDraw(text,
+	elements->draws.push_back(
+		new TextDraw(std::string(text),
 			D2D1::RectF(x, y, x + width, y + height),
 			layer
 		)
@@ -516,6 +340,63 @@ bool Renderer::Write(const wchar_t* text, float x, float y, float width, float h
 }
 
 bool Renderer::End()
+{
+	return elements->End();
+}
+
+
+int Renderer::LoadContent(const wchar_t* filePath, float height, float width)
+{
+	IWICImagingFactory* imageFactory = NULL;
+	//ID2D1Bitmap* bmp;
+	unsigned int index = (int)(elements->bitmaps.size());
+	elements->bitmaps.push_back(nullptr);
+	elements->filenames.push_back(filePath);
+
+	HRESULT hr = CoCreateInstance(
+		CLSID_WICImagingFactory,
+		NULL,
+		CLSCTX_INPROC_SERVER,
+		IID_PPV_ARGS(&imageFactory)
+	);
+	hr = LoadBitmapFromFile(elements->renderTarget, imageFactory, filePath,
+		(UINT)width, (UINT)height, &elements->bitmaps.at(index));
+
+
+	SafeRelease(&imageFactory);
+
+	if (!SUCCEEDED(hr))
+		return -1;
+
+	//bitmaps.push_back(bmp);
+	return index;
+}
+
+bool Renderer::Resize(HWND hWnd)
+{
+	if (!elements->factory)
+		return false;
+
+	RECT rc;
+	GetClientRect(hWnd, &rc);
+
+	D2D1_SIZE_U size = D2D1::SizeU(rc.right, rc.bottom);
+
+	elements->renderTarget->Resize(size);
+
+	InvalidateRect(hWnd, NULL, FALSE);
+
+	return true;
+}
+
+bool Renderer::Impl_Elements::Begin()
+{
+	renderTarget->BeginDraw();
+	renderTarget->Clear(D2D1::ColorF(0, 0, 0, 0));//D2D1::ColorF::Black));
+	return true;
+}
+
+bool Renderer::Impl_Elements::End()
 {
 	std::sort(
 		draws.begin(),
@@ -529,7 +410,7 @@ bool Renderer::End()
 
 	for (int i = 0; i < draws.size(); i++)
 	{
-		draws[i]->Draw();
+		draws[i]->Draw(this);
 	}
 
 	for (int i = 0; i < draws.size(); i++)
@@ -547,47 +428,223 @@ bool Renderer::End()
 		return false;
 }
 
-
-int Renderer::LoadContent(const wchar_t* filePath, float height, float width)
+void Renderer::Impl_Elements::Clear()
 {
-	IWICImagingFactory* imageFactory = NULL;
-	//ID2D1Bitmap* bmp;
-	unsigned int index = (int)(bitmaps.size());
-	bitmaps.push_back(nullptr);
-	filenames.push_back(filePath);
+	for (int i = 0; i < bitmaps.size(); i++)
+	{
+		SafeRelease(&bitmaps[i]);
+	}
+	for (int i = 0; i < draws.size(); i++)
+	{
+		delete draws[i];
+	}
+	draws.clear();
+	bitmaps.clear();
+	filenames.clear();
 
-	HRESULT hr = CoCreateInstance(
-		CLSID_WICImagingFactory,
-		NULL,
-		CLSCTX_INPROC_SERVER,
-		IID_PPV_ARGS(&imageFactory)
-	);
-	hr = LoadBitmapFromFile(renderTarget, imageFactory, filePath,
-		(UINT)width, (UINT)height, &bitmaps.at(index));
-
-
-	SafeRelease(&imageFactory);
-
-	if (!SUCCEEDED(hr))
-		return -1;
-
-	//bitmaps.push_back(bmp);
-	return index;
+	RemoveFontResource(L"APPLE_KID.TTF");
+	SafeRelease(&textBrush);
+	SafeRelease(&writeFactory);
+	SafeRelease(&textFormat);
+	SafeRelease(&renderTarget);
+	SafeRelease(&factory);
 }
 
-bool Renderer::Resize(HWND hWnd)
+void Renderer::Impl_Elements::Draw(ObjectDraw* object)
 {
-	if (!factory)
-		return false;
 
-	RECT rc;
-	GetClientRect(hWnd, &rc);
+	if (object->rotation == ObjectDraw::NONE)
+	{
+		renderTarget->DrawBitmap(
+			bitmaps[object->textureID],
+			object->destination,
+			object->opacity,
+			D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR,
+			object->source
+		);
+	}
+	else
+	{
+		HRESULT res;
 
-	D2D1_SIZE_U size = D2D1::SizeU(rc.right, rc.bottom);
+		ID2D1Bitmap* originalBitmap = bitmaps[object->textureID];
+		ID2D1Bitmap* rotatedBitmap = NULL;
+		//(bitmaps[object->textureID]);
 
-	renderTarget->Resize(size);
+		// get the frame
+		IWICImagingFactory* imagingfactory = NULL;
+		IWICFormatConverter* converter = NULL;
+		IWICBitmapFrameDecode* frame = NULL;
+		IWICBitmapDecoder* decoder = NULL;
+		IWICBitmapFlipRotator* rotator = NULL;
 
-	InvalidateRect(hWnd, NULL, FALSE);
+		res = CoCreateInstance(
+			CLSID_WICImagingFactory,
+			NULL,
+			CLSCTX_INPROC_SERVER,
+			IID_PPV_ARGS(&imagingfactory)
+		);
 
-	return true;
+		if (SUCCEEDED(res))
+		{
+			D2D1_SIZE_U origsize;
+			origsize.width = (UINT32)originalBitmap->GetSize().width;
+			origsize.height = (UINT32)originalBitmap->GetSize().height;
+
+			D2D1_BITMAP_PROPERTIES origproperties;
+			origproperties.pixelFormat = originalBitmap->GetPixelFormat();
+			originalBitmap->GetDpi(&origproperties.dpiX, &origproperties.dpiY);
+
+			renderTarget->CreateBitmap(origsize, origproperties, &originalBitmap);
+		}
+
+		if (SUCCEEDED(res))
+			res = imagingfactory->CreateDecoderFromFilename(
+				filenames[object->textureID],
+				NULL,
+				GENERIC_READ,
+				WICDecodeMetadataCacheOnLoad,
+				&decoder
+			);
+
+		if (SUCCEEDED(res))
+			res = decoder->GetFrame(0, &frame);
+
+		if (SUCCEEDED(res))
+			res = imagingfactory->CreateFormatConverter(&converter);
+
+		if (SUCCEEDED(res))
+		{
+			imagingfactory->CreateBitmapFlipRotator(&rotator);
+		}
+
+		if (SUCCEEDED(res))
+		{
+			D2D1_RECT_F newSource = D2D1::RectF(0, 0, 0, 0);
+			D2D1_RECT_F source = object->source;
+			float width = (float)originalBitmap->GetSize().width;
+			float height = (float)originalBitmap->GetSize().height;
+			float sourceHeight = (source.bottom - source.top);
+			float sourceWidth = (source.right - source.left);
+
+			// x′= xcosθ − ysinθ
+			// y′ = ycosθ + xsinθ
+			switch (object->rotation)
+			{
+			case ObjectDraw::HORIZONTAL:
+				res = rotator->Initialize(frame, WICBitmapTransformFlipHorizontal);
+				newSource.left = width - source.left - sourceWidth;
+				newSource.right = newSource.left + sourceWidth;
+				newSource.top = source.top;
+				newSource.bottom = source.bottom;
+				break;
+			case ObjectDraw::VERTICAL:
+				res = rotator->Initialize(frame, WICBitmapTransformFlipVertical);
+				newSource.left = source.left;
+				newSource.right = source.right;
+				newSource.top = height - source.top - sourceHeight;
+				newSource.bottom = newSource.bottom + sourceHeight;
+				break;
+			case ObjectDraw::ROT_90:
+				res = rotator->Initialize(frame, WICBitmapTransformRotate90);
+				newSource.left = height - source.bottom;
+				newSource.right = height - source.top;
+				newSource.top = source.left;
+				newSource.bottom = source.right;
+				break;
+			case ObjectDraw::ROT_90_VERTICAL:
+				res = rotator->Initialize(frame, (WICBitmapTransformOptions)(WICBitmapTransformRotate90 | WICBitmapTransformFlipVertical));
+				newSource.left = source.left;
+				newSource.right = source.right;
+				newSource.top = height - source.top - (source.bottom - source.top);
+				newSource.bottom = newSource.bottom + (source.bottom - source.top);
+				source = D2D1::RectF(newSource.left, newSource.top, newSource.right, newSource.bottom);
+				newSource.left = height - source.bottom;
+				newSource.right = height - source.top;
+				newSource.top = source.left;
+				newSource.bottom = source.right;
+				break;
+			case ObjectDraw::ROT_180:
+				res = rotator->Initialize(frame, WICBitmapTransformRotate180);
+				newSource.left = width - source.left - (source.right - source.left);
+				newSource.right = newSource.left + (source.right - source.left);
+				newSource.top = height - source.top - (source.bottom - source.top);
+				newSource.bottom = newSource.bottom + (source.bottom - source.top);
+				break;
+			case ObjectDraw::ROT_270:
+				res = rotator->Initialize(frame, WICBitmapTransformRotate270);
+				newSource.left = source.top;
+				newSource.right = source.bottom;
+				newSource.top = width - source.right;
+				newSource.bottom = width - source.left;
+				break;
+			case ObjectDraw::ROT_270_VERTICAL:
+				res = rotator->Initialize(frame, (WICBitmapTransformOptions)(WICBitmapTransformRotate270 | WICBitmapTransformFlipVertical));
+				newSource.left = source.left;
+				newSource.right = source.right;
+				newSource.top = height - source.top - (source.bottom - source.top);
+				newSource.bottom = newSource.bottom + (source.bottom - source.top);
+				source = D2D1::RectF(newSource.left, newSource.top, newSource.right, newSource.bottom);
+				newSource.left = source.top;
+				newSource.right = source.bottom;
+				newSource.top = width - source.right;
+				newSource.bottom = width - source.left;
+				break;
+			}
+
+			newSource.left = round(newSource.left);
+			newSource.right = round(newSource.right);
+			newSource.top = round(newSource.top);
+			newSource.bottom = round(newSource.bottom);
+
+			if (SUCCEEDED(res))
+				res = converter->Initialize(
+					rotator,
+					GUID_WICPixelFormat32bppPBGRA,
+					WICBitmapDitherTypeNone,
+					NULL,
+					0.f,
+					WICBitmapPaletteTypeMedianCut
+				);
+
+			res = renderTarget->CreateBitmapFromWicBitmap(
+				converter,
+				&rotatedBitmap
+			);
+
+			renderTarget->DrawBitmap(
+				rotatedBitmap,
+				object->destination,
+				object->opacity,
+				D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR,
+				newSource
+			);
+		}
+
+		SafeRelease(&rotatedBitmap);
+		SafeRelease(&imagingfactory);
+		SafeRelease(&converter);
+		SafeRelease(&frame);
+		SafeRelease(&decoder);
+		SafeRelease(&rotator);
+	}
+}
+
+void Renderer::Impl_Elements::Draw(TextDraw* text)
+{
+	size_t ret, size = strlen(text->text.c_str()) + 1;
+	wchar_t* wtext = new wchar_t[size];
+
+	mbstowcs_s(&ret, wtext, size, text->text.c_str(), size - 1);
+
+
+	renderTarget->DrawTextW(
+		wtext,
+		(UINT32)wcslen(wtext),
+		textFormat,
+		text->destination,
+		textBrush
+	);
+
+	delete[] wtext;
 }

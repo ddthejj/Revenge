@@ -1,4 +1,5 @@
 #pragma once
+#include "defines.h"
 #include "SpriteBatch.h"
 #include "Texture.h"
 #include "Rectangle.h"
@@ -17,7 +18,7 @@ SpriteBatch::~SpriteBatch()
 	delete renderer;
 }
 
-Texture * SpriteBatch::Load(const wchar_t * filepath, float height, float width)
+Texture * SpriteBatch::Load(const wchar_t* filepath, float height, float width)
 {
 	return new Texture(renderer->LoadContent(filepath, height, width), height, width);;
 }
@@ -31,12 +32,12 @@ void SpriteBatch::Draw(Texture* texture, MyRectangle* rectangle, MyRectangle* so
 {
 	if (!source)
 		renderer->Draw(texture->ID(),
-		((WIDTH / 2.0f) - camera[0]) + rectangle->X(), ((HEIGHT / 2.0f) - camera[1]) + rectangle->Y(), (int)rectangle->Width(), (int)rectangle->Height(),
+		((windowWidth / 2.0f) - camera[0]) + rectangle->X(), ((windowHeight / 2.0f) - camera[1]) + rectangle->Y(), (int)rectangle->Width(), (int)rectangle->Height(),
 			0.f, 0.f, (int)texture->Width(), (int)texture->Height(),
 			opacity, layer, rot);
 	else
 		renderer->Draw(texture->ID(),
-		((WIDTH / 2.0f) - camera[0]) + rectangle->X(), ((HEIGHT / 2.0f) - camera[1]) + rectangle->Y(), (int)rectangle->Width(), (int)rectangle->Height(),
+		((windowWidth / 2.0f) - camera[0]) + rectangle->X(), ((windowHeight / 2.0f) - camera[1]) + rectangle->Y(), (int)rectangle->Width(), (int)rectangle->Height(),
 			source->X(), source->Y(), (int)source->Height(), (int)source->Width(),
 			opacity, layer, rot);
 }
@@ -55,7 +56,7 @@ void SpriteBatch::DrawUI(Texture* texture, MyRectangle* rectangle, MyRectangle* 
 			opacity, layer, rot);
 }
 
-void SpriteBatch::WriteText(const wchar_t * text, MyRectangle * rectangle, float layer)
+void SpriteBatch::WriteText(const char * text, MyRectangle * rectangle, float layer)
 {
 	renderer->Write(text, rectangle->X(), rectangle->Y(), rectangle->Height(), rectangle->Width(), layer);
 }
@@ -78,4 +79,11 @@ void SpriteBatch::SetCamera(float x, float y)
 void SpriteBatch::Resize(native_handle hWnd)
 {
 	renderer->Resize((HWND)hWnd);
+	RECT rc;
+	GetClientRect((HWND)hWnd, &rc);
+
+	windowWidth = rc.right - rc.left;
+	windowHeight = rc.bottom - rc.top;
+	
+	SetCamera((float)windowWidth / 2.f, (float)windowHeight / 2.f);
 }
