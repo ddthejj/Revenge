@@ -13,6 +13,7 @@ class Map;
 class Player;
 class Door;
 class MenuBox;
+class Character;
 
 
 class Manager
@@ -65,6 +66,7 @@ private:
 	static std::vector<Sprite*> UpdateList;
 	static std::vector<Sprite*> DrawList;
 	static std::vector<Map*> maps;
+	static std::vector<Character*> party;
 
 	static Map* currentMap;
 	static Player* currentPlayer;
@@ -81,6 +83,7 @@ public:
 	static ProtoTile* GetProtoTile(int index);
 	static Room* GetRoom(int index);
 	static Player* GetCurrentPlayer() { return currentPlayer; }
+	static std::vector<Character*> GetParty() { return party; }
 	static Room* GetCurrentRoom();
 	static Texture* GetTexture(int index) { if (index < TEX_MAX) return textures[index]; else return nullptr; }
 	static bool IsKeyDown(KEYS index) { return keys[index]; }

@@ -7,12 +7,15 @@
 #include <iostream>
 #include <fstream>
 
-MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _texture, const char* filename) : Sprite(_x, _y, _width, _height, _texture, 0.f)
+MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _texture) : Sprite(_x, _y, _width, _height, _texture, 0.f)
 {
 	optionAt = new Point<int>();
+	arrow = new Sprite(0, 0, 7, 7, 0, 0, 15, 15, Manager::GetTexture(Manager::TEX_ARROW), .81f);
+	// options need to be set later
+}
 
-	arrow = new Sprite(0, 0, 15, 15, 0, 0, 15, 15, Manager::GetTexture(Manager::TEX_ARROW), .81f);
-
+MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _texture, const char* filename) : MenuBox(_x, _y, _width, _height, _texture)
+{
 	std::ifstream menu(filename, std::ios::in);
 
 	if (menu.is_open())
@@ -135,7 +138,10 @@ void MenuBox::Open(MenuBox* _previousMenu)
 
 	optionAt->x = 0; optionAt->y = 0;
 	if (options[optionAt->x][optionAt->y])
+	{
+		UpdateArrowLocation();
 		return;
+	}
 
 	for (int y = 0; y < optionsHeight; y++)
 	{
@@ -144,12 +150,15 @@ void MenuBox::Open(MenuBox* _previousMenu)
 			if (options[x][y])
 			{
 				optionAt->x = x; optionAt->y = y;
+				goto FOUNDOPTION;
 			}
 		}
 	}
+FOUNDOPTION:
+	UpdateArrowLocation();
 }
 
-void MenuBox::ChangeOptions(char** texts, int* option, Point<float>* positions, Point<int>* layout, int sizeX, int sizeY)
+void MenuBox::SetOptions(char** texts, int* option, Point<float>* positions, Point<int>* layout, int sizeX, int sizeY)
 {
 	for (int i = 0; i < optionsWidth; i++)
 	{
@@ -194,6 +203,23 @@ void MenuBox::Move(float x, float y)
 	rectangle->SetY(y);
 }
 
+void MenuBox::UpdateArrowLocation()
+{
+	int offsetX = -12, offsetY = 0;
+	float fontSize = 20.f; // this should probably be like retrieved from the renderer
+	offsetX += (int)rectangle->X();
+	offsetY += (int)rectangle->Y();
+	offsetY += (int)((fontSize / 2.f) - (arrow->GetRectangle()->Height() / 2.f) - 2);
+
+	arrow->SetPos(Point<float>(options[optionAt->x][optionAt->y]->x + offsetX, options[optionAt->x][optionAt->y]->y + offsetY));
+}
+
+void MenuBox::ResetArrow()
+{
+	arrow->SetSourcePos(Point<float>(0, 0));
+	arrowTimer = 0;
+}
+
 
 int MenuBox::ChooseOption()
 {
@@ -209,21 +235,6 @@ void MenuBox::Update()
 
 		do
 		{
-			optionAt->y++;
-			if (optionAt->y >= optionsHeight)
-				optionAt->y = 0;
-
-			whichOption = options[optionAt->x][optionAt->y];
-		} while (whichOption == nullptr);
-
-		arrow->SetPos(Point<float>(options[optionAt->x][optionAt->y]->x - 10, options[optionAt->x][optionAt->y]->y));
-	}
-	else if (Manager::IsKeyPressed(Manager::KEYS::KEY_DOWN))
-	{
-		MenuOption* whichOption = options[optionAt->x][optionAt->y];
-
-		do
-		{
 			optionAt->y--;
 			if (optionAt->y < 0)
 				optionAt->y = optionsHeight - 1;
@@ -231,7 +242,24 @@ void MenuBox::Update()
 			whichOption = options[optionAt->x][optionAt->y];
 		} while (whichOption == nullptr);
 
-		arrow->SetPos(Point<float>(options[optionAt->x][optionAt->y]->x - 10, options[optionAt->x][optionAt->y]->y));
+		UpdateArrowLocation();
+		ResetArrow();
+	}
+	else if (Manager::IsKeyPressed(Manager::KEYS::KEY_DOWN))
+	{
+		MenuOption* whichOption = options[optionAt->x][optionAt->y];
+
+		do
+		{
+			optionAt->y++;
+			if (optionAt->y >= optionsHeight)
+				optionAt->y = 0;
+
+			whichOption = options[optionAt->x][optionAt->y];
+		} while (whichOption == nullptr);
+
+		UpdateArrowLocation();
+		ResetArrow();
 	}
 	else if (Manager::IsKeyPressed(Manager::KEYS::KEY_RIGHT))
 	{
@@ -246,7 +274,8 @@ void MenuBox::Update()
 			whichOption = options[optionAt->x][optionAt->y];
 		} while (whichOption == nullptr);
 
-		arrow->SetPos(Point<float>(options[optionAt->x][optionAt->y]->x - 10, options[optionAt->x][optionAt->y]->y));
+		UpdateArrowLocation();
+		ResetArrow();
 	}
 	else if (Manager::IsKeyPressed(Manager::KEYS::KEY_LEFT))
 	{
@@ -261,18 +290,18 @@ void MenuBox::Update()
 			whichOption = options[optionAt->x][optionAt->y];
 		} while (whichOption == nullptr);
 
-		arrow->SetPos(Point<float>(options[optionAt->x][optionAt->y]->x - 10, options[optionAt->x][optionAt->y]->y));
+		UpdateArrowLocation();
+		ResetArrow();
 	}
 
 	arrowTimer++;
-	if (arrowTimer == 60)
+	if (arrowTimer == 40)
 	{
 		arrow->SetSourcePos(Point<float>(15, 0));
 	}
-	else if (arrowTimer == 120)
+	else if (arrowTimer == 80)
 	{
-		arrow->SetSourcePos(Point<float>(0, 0));
-		arrowTimer = 0;
+		ResetArrow();
 	}
 }
 

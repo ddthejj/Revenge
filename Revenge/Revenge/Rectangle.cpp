@@ -14,9 +14,8 @@ MyRectangle::MyRectangle(float _x, float _y, float _height, float _width)
 	width = _width;
 }
 
-MyRectangle::MyRectangle(Point<float> location, float height, float width)
+MyRectangle::MyRectangle(Point<float> location, float height, float width) : MyRectangle(location.x, location.y, height, width)
 {
-	MyRectangle(location.x, location.y, height, width);
 }
 
 MyRectangle::MyRectangle(const MyRectangle& that)

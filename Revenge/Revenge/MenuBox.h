@@ -21,23 +21,27 @@ class MenuBox : public Sprite
 	};
 
 	//std::vector<MenuOption> options;
-	MenuOption*** options;
+	MenuOption*** options = nullptr;
 	int optionsWidth = 0, optionsHeight = 0;
-	Point<int>* optionAt;
-	Sprite* arrow;
+	Point<int>* optionAt = nullptr;
+	Sprite* arrow = nullptr;
 	int arrowTimer = 0;
 
 protected:
 
 	MenuBox* previousMenu;
+	
+	void UpdateArrowLocation();
+	void ResetArrow();
 
 public:
 
+	MenuBox(float _x, float _y, float _width, float _height, Texture* _texture);
 	MenuBox(float _x, float _y, float _width, float _height, Texture* _texture, const char* filename);
 	~MenuBox();
 
 	void Open(MenuBox* _previousMenu);
-	void ChangeOptions(char** texts, int* option, Point<float>* positions, Point<int>* layout, int sizeX, int sizeY);
+	void SetOptions(char** texts, int* option, Point<float>* positions, Point<int>* layout, int sizeX, int sizeY);
 	void Resize(float x, float y, float height, float width);
 	void Move(float x, float y);
 

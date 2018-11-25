@@ -31,7 +31,9 @@ MyRectangle* Sprite::GetRectangle() const
 
 void Sprite::SetRectangle(const MyRectangle& _rectangle)
 {
-	*rectangle = _rectangle;
+	if (rectangle)
+		delete rectangle;
+	rectangle = new MyRectangle(_rectangle);
 }
 
 void Sprite::SetPos(const Point<float>& location)

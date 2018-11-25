@@ -16,6 +16,7 @@ ProtoTile* Manager::protoTiles[TILE_MAX];
 
 std::vector<Sprite*> Manager::UpdateList;
 std::vector<Sprite*> Manager::DrawList;
+std::vector<Character*> Manager::party;
 
 std::vector<Map*> Manager::maps;
 Map* Manager::currentMap;
@@ -133,6 +134,7 @@ void Manager::Init(HWND hwnd)
 	currentPlayer->Activate();
 	// fade rectangle
 	fadeRectangle = new Sprite(0, 0, WIDTH, HEIGHT, textures[TEX_BLACK], 1.f, 0.f);
+	party.push_back(currentPlayer);
 
 	MenuManager::Init();
 }
