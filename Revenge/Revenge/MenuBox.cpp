@@ -3,6 +3,7 @@
 #include "SpriteBatch.h"
 #include "Manager.h"
 #include "Texture.h"
+#include "MenuManager.h"
 #include <iostream>
 #include <fstream>
 
@@ -10,6 +11,7 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _text
 {
 	optionAt = new Point<int>();
 
+	arrow = new Sprite(0, 0, 15, 15, 0, 0, 15, 15, Manager::GetTexture(Manager::TEX_ARROW), .81f);
 
 	std::ifstream menu(filename, std::ios::in);
 
@@ -36,14 +38,18 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _text
 
 		optionsHeight = atoi(word);
 
-		options = new MenuOption*[optionsWidth];
+		options = new MenuOption**[optionsWidth];
 		for (int i = 0; i < optionsWidth; i++)
-			options[i] = new MenuOption[optionsHeight];
+		{
+			options[i] = new MenuOption*[optionsHeight];
+			for (int j = 0; j < optionsHeight; j++)
+				options[i][j] = nullptr;
+		}
 
 
 		while (!menu.eof())
 		{
-			MenuOption option;
+			MenuOption* option = new MenuOption();
 
 			whichChar = 0;
 			do
@@ -52,7 +58,7 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _text
 			} while (word[whichChar] != ',' && word[whichChar++] != '\n' && !menu.eof());
 
 			word[whichChar] = '\0';
-			option.text = std::string(word);
+			option->text = std::string(word);
 
 			whichChar = 0;
 			do
@@ -61,7 +67,7 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _text
 			} while (word[whichChar] != ',' && word[whichChar++] != '\n' && !menu.eof());
 
 			word[whichChar] = '\0';
-			option.option = atoi(word);
+			option->option = atoi(word);
 
 			whichChar = 0;
 			do
@@ -70,7 +76,7 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _text
 			} while (word[whichChar] != ',' && word[whichChar++] != '\n' && !menu.eof());
 
 			word[whichChar] = '\0';
-			option.x = (float)atof(word);
+			option->x = (float)atof(word);
 
 			whichChar = 0;
 			do
@@ -79,7 +85,7 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _text
 			} while (word[whichChar] != ',' && word[whichChar++] != '\n' && !menu.eof());
 
 			word[whichChar] = '\0';
-			option.y = (float)atof(word);
+			option->y = (float)atof(word);
 
 			whichChar = 0;
 			do
@@ -107,12 +113,18 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _text
 MenuBox::~MenuBox()
 {
 	for (int i = 0; i < optionsWidth; i++)
-		if (options[i])
-			delete[] options[i];
-
+	{
+		for (int j = 0; j < optionsHeight; j++)
+		{
+			if (options[i][j])
+				delete options[i][j];
+		}
+		delete[] options[i];
+	}
 	delete[] options;
 
 	delete optionAt;
+	delete arrow;
 }
 
 
@@ -120,34 +132,51 @@ void MenuBox::Open(MenuBox* _previousMenu)
 {
 	previousMenu = _previousMenu;
 	Sprite::Activate();
+
+	optionAt->x = 0; optionAt->y = 0;
+	if (options[optionAt->x][optionAt->y])
+		return;
+
+	for (int y = 0; y < optionsHeight; y++)
+	{
+		for (int x = 0; x < optionsWidth; x++)
+		{
+			if (options[x][y])
+			{
+				optionAt->x = x; optionAt->y = y;
+			}
+		}
+	}
 }
 
 void MenuBox::ChangeOptions(char** texts, int* option, Point<float>* positions, Point<int>* layout, int sizeX, int sizeY)
 {
 	for (int i = 0; i < optionsWidth; i++)
 	{
-		delete options[i];
+		for (int j = 0; j < optionsHeight; j++)
+		{
+			if (options[i][j])
+				delete options[i][j];
+		}
+		delete[] options[i];
 	}
-	delete options;
+	delete[] options;
 
 	optionsWidth = sizeX;
 	optionsHeight = sizeY;
 
-	options = new MenuOption*[optionsWidth];
+	options = new MenuOption**[optionsWidth];
 	for (int i = 0; i < optionsWidth; i++)
-		options[i] = new MenuOption[optionsHeight];
+	{
+		options[i] = new MenuOption*[optionsHeight];
+		for (int j = 0; j < optionsWidth; j++)
+			options[i][j] = nullptr;
+	}
 
 	for (int i = 0; i < optionsWidth; i++)
 	{
-		MenuOption newOption;
-
-		newOption.text = texts[i];
-		newOption.option = option[i];
-		newOption.x = positions[i].x;
-		newOption.y = positions[i].y;
-
-		//options.push_back(MenuOption(texts[i], option[i], positions[i].x, positions[i].y));
-		options[layout[i].x][layout[i].y] = MenuOption(newOption);
+		MenuOption* newOption = new MenuOption(texts[i], option[i], positions[i].x, positions[i].y);
+		options[layout[i].x][layout[i].y] = newOption;
 	}
 }
 
@@ -168,14 +197,15 @@ void MenuBox::Move(float x, float y)
 
 int MenuBox::ChooseOption()
 {
-	return options[optionAt->x][optionAt->y].option;
+	return options[optionAt->x][optionAt->y]->option;
 }
 
-void MenuBox::MoveSelected(int key)
+
+void MenuBox::Update()
 {
-	if (key == (int)Manager::KEYS::KEY_UP)
+	if (Manager::IsKeyPressed(Manager::KEYS::KEY_UP))
 	{
-		MenuOption* whichOption = &options[optionAt->x][optionAt->y];
+		MenuOption* whichOption = options[optionAt->x][optionAt->y];
 
 		do
 		{
@@ -183,12 +213,14 @@ void MenuBox::MoveSelected(int key)
 			if (optionAt->y >= optionsHeight)
 				optionAt->y = 0;
 
-			whichOption = &options[optionAt->x][optionAt->y];
+			whichOption = options[optionAt->x][optionAt->y];
 		} while (whichOption == nullptr);
+
+		arrow->SetPos(Point<float>(options[optionAt->x][optionAt->y]->x - 10, options[optionAt->x][optionAt->y]->y));
 	}
-	else if (key == (int)Manager::KEYS::KEY_DOWN)
+	else if (Manager::IsKeyPressed(Manager::KEYS::KEY_DOWN))
 	{
-		MenuOption* whichOption = &options[optionAt->x][optionAt->y];
+		MenuOption* whichOption = options[optionAt->x][optionAt->y];
 
 		do
 		{
@@ -196,12 +228,14 @@ void MenuBox::MoveSelected(int key)
 			if (optionAt->y < 0)
 				optionAt->y = optionsHeight - 1;
 
-			whichOption = &options[optionAt->x][optionAt->y];
+			whichOption = options[optionAt->x][optionAt->y];
 		} while (whichOption == nullptr);
+
+		arrow->SetPos(Point<float>(options[optionAt->x][optionAt->y]->x - 10, options[optionAt->x][optionAt->y]->y));
 	}
-	else if (key == (int)Manager::KEYS::KEY_RIGHT)
+	else if (Manager::IsKeyPressed(Manager::KEYS::KEY_RIGHT))
 	{
-		MenuOption* whichOption = &options[optionAt->x][optionAt->y];
+		MenuOption* whichOption = options[optionAt->x][optionAt->y];
 
 		do
 		{
@@ -209,12 +243,14 @@ void MenuBox::MoveSelected(int key)
 			if (optionAt->x >= optionsWidth)
 				optionAt->x = 0;
 
-			whichOption = &options[optionAt->x][optionAt->y];
+			whichOption = options[optionAt->x][optionAt->y];
 		} while (whichOption == nullptr);
+
+		arrow->SetPos(Point<float>(options[optionAt->x][optionAt->y]->x - 10, options[optionAt->x][optionAt->y]->y));
 	}
-	else if (key == (int)Manager::KEYS::KEY_LEFT)
+	else if (Manager::IsKeyPressed(Manager::KEYS::KEY_LEFT))
 	{
-		MenuOption* whichOption = &options[optionAt->x][optionAt->y];
+		MenuOption* whichOption = options[optionAt->x][optionAt->y];
 
 		do
 		{
@@ -222,20 +258,26 @@ void MenuBox::MoveSelected(int key)
 			if (optionAt->x < 0)
 				optionAt->x = optionsWidth - 1;
 
-			whichOption = &options[optionAt->x][optionAt->y];
+			whichOption = options[optionAt->x][optionAt->y];
 		} while (whichOption == nullptr);
+
+		arrow->SetPos(Point<float>(options[optionAt->x][optionAt->y]->x - 10, options[optionAt->x][optionAt->y]->y));
 	}
-}
 
-
-void MenuBox::Update()
-{
-
+	arrowTimer++;
+	if (arrowTimer == 60)
+	{
+		arrow->SetSourcePos(Point<float>(15, 0));
+	}
+	else if (arrowTimer == 120)
+	{
+		arrow->SetSourcePos(Point<float>(0, 0));
+		arrowTimer = 0;
+	}
 }
 
 void MenuBox::Draw(SpriteBatch* spriteBatch)
 {
-
 	MyRectangle cornerSource(0, 0, 10, 10);
 	MyRectangle borderSource(10, 0, 10, 10);
 	MyRectangle backgroundSource(20, 0, 10, 10);
@@ -258,9 +300,17 @@ void MenuBox::Draw(SpriteBatch* spriteBatch)
 	{
 		for (int j = 0; j < optionsHeight; j++)
 		{
-			MenuOption option = options[i][j];
-			spriteBatch->WriteText(option.text.c_str(), &MyRectangle(rectangle->X() + option.x, rectangle->Y() + option.y, (rectangle->Width() - 20), 10), .81f);
+			MenuOption* option = options[i][j];
+			if (option)
+			{
+				char* text = new char[option->text.length() + 1];
+				strcpy_s(text, option->text.length() + 1, option->text.c_str());
+				MyRectangle* textRectangle = new MyRectangle(rectangle->X() + option->x, rectangle->Y() + option->y, (rectangle->Width() - 20), 10);
+				spriteBatch->WriteText(text, textRectangle, .81f);
+				delete textRectangle;
+				delete[] text;
+			}
 		}
 	}
-
+	arrow->DrawUI(spriteBatch);
 }

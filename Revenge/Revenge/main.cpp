@@ -1,5 +1,6 @@
 #pragma once
 #include "defines.h"
+#include "vld.h"
 #include "Manager.h"
 #include <time.h>
 

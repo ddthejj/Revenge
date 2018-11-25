@@ -17,7 +17,7 @@ template <class T> void SafeRelease(T **ppT)
 	if (*ppT)
 	{
 		(*ppT)->Release();
-		*ppT = NULL;
+		*ppT = nullptr;
 	}
 }
 
@@ -25,11 +25,11 @@ template <class T> void SafeRelease(T **ppT)
 
 struct Renderer::Impl_Elements
 {
-	ID2D1Factory* factory = NULL;
-	ID2D1HwndRenderTarget* renderTarget = NULL;
-	IDWriteFactory5* writeFactory = NULL;
-	IDWriteTextFormat* textFormat = NULL;
-	ID2D1SolidColorBrush* textBrush = NULL;
+	ID2D1Factory* factory = nullptr;
+	ID2D1HwndRenderTarget* renderTarget = nullptr;
+	IDWriteFactory5* writeFactory = nullptr;
+	IDWriteTextFormat* textFormat = nullptr;
+	ID2D1SolidColorBrush* textBrush = nullptr;
 
 	std::vector<ID2D1Bitmap*> bitmaps;
 	std::vector<PCWSTR> filenames;
@@ -120,6 +120,10 @@ struct Renderer::Impl_Elements
 struct Renderer::ToDraw
 {
 	float layer;
+	virtual ~ToDraw()
+	{
+
+	}
 	virtual void Draw(Impl_Elements* elements) = 0;
 };
 
@@ -146,7 +150,7 @@ struct Renderer::ObjectDraw : public Renderer::ToDraw
 	{
 		textureID = _textureID; destination = _destination; opacity = _opacity; source = _source; layer = _layer; rotation = (ROTATIONS)rot;
 	}
-
+	virtual ~ObjectDraw();
 	void Draw(Impl_Elements* elements)
 	{
 		elements->Draw(this);
@@ -155,10 +159,11 @@ struct Renderer::ObjectDraw : public Renderer::ToDraw
 
 struct Renderer::TextDraw : public Renderer::ToDraw
 {
-	std::string text;
+	std::string* text;
 	D2D1_RECT_F destination;
 
-	TextDraw(std::string _text, D2D1_RECT_F _destination, float _layer) { text = _text; destination = _destination; layer = _layer; }
+	TextDraw(std::string* _text, D2D1_RECT_F _destination, float _layer) { text = _text; destination = _destination; layer = _layer; }
+	virtual ~TextDraw();
 	void Draw(Impl_Elements* elements)
 	{
 		elements->Draw(this);
@@ -176,11 +181,11 @@ HRESULT LoadBitmapFromFile(
 	ID2D1Bitmap **ppBitmap
 )
 {
-	IWICBitmapFrameDecode *Source = NULL;
-	IWICBitmapDecoder *Decoder = NULL;
-	IWICStream *Stream = NULL;
-	IWICFormatConverter *Converter = NULL;
-	IWICBitmapScaler *Scaler = NULL;
+	IWICBitmapFrameDecode *Source = nullptr;
+	IWICBitmapDecoder *Decoder = nullptr;
+	IWICStream *Stream = nullptr;
+	IWICFormatConverter *Converter = nullptr;
+	IWICBitmapScaler *Scaler = nullptr;
 
 	// Create the decoder to reformat the WIC image into D2D filetypes
 	// This automatically loads the image
@@ -330,7 +335,7 @@ bool Renderer::Draw(unsigned int textureID,
 bool Renderer::Write(const char* text, float x, float y, float width, float height, float layer)
 {
 	elements->draws.push_back(
-		new TextDraw(std::string(text),
+		new TextDraw(new std::string(text),
 			D2D1::RectF(x, y, x + width, y + height),
 			layer
 		)
@@ -468,15 +473,15 @@ void Renderer::Impl_Elements::Draw(ObjectDraw* object)
 		HRESULT res;
 
 		ID2D1Bitmap* originalBitmap = bitmaps[object->textureID];
-		ID2D1Bitmap* rotatedBitmap = NULL;
+		ID2D1Bitmap* rotatedBitmap = nullptr;
 		//(bitmaps[object->textureID]);
 
 		// get the frame
-		IWICImagingFactory* imagingfactory = NULL;
-		IWICFormatConverter* converter = NULL;
-		IWICBitmapFrameDecode* frame = NULL;
-		IWICBitmapDecoder* decoder = NULL;
-		IWICBitmapFlipRotator* rotator = NULL;
+		IWICImagingFactory* imagingfactory = nullptr;
+		IWICFormatConverter* converter = nullptr;
+		IWICBitmapFrameDecode* frame = nullptr;
+		IWICBitmapDecoder* decoder = nullptr;
+		IWICBitmapFlipRotator* rotator = nullptr;
 
 		res = CoCreateInstance(
 			CLSID_WICImagingFactory,
@@ -632,10 +637,10 @@ void Renderer::Impl_Elements::Draw(ObjectDraw* object)
 
 void Renderer::Impl_Elements::Draw(TextDraw* text)
 {
-	size_t ret, size = strlen(text->text.c_str()) + 1;
+	size_t ret, size = strlen(text->text->c_str()) + 1;
 	wchar_t* wtext = new wchar_t[size];
 
-	mbstowcs_s(&ret, wtext, size, text->text.c_str(), size - 1);
+	mbstowcs_s(&ret, wtext, size, text->text->c_str(), size - 1);
 
 
 	renderTarget->DrawTextW(
@@ -647,4 +652,15 @@ void Renderer::Impl_Elements::Draw(TextDraw* text)
 	);
 
 	delete[] wtext;
+
+}
+
+Renderer::TextDraw::~TextDraw()
+{
+	delete text;
+}
+
+Renderer::ObjectDraw::~ObjectDraw()
+{
+
 }

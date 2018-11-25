@@ -9,7 +9,6 @@
 MenuBox** MenuManager::menuList = new MenuBox*[MENU_MAX];
 MenuBox* MenuManager::activeMenu = nullptr;
 Texture* MenuManager::menuTex = nullptr;
-Sprite* MenuManager::arrow = nullptr;
 
 void MenuManager::Init()
 {
@@ -22,8 +21,6 @@ void MenuManager::Init()
 	//menuList[MENU_CHARACTER] = new MenuBox(250, 50, 100, 100, menuTex, "../Assets/Menus/Menu_Character.txt");
 	//menuList[MENU_INVENTORY] = new MenuBox(250, 50, 100, 100, menuTex, "../Assets/Menus/Menu_Inventory.txt");
 	//menuList[MENU_OPTIONS] = new MenuBox(250, 50, 100, 100, menuTex, "../Assets/Menus/Menu_Options.txt");
-
-	arrow = new Sprite(0, 0, 15, 15, Manager::GetTexture(Manager::TEX_MAX), .81f);
 }
 
 void MenuManager::Clean()
@@ -34,7 +31,6 @@ void MenuManager::Clean()
 			delete menuList[i];
 	}
 	delete menuList;
-	delete arrow;
 }
 
 void MenuManager::OpenMenu(MENUS index)
@@ -65,7 +61,6 @@ void MenuManager::OpenMenu(MENUS index)
 
 	menuList[index]->Open(activeMenu);
 	activeMenu = menuList[index];
-	activeMenu->Activate();
 }
 
 void MenuManager::CloseMenu()
@@ -92,11 +87,6 @@ void MenuManager::CloseAllMenus()
 	Manager::UnfreezeScene();
 }
 
-void MenuManager::SetCursorPos(Point<float> pos)
-{
-	//arrow
-}
-
 
 void MenuManager::Update(float delta_time)
 {
@@ -110,15 +100,6 @@ void MenuManager::Update(float delta_time)
 	}
 	else
 	{
-		if (Manager::IsKeyPressed(Manager::KEYS::KEY_UP))
-		{
-			activeMenu->MoveSelected((int)Manager::KEYS::KEY_UP);
-		}
-		else if (Manager::IsKeyPressed(Manager::KEYS::KEY_DOWN))
-		{
-			activeMenu->MoveSelected((int)Manager::KEYS::KEY_DOWN);
-		}
-
 		if (Manager::IsKeyPressed(Manager::KEY_MENU))
 		{
 			Manager::UnfreezeScene();

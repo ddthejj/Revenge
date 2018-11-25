@@ -21,8 +21,11 @@ public:
 	MyRectangle* GetRectangle() const;
 	void SetRectangle(const MyRectangle& _rectangle);
 	void SetPos(const Point<float>& location);
+	void SetSource(const MyRectangle& _source);
+	void SetSourcePos(const Point<float>& location);
 
 	virtual void Draw(SpriteBatch* spriteBatch);
+	virtual void DrawUI(SpriteBatch* spriteBatch);
 	virtual void Update() {}
 	virtual void Activate();
 	virtual void Deactivate();

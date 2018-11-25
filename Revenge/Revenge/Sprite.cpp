@@ -4,13 +4,9 @@
 #include "SpriteBatch.h"
 #include "Texture.h"
 
-Sprite::Sprite(float x, float y, float width, float height, Texture* _texture, float _layer, float _opacity)
+Sprite::Sprite(float x, float y, float width, float height, Texture* _texture, float _layer, float _opacity) : Sprite(x, y, width, height, 0, 0, _texture->Width(), _texture->Height(), _texture, _layer, _opacity)
 {
-	rectangle = new MyRectangle(x, y, width, height);
-	sourceRectangle = nullptr;
-	texture = _texture;
-	layer = _layer;
-	opacity = _opacity;
+
 }
 
 Sprite::Sprite(float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, Texture * _texture, float _layer, float _opacity)
@@ -42,6 +38,17 @@ void Sprite::SetPos(const Point<float>& location)
 {
 	rectangle->SetLocation(location);
 }
+
+void Sprite::SetSource(const MyRectangle& _source)
+{
+	*sourceRectangle = _source;
+}
+
+void Sprite::SetSourcePos(const Point<float>& location)
+{
+	sourceRectangle->SetLocation(location);
+}
+
 
 void Sprite::Activate()
 {
@@ -88,4 +95,12 @@ void Sprite::Draw(SpriteBatch* spriteBatch)
 		spriteBatch->Draw(texture, rectangle, opacity, layer);
 	else
 		spriteBatch->Draw(texture, rectangle, sourceRectangle, opacity, layer);
+}
+
+void Sprite::DrawUI(SpriteBatch* spriteBatch)
+{
+	if (!sourceRectangle)
+		spriteBatch->DrawUI(texture, rectangle, opacity, layer);
+	else
+		spriteBatch->DrawUI(texture, rectangle, sourceRectangle, opacity, layer);
 }

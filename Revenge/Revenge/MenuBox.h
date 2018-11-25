@@ -21,9 +21,11 @@ class MenuBox : public Sprite
 	};
 
 	//std::vector<MenuOption> options;
-	MenuOption** options;
+	MenuOption*** options;
 	int optionsWidth = 0, optionsHeight = 0;
 	Point<int>* optionAt;
+	Sprite* arrow;
+	int arrowTimer = 0;
 
 protected:
 
@@ -40,7 +42,6 @@ public:
 	void Move(float x, float y);
 
 	int ChooseOption();
-	void MoveSelected(int key);
 	//int
 
 	virtual void Draw(SpriteBatch* spriteBatch);

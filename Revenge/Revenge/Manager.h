@@ -82,7 +82,7 @@ public:
 	static Room* GetRoom(int index);
 	static Player* GetCurrentPlayer() { return currentPlayer; }
 	static Room* GetCurrentRoom();
-	static Texture* GetTexture(int index) { return textures[index]; }
+	static Texture* GetTexture(int index) { if (index < TEX_MAX) return textures[index]; else return nullptr; }
 	static bool IsKeyDown(KEYS index) { return keys[index]; }
 	static bool IsPreviousKeyDown(KEYS index) { return previousKeys[index]; }
 	static bool IsKeyPressed(KEYS index);

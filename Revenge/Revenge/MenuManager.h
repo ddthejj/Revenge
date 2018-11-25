@@ -23,7 +23,6 @@ class MenuManager
 	static MenuBox** menuList;
 	static MenuBox* activeMenu;
 	static Texture* menuTex;
-	static Sprite* arrow;
 public:
 	static void Init();
 	static void Clean();
@@ -31,7 +30,6 @@ public:
 	static void OpenMenu(MENUS index);
 	static void CloseMenu();
 	static void CloseAllMenus();
-	static void SetCursorPos(Point<float> pos);
 	
 	static void Update(float delta_time);
 };
