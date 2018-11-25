@@ -148,7 +148,7 @@ struct Renderer::ObjectDraw : public Renderer::ToDraw
 
 	ObjectDraw(unsigned int _textureID, D2D1_RECT_F _destination, float _opacity, D2D1_RECT_F _source, float _layer, int rot = 0)
 	{
-		textureID = _textureID; destination = _destination; opacity = _opacity; source = _source; layer = _layer; rotation = (ROTATIONS)rot;
+		textureID = _textureID; destination = _destination; opacity = _opacity; source = _source; layer = _layer; rotation = (ROTATIONS)0;//rot;
 	}
 	virtual ~ObjectDraw();
 	void Draw(Impl_Elements* elements)

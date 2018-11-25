@@ -110,7 +110,7 @@ void Manager::Init(HWND hwnd)
 	spriteBatch = new SpriteBatch(hwnd);
 	// textures
 	textures[TEX_BLACK] = spriteBatch->Load(L"../Assets/TestTextures/Black.png", 32, 32);
-	textures[TEX_MENU] = spriteBatch->Load(L"../Assets/TestTextures/TextBox.png", 10, 10 * 3);
+	textures[TEX_MENU] = spriteBatch->Load(L"../Assets/TestTextures/TextBox.png", 10 * 4, 10 * 3);
 	textures[TEX_BROWNFLOOR] = spriteBatch->Load(L"../Assets/TestTextures/BrownTile.png", 32, 32);
 	textures[TEX_REDWALL] = spriteBatch->Load(L"../Assets/TestTextures/RedTile.png", 32, 32);
 	textures[TEX_GREENDOOR] = spriteBatch->Load(L"../Assets/TestTextures/GreenTile.png", 32, 32);
