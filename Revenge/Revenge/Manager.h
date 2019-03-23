@@ -55,10 +55,6 @@ public:
 
 #pragma endregion
 
-	static char keyOptions[KEY_MAX];
-	static bool keys[KEY_MAX];
-	static bool previousKeys[KEY_MAX];
-
 private:
 	static SpriteBatch* spriteBatch;
 	static Texture* textures[TEX_MAX];
@@ -86,8 +82,8 @@ public:
 	static std::vector<Character*> GetParty() { return party; }
 	static Room* GetCurrentRoom();
 	static Texture* GetTexture(int index) { if (index < TEX_MAX) return textures[index]; else return nullptr; }
-	static bool IsKeyDown(KEYS index) { return keys[index]; }
-	static bool IsPreviousKeyDown(KEYS index) { return previousKeys[index]; }
+	static bool IsKeyDown(KEYS index);// { return keys[index]; }
+	static bool IsPreviousKeyDown(KEYS index);// { return previousKeys[index]; }
 	static bool IsKeyPressed(KEYS index);
 
 	static void MoveMouse(HWND hwnd, LPARAM lParam);

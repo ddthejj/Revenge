@@ -50,5 +50,7 @@ public:
 
 	virtual void Draw(SpriteBatch* spriteBatch);
 	virtual void Update();
+
+	virtual void Freeze();
 };
 

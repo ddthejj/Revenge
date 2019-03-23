@@ -9,6 +9,7 @@
 #include "Map.h"
 #include "MenuBox.h"
 #include "MenuManager.h"
+#include "InputManager.h"
 
 SpriteBatch* Manager::spriteBatch = nullptr;
 Texture* Manager::textures[TEX_MAX];
@@ -21,10 +22,6 @@ std::vector<Character*> Manager::party;
 std::vector<Map*> Manager::maps;
 Map* Manager::currentMap;
 Player* Manager::currentPlayer;
-
-bool Manager::keys[KEY_MAX];
-bool Manager::previousKeys[KEY_MAX];
-char Manager::keyOptions[KEY_MAX];
 
 bool Manager::fadingIn = false;
 bool Manager::fadingOut = false;
@@ -45,6 +42,16 @@ Room * Manager::GetCurrentRoom()
 	return currentMap->CurrentRoom();
 }
 
+bool Manager::IsKeyDown(KEYS index)
+{
+	return InputManager::IsKeyDown(index);
+}
+
+bool Manager::IsPreviousKeyDown(KEYS index)
+{
+	return InputManager::IsPreviousKeyDown(index);
+}
+
 Room* Manager::GetRoom(int index)
 {
 	return currentMap->GetRoom(index);
@@ -52,10 +59,7 @@ Room* Manager::GetRoom(int index)
 
 bool Manager::IsKeyPressed(KEYS index)
 {
-	if (keys[index] == true && previousKeys[index] == false)
-		return true;
-
-	return false;
+	return InputManager::IsKeyPressed(index);
 }
 
 
@@ -65,26 +69,12 @@ void Manager::MoveMouse(HWND hwnd, LPARAM lParam)
 
 void Manager::PressKey(WPARAM wParam)
 {
-	for (int key = 0; key < KEY_MAX; key++)
-	{
-		if (wParam == keyOptions[key])
-		{
-			keys[key] = true;
-			break;
-		}
-	}
+	InputManager::PressKey(wParam);
 }
 
 void Manager::ReleaseKey(WPARAM wParam)
 {
-	for (int key = 0; key < KEY_MAX; key++)
-	{
-		if (wParam == keyOptions[key])
-		{
-			keys[key] = false;
-			break;
-		}
-	}
+	InputManager::ReleaseKey(wParam);
 }
 
 void Manager::ResizeWindow(HWND hWnd)
@@ -99,13 +89,7 @@ void Manager::ResizeWindow(HWND hWnd)
 
 void Manager::Init(HWND hwnd)
 {
-	// key options
-	keyOptions[KEY_UP] = 'W';
-	keyOptions[KEY_DOWN] = 'S';
-	keyOptions[KEY_LEFT] = 'A';
-	keyOptions[KEY_RIGHT] = 'D';
-	keyOptions[KEY_MENU] = 'E';
-	keyOptions[KEY_INTERACT] = VK_SPACE;
+	InputManager::Init();
 	// spritebatch
 	spriteBatch = new SpriteBatch(hwnd);
 	// textures
@@ -292,8 +276,7 @@ void Manager::Update(float delta_time)
 	}
 	CenterCamera(currentPlayer->GetRectangle()->CenterX(), currentPlayer->GetRectangle()->CenterY());
 
-	for (int i = 0; i < KEY_MAX; i++)
-		previousKeys[i] = keys[i];
+	InputManager::Update(delta_time);
 }
 
 void Manager::Draw()

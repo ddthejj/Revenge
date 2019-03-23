@@ -349,3 +349,10 @@ void MenuBox::Draw(SpriteBatch* spriteBatch)
 	}
 	arrow->DrawUI(spriteBatch);
 }
+
+
+void MenuBox::Freeze()
+{
+	Sprite::Freeze();
+	ResetArrow();
+}

@@ -1,0 +1,4 @@
+Character,1,30,30
+Inventory,2,30,60
+Magic,3,30,90
+Cancel,-1,30,120

@@ -18,7 +18,7 @@ void MenuManager::Init()
 	for (int i = 0; i < MENU_MAX; i++)
 		menuList[i] = nullptr;
 
-	menuList[MENU_BASE] = new MenuBox(50, 50, 200, 200, menuTex, "../Assets/Menus/Menu_Base.txt");
+	menuList[MENU_BASE] = new MenuBox(50, 50, 200, 150, menuTex, "../Assets/Menus/Menu_Base.txt");
 	menuList[MENU_CHARACTER] = new MenuBox(50, 50, 100, 100, menuTex);
 	//menuList[MENU_INVENTORY] = new MenuBox(250, 50, 100, 100, menuTex, "../Assets/Menus/Menu_Inventory.txt");
 	//menuList[MENU_OPTIONS] = new MenuBox(250, 50, 100, 100, menuTex, "../Assets/Menus/Menu_Options.txt");
@@ -41,6 +41,9 @@ void MenuManager::OpenMenu(MENUS index)
 		CloseMenu();
 		return;
 	}
+
+	if (!menuList[index])
+		return;
 
 	if (activeMenu)
 		activeMenu->Freeze();
@@ -71,7 +74,7 @@ void MenuManager::OpenMenu(MENUS index)
 		{
 			texts[i] = party[i]->Name();
 			options[i] = i;
-			positions[i] = Point<float>(30, 30 * (i + 1));
+			positions[i] = Point<float>(40, 30 * (i + 1));
 			layouts[i] = Point<int>(0, i);
 		}
 
