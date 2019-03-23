@@ -69,6 +69,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Essentials</Filter>
     </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Texture.h">
@@ -109,6 +112,9 @@
     </ClInclude>
     <ClInclude Include="defines.h">
       <Filter>Essentials</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
