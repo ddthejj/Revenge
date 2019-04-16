@@ -12,6 +12,7 @@
 #pragma comment(lib, "d2d1.lib")
 #pragma comment(lib, "Dwrite.lib")
 
+// safely release directX objects
 template <class T> void SafeRelease(T **ppT)
 {
 	if (*ppT)
@@ -23,24 +24,27 @@ template <class T> void SafeRelease(T **ppT)
 
 #pragma region Structs
 
+// elements required by directX
 struct Renderer::Impl_Elements
 {
-	ID2D1Factory* factory = nullptr;
-	ID2D1HwndRenderTarget* renderTarget = nullptr;
-	IDWriteFactory5* writeFactory = nullptr;
-	IDWriteTextFormat* textFormat = nullptr;
-	ID2D1SolidColorBrush* textBrush = nullptr;
+	ID2D1Factory* factory = nullptr;					// factory for creating other objects
+	ID2D1HwndRenderTarget* renderTarget = nullptr;		// the surface to draw onto
+	IDWriteFactory5* writeFactory = nullptr;			// factory for creating other write objects
+	IDWriteTextFormat* textFormat = nullptr;			// format for how text will be drawn
+	ID2D1SolidColorBrush* textBrush = nullptr;			// the brush to draw text with
 
-	std::vector<ID2D1Bitmap*> bitmaps;
-	std::vector<PCWSTR> filenames;
-	std::vector<Renderer::ToDraw*> draws;
+	std::vector<ID2D1Bitmap*> bitmaps;					// list of loaded textures
+	std::vector<PCWSTR> filenames;						// list of loaded textures' file names
+	std::vector<Renderer::ToDraw*> draws;				// list of objects to draw
 
 	Impl_Elements(HWND hwnd)
 	{
 		HRESULT res;
 
+		// create the d2d factory
 		res = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &factory);
 
+		// create the d2d pixel format
 		D2D1_PIXEL_FORMAT pixelFormat = D2D1::PixelFormat(
 			DXGI_FORMAT_B8G8R8A8_UNORM,
 			D2D1_ALPHA_MODE_PREMULTIPLIED

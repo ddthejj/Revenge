@@ -208,15 +208,15 @@ void Manager::HitDoor(Door* hit)
 
 void Manager::TransitionRoom()
 {
-	if (fadingOut && fadeRectangle->opacity <= 0.f)
+	if (fadingOut && fadeRectangle->Opacity() <= 0.f)
 	{
 		// begin fade
 		fadeRectangle->Activate();
 		currentMap->Freeze();
 		currentPlayer->Freeze();
-		fadeRectangle->opacity += ROOM_FADE_SPEED;
+		fadeRectangle->IncreaseOpacity(ROOM_FADE_SPEED);
 	}
-	else if (fadingOut && fadeRectangle->opacity >= 1.f)
+	else if (fadingOut && fadeRectangle->Opacity() >= 1.f)
 	{
 		// when fade out is done
 		currentMap->Deactivate();
@@ -227,9 +227,9 @@ void Manager::TransitionRoom()
 		currentMap->Freeze();
 		fadingOut = false;
 		fadingIn = true;
-		fadeRectangle->opacity -= ROOM_FADE_SPEED;
+		fadeRectangle->DecreaseOpacity(ROOM_FADE_SPEED);
 	}
-	else if (fadingIn && fadeRectangle->opacity <= 0.f)
+	else if (fadingIn && fadeRectangle->Opacity() <= 0.f)
 	{
 		// fading done
 		fadingIn = false;
@@ -240,11 +240,11 @@ void Manager::TransitionRoom()
 	else if (fadingOut)
 	{
 		// fade out slowly
-		fadeRectangle->opacity += ROOM_FADE_SPEED;
+		fadeRectangle->IncreaseOpacity(ROOM_FADE_SPEED);
 	}
 	else if (fadingIn)
 	{
-		fadeRectangle->opacity -= ROOM_FADE_SPEED;
+		fadeRectangle->DecreaseOpacity(ROOM_FADE_SPEED);
 		// fade in slowly
 	}
 

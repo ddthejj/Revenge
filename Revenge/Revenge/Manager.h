@@ -15,7 +15,7 @@ class Door;
 class MenuBox;
 class Character;
 
-
+// handles the entire game and all other managers
 class Manager
 {
 public:
@@ -57,6 +57,9 @@ public:
 #pragma endregion
 
 private:
+
+#pragma region Properties
+
 	static SpriteBatch* spriteBatch;			// Renderer class
 	static Texture* textures[TEX_MAX];			// List of all loaded textures
 	static ProtoTile* protoTiles[TILE_MAX];		// List of all prototype tiles 
@@ -74,6 +77,8 @@ private:
 	static Sprite* fadeRectangle;				// The rectangle that covers the screen when fading
 
 	static void TransitionRoom();				// Fade the screen out, load the new room, fade the screen in
+
+#pragma endregion
 
 public:
 
