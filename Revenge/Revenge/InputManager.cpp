@@ -2,11 +2,11 @@
 #include "InputManager.h"
 
 
-bool InputManager::keys[Manager::KEY_MAX];
-bool InputManager::previousKeys[Manager::KEY_MAX];
-char InputManager::keyOptions[Manager::KEY_MAX];
+bool InputManager::keys[KEY_MAX];
+bool InputManager::previousKeys[KEY_MAX];
+char InputManager::keyOptions[KEY_MAX];
 
-bool InputManager::IsKeyPressed(Manager::KEYS index)
+bool InputManager::IsKeyPressed(KEYS index)
 {
 	if (keys[index] == true && previousKeys[index] == false)
 		return true;
@@ -17,7 +17,7 @@ bool InputManager::IsKeyPressed(Manager::KEYS index)
 
 void InputManager::PressKey(WPARAM wParam)
 {
-	for (int key = 0; key < Manager::KEY_MAX; key++)
+	for (int key = 0; key < KEY_MAX; key++)
 	{
 		if (wParam == keyOptions[key])
 		{
@@ -29,7 +29,7 @@ void InputManager::PressKey(WPARAM wParam)
 
 void InputManager::ReleaseKey(WPARAM wParam)
 {
-	for (int key = 0; key < Manager::KEY_MAX; key++)
+	for (int key = 0; key < KEY_MAX; key++)
 	{
 		if (wParam == keyOptions[key])
 		{
@@ -43,17 +43,17 @@ void InputManager::ReleaseKey(WPARAM wParam)
 void InputManager::Init()
 {
 	// key options
-	keyOptions[Manager::KEY_UP] = 'W';
-	keyOptions[Manager::KEY_DOWN] = 'S';
-	keyOptions[Manager::KEY_LEFT] = 'A';
-	keyOptions[Manager::KEY_RIGHT] = 'D';
-	keyOptions[Manager::KEY_MENU] = 'E';
-	keyOptions[Manager::KEY_INTERACT] = VK_SPACE;
+	keyOptions[KEY_UP] = 'W';
+	keyOptions[KEY_DOWN] = 'S';
+	keyOptions[KEY_LEFT] = 'A';
+	keyOptions[KEY_RIGHT] = 'D';
+	keyOptions[KEY_MENU] = 'E';
+	keyOptions[KEY_INTERACT] = VK_SPACE;
 }
 
 void InputManager::Update(float delta_time)
 {
 
-	for (int i = 0; i < Manager::KEY_MAX; i++)
+	for (int i = 0; i < KEY_MAX; i++)
 		previousKeys[i] = keys[i];
 }

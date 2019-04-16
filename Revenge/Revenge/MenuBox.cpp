@@ -10,7 +10,7 @@
 MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _texture) : Sprite(_x, _y, _width, _height, _texture, 0.f)
 {
 	optionAt = new Point<int>();
-	arrow = new Sprite(0, 0, 7, 7, 0, 0, 15, 15, Manager::GetTexture(Manager::TEX_ARROW), .81f);
+	arrow = new Sprite(0, 0, 7, 7, 0, 0, 15, 15, Manager::GetTexture(TEX_ARROW), .81f);
 	// options need to be set later
 }
 
@@ -229,7 +229,7 @@ int MenuBox::ChooseOption()
 
 void MenuBox::Update()
 {
-	if (Manager::IsKeyPressed(Manager::KEYS::KEY_UP))
+	if (Manager::IsKeyPressed(KEY_UP))
 	{
 		MenuOption* whichOption = options[optionAt->x][optionAt->y];
 
@@ -245,7 +245,7 @@ void MenuBox::Update()
 		UpdateArrowLocation();
 		ResetArrow();
 	}
-	else if (Manager::IsKeyPressed(Manager::KEYS::KEY_DOWN))
+	else if (Manager::IsKeyPressed(KEY_DOWN))
 	{
 		MenuOption* whichOption = options[optionAt->x][optionAt->y];
 
@@ -261,7 +261,7 @@ void MenuBox::Update()
 		UpdateArrowLocation();
 		ResetArrow();
 	}
-	else if (Manager::IsKeyPressed(Manager::KEYS::KEY_RIGHT))
+	else if (Manager::IsKeyPressed(KEY_RIGHT))
 	{
 		MenuOption* whichOption = options[optionAt->x][optionAt->y];
 
@@ -277,7 +277,7 @@ void MenuBox::Update()
 		UpdateArrowLocation();
 		ResetArrow();
 	}
-	else if (Manager::IsKeyPressed(Manager::KEYS::KEY_LEFT))
+	else if (Manager::IsKeyPressed(KEYS::KEY_LEFT))
 	{
 		MenuOption* whichOption = options[optionAt->x][optionAt->y];
 

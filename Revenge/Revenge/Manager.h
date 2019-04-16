@@ -1,6 +1,9 @@
 #pragma once
+#include "defines.h"
+
 #include <Windows.h>
 #include <vector>
+
 
 
 class MyRectangle;
@@ -20,41 +23,6 @@ class Manager
 {
 public:
 
-#pragma region ENUMS 
-
-	
-	enum TILES				// Tiles
-	{
-		TILE_BROWNFLOOR,	// Test floor
-		TILE_REDWALL,		// Test wall
-		TILE_GREENDOOR,		// Test door
-		TILE_MAX
-	};
-
-	enum TEXTURES			// Textures
-	{
-		TEX_BLACK,			// 1 black pixel
-		TEX_MENU,			// Menus borders, corners, and backgrounds
-		TEX_ARROW,			// Menu arrow
-		TEX_BROWNFLOOR,		// Test floor 
-		TEX_REDWALL,		// Test wall
-		TEX_GREENDOOR,		// Test door
-		TEX_PLAYER,			// Test Player spritesheet
-		TEX_MAX
-	};
-
-	enum KEYS				// Keybinds
-	{
-		KEY_UP,				// Up key
-		KEY_DOWN,			// Down key
-		KEY_LEFT,			// Left key
-		KEY_RIGHT,			// Right key
-		KEY_MENU,			// Open menu
-		KEY_INTERACT,		// Select / interact with tiles
-		KEY_MAX
-	};
-
-#pragma endregion
 
 private:
 
@@ -62,21 +30,18 @@ private:
 
 	static SpriteBatch* spriteBatch;			// Renderer class
 	static Texture* textures[TEX_MAX];			// List of all loaded textures
-	static ProtoTile* protoTiles[TILE_MAX];		// List of all prototype tiles 
+	//static ProtoTile* protoTiles[TILE_MAX];		// List of all prototype tiles 
 	static std::vector<Sprite*> UpdateList;		// Items that are being updated
 	static std::vector<Sprite*> DrawList;		// Items that are being drawn
-	static std::vector<Map*> maps;				// List of all maps possible
+	//static std::vector<Map*> maps;				// List of all maps possible
 	static std::vector<Character*> party;		// List of party members
 
-	static Map* currentMap;						// Currently loaded map
-	static Player* currentPlayer;				// Current active player
+	//static Map* currentMap;						// Currently loaded map
+	//static Player* currentPlayer;				// Current active player
 
 	static bool fadingIn, fadingOut;			// Whether or not the screen is being faded in or out
 	static float fadeOpacity;					// What the current opacity of the fade is
-	static Door* doorHit;						// The door that the player hit
 	static Sprite* fadeRectangle;				// The rectangle that covers the screen when fading
-
-	static void TransitionRoom();				// Fade the screen out, load the new room, fade the screen in
 
 #pragma endregion
 
@@ -88,12 +53,12 @@ public:
 	static ProtoTile* GetProtoTile(int index);
 	// Get a room
 	static Room* GetRoom(int index);
-	// Get the current player
-	static Player* GetCurrentPlayer() { return currentPlayer; }
-	// Get the party list
-	static std::vector<Character*> GetParty() { return party; }
 	// Get the current room
 	static Room* GetCurrentRoom();
+	// Get the current player
+	static Player* GetCurrentPlayer();
+	// Get the party list
+	static std::vector<Character*> GetParty() { return party; }
 	// Get a texture
 	static Texture* GetTexture(int index) { if (index < TEX_MAX) return textures[index]; else return nullptr; }
 
@@ -146,6 +111,8 @@ public:
 	static void FreezeScene();
 	// Unfreeze the entire scene
 	static void UnfreezeScene();
+	// Fade the scene
+	static FADE_STATUS FadeScene();
 
 	// Update every object in the update list
 	static void Update(float delta_time);

@@ -13,7 +13,7 @@ Texture* MenuManager::menuTex = nullptr;
 
 void MenuManager::Init()
 {
-	menuTex = Manager::GetTexture(Manager::TEX_MENU);
+	menuTex = Manager::GetTexture(TEX_MENU);
 
 	for (int i = 0; i < MENU_MAX; i++)
 		menuList[i] = nullptr;
@@ -132,7 +132,7 @@ void MenuManager::Update(float delta_time)
 {
 	if (!activeMenu)
 	{
-		if (Manager::IsKeyPressed(Manager::KEY_MENU))
+		if (Manager::IsKeyPressed(KEY_MENU))
 		{
 			Manager::FreezeScene();
 			OpenMenu(MENU_BASE);
@@ -140,12 +140,12 @@ void MenuManager::Update(float delta_time)
 	}
 	else
 	{
-		if (Manager::IsKeyPressed(Manager::KEY_MENU))
+		if (Manager::IsKeyPressed(KEY_MENU))
 		{
 			Manager::UnfreezeScene();
 			CloseAllMenus();
 		}
-		else if (Manager::IsKeyPressed(Manager::KEY_INTERACT))
+		else if (Manager::IsKeyPressed(KEY_INTERACT))
 		{
 			int option = activeMenu->ChooseOption();
 			if (option == MENUS::MENU_PREVIOUS)

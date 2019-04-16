@@ -10,36 +10,43 @@
 #include "MenuBox.h"
 #include "MenuManager.h"
 #include "InputManager.h"
+#include "OverworldManager.h"
 
 SpriteBatch* Manager::spriteBatch = nullptr;
 Texture* Manager::textures[TEX_MAX];
-ProtoTile* Manager::protoTiles[TILE_MAX];
+//ProtoTile* Manager::protoTiles[TILE_MAX];
 
 std::vector<Sprite*> Manager::UpdateList;
 std::vector<Sprite*> Manager::DrawList;
 std::vector<Character*> Manager::party;
 
-std::vector<Map*> Manager::maps;
-Map* Manager::currentMap;
-Player* Manager::currentPlayer;
+//std::vector<Map*> Manager::maps;
+//Map* Manager::currentMap;
+//Player* Manager::currentPlayer = nullptr;
 
 bool Manager::fadingIn = false;
 bool Manager::fadingOut = false;
-Door* Manager::doorHit = nullptr;
 
 Sprite* Manager::fadeRectangle = nullptr;
 
 ProtoTile* Manager::GetProtoTile(int index)
 {
-	if (index < TILES::TILE_MAX)
-		return protoTiles[index];
-	else
-		return nullptr;
+	return OverworldManager::GetProtoTile(index);
+}
+
+Room* Manager::GetRoom(int index)
+{
+	return OverworldManager::GetRoom(index);
 }
 
 Room * Manager::GetCurrentRoom()
 {
-	return currentMap->CurrentRoom();
+	return OverworldManager::GetCurrentRoom();
+}
+
+Player * Manager::GetCurrentPlayer()
+{
+	return OverworldManager::GetCurrentPlayer();
 }
 
 bool Manager::IsKeyDown(KEYS index)
@@ -50,11 +57,6 @@ bool Manager::IsKeyDown(KEYS index)
 bool Manager::IsPreviousKeyDown(KEYS index)
 {
 	return InputManager::IsPreviousKeyDown(index);
-}
-
-Room* Manager::GetRoom(int index)
-{
-	return currentMap->GetRoom(index);
 }
 
 bool Manager::IsKeyPressed(KEYS index)
@@ -100,25 +102,11 @@ void Manager::Init(HWND hwnd)
 	textures[TEX_GREENDOOR] = spriteBatch->Load(L"../Assets/TestTextures/GreenTile.png", 32, 32);
 	textures[TEX_PLAYER] = spriteBatch->Load(L"../Assets/TestTextures/Player_Spritesheet.png", 32 * 4, 32 * 4);
 	textures[TEX_ARROW] = spriteBatch->Load(L"../Assets/TestTextures/Arrow.png", 15, 30);
-	// prototype tiles
-	protoTiles[TILE_BROWNFLOOR] = new ProtoTile(textures[TEX_BROWNFLOOR], 32, 32);
-	protoTiles[TILE_REDWALL] = new ProtoTile(textures[TEX_REDWALL], 32, 32, true);
-	protoTiles[TILE_GREENDOOR] = new ProtoTile(textures[TEX_GREENDOOR], 32, 32, false, true);
+	// load the overworld
+	OverworldManager::Init();
 
-	// test room 1 
-	//rooms.push_back(new Room("../RoomData/TestRoom/TestRoom0.txt"));
-	//rooms.push_back(new Room("../RoomData/TestRoom/TestRoom1.txt"));
-	//currentMap = rooms[0];
-	//currentMap->Activate();
-	maps.push_back(new Map("../Assets/RoomData/TestRoom/TestRoom", 2));
-	currentMap = maps[0];
-	currentMap->Activate();
-	// test player
-	currentPlayer = new Player(240, 240, 32, 32, textures[TEX_PLAYER], .6f);
-	currentPlayer->Activate();
-	// fade rectangle
 	fadeRectangle = new Sprite(0, 0, WIDTH, HEIGHT, textures[TEX_BLACK], 1.f, 0.f);
-	party.push_back(currentPlayer);
+	party.push_back(OverworldManager::GetCurrentPlayer());
 
 	MenuManager::Init();
 }
@@ -127,21 +115,12 @@ void Manager::Clean()
 {
 	// menu
 	MenuManager::Clean();
+	// overworld 
+	OverworldManager::Clean();
 	// fade rectangle
 	delete fadeRectangle;
-	// test player
-	delete currentPlayer;
-	// test rooms
-	for (int i = 0; i < maps.size(); i++)
-		delete maps.at(i);
-	maps.clear();
 	// spritebatch 
 	delete spriteBatch;
-	// prototype tiles
-	for (int i = 0; i < TILE_MAX; i++)
-	{
-		delete protoTiles[i];
-	}
 	// textures
 	for (int i = 0; i < TEX_MAX; i++)
 	{
@@ -202,80 +181,81 @@ void Manager::HitDoor(Door* hit)
 {
 	if (fadingOut)
 		return;
-	doorHit = hit;
+	//doorHit = hit;
+	OverworldManager::HitDoor(hit);
 	fadingOut = true;
 }
 
-void Manager::TransitionRoom()
+FADE_STATUS Manager::FadeScene()
 {
 	if (fadingOut && fadeRectangle->Opacity() <= 0.f)
 	{
 		// begin fade
 		fadeRectangle->Activate();
-		currentMap->Freeze();
-		currentPlayer->Freeze();
+		//currentMap->Freeze();
+		//currentPlayer->Freeze();
 		fadeRectangle->IncreaseOpacity(ROOM_FADE_SPEED);
+		return FADE_START;
 	}
 	else if (fadingOut && fadeRectangle->Opacity() >= 1.f)
 	{
 		// when fade out is done
-		currentMap->Deactivate();
-		currentMap->SetRoom(doorHit->Destination());
-		currentPlayer->GetRectangle()->SetX(doorHit->DestinationX());
-		currentPlayer->GetRectangle()->SetY(doorHit->DestinationY());
-		currentMap->Activate();
-		currentMap->Freeze();
+		//currentMap->Deactivate();
+		//currentMap->SetRoom(doorHit->Destination());
+		//currentPlayer->GetRectangle()->SetX(doorHit->DestinationX());
+		//currentPlayer->GetRectangle()->SetY(doorHit->DestinationY());
+		//currentMap->Activate();
+		//currentMap->Freeze();
 		fadingOut = false;
 		fadingIn = true;
 		fadeRectangle->DecreaseOpacity(ROOM_FADE_SPEED);
+		return FADE_SWITCH;
 	}
 	else if (fadingIn && fadeRectangle->Opacity() <= 0.f)
 	{
 		// fading done
 		fadingIn = false;
-		currentMap->Unfreeze();
-		currentPlayer->Unfreeze();
+		//currentMap->Unfreeze();
+		//currentPlayer->Unfreeze();
 		fadeRectangle->Deactivate();
+		return FADE_DONE;
 	}
 	else if (fadingOut)
 	{
 		// fade out slowly
 		fadeRectangle->IncreaseOpacity(ROOM_FADE_SPEED);
+		return FADE_OUT;
 	}
 	else if (fadingIn)
 	{
-		fadeRectangle->DecreaseOpacity(ROOM_FADE_SPEED);
 		// fade in slowly
+		fadeRectangle->DecreaseOpacity(ROOM_FADE_SPEED);
+		return FADE_IN;
 	}
-
+	else
+		return FADE_DONE;
 }
 
 void Manager::FreezeScene()
 {
-	currentMap->Freeze();
-	currentPlayer->Freeze();
+	OverworldManager::FreezeScene();
 }
 
 void Manager::UnfreezeScene()
 {
-	currentPlayer->Unfreeze();
-	currentMap->Unfreeze();
+	OverworldManager::UnfreezeScene();
 }
 
 void Manager::Update(float delta_time)
 {
 	MenuManager::Update(delta_time);
 
-	if (fadingIn || fadingOut)
-		TransitionRoom();
-
 	for (std::vector<Sprite*>::iterator it = UpdateList.begin(); it != UpdateList.end(); ++it)
 	{
 		Sprite* sprite = (*it);
 		sprite->Update();
 	}
-	CenterCamera(currentPlayer->GetRectangle()->CenterX(), currentPlayer->GetRectangle()->CenterY());
-
+	OverworldManager::Update(delta_time);
 	InputManager::Update(delta_time);
 }
 

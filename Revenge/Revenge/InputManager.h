@@ -6,9 +6,9 @@ class InputManager
 {
 public:
 
-	static char keyOptions[Manager::KEY_MAX];	// list of keybinds
-	static bool keys[Manager::KEY_MAX];			// whether a key is down or not this frame
-	static bool previousKeys[Manager::KEY_MAX];	// whether a key was down or not last frame
+	static char keyOptions[KEY_MAX];	// list of keybinds
+	static bool keys[KEY_MAX];			// whether a key is down or not this frame
+	static bool previousKeys[KEY_MAX];	// whether a key was down or not last frame
 
 #pragma region Access From Main
 
@@ -21,9 +21,9 @@ public:
 
 #pragma region Key Access
 
-	static bool IsKeyDown(Manager::KEYS index) { return keys[index]; }					// Whether or not a key is down this frame
-	static bool IsPreviousKeyDown(Manager::KEYS index) { return previousKeys[index]; }	// Whether or not a key was down last frame
-	static bool IsKeyPressed(Manager::KEYS index);										// Whether or not the key was first pressed this frame
+	static bool IsKeyDown(KEYS index) { return keys[index]; }					// Whether or not a key is down this frame
+	static bool IsPreviousKeyDown(KEYS index) { return previousKeys[index]; }	// Whether or not a key was down last frame
+	static bool IsKeyPressed(KEYS index);										// Whether or not the key was first pressed this frame
 
 #pragma endregion
 
