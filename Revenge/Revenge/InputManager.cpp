@@ -1,17 +1,24 @@
 #include "defines.h"
 #include "InputManager.h"
+#include <Windowsx.h>
 
 
 bool InputManager::keys[KEY_MAX];
 bool InputManager::previousKeys[KEY_MAX];
 char InputManager::keyOptions[KEY_MAX];
+bool InputManager::mouseKeys[MOUSE_KEY_MAX];
+bool InputManager::previousMouseKeys[MOUSE_KEY_MAX];
+float InputManager::mouseX = 0.f, InputManager::mouseY = 0.f;
+char InputManager::charPressed = '\0', InputManager::previousCharPressed = '\0';
 
 bool InputManager::IsKeyPressed(KEYS index)
 {
-	if (keys[index] == true && previousKeys[index] == false)
-		return true;
+	return (keys[index] == true && previousKeys[index] == false);
+}
 
-	return false;
+bool InputManager::IsMouseKeyPressed(MOUSE_KEYS index)
+{
+	return mouseKeys[index]== true && previousMouseKeys[index] == false;
 }
 
 
@@ -39,6 +46,22 @@ void InputManager::ReleaseKey(WPARAM wParam)
 	}
 }
 
+void InputManager::MoveMouse(HWND hwnd, LPARAM lParam)
+{
+	mouseX = (float)(GET_X_LPARAM(lParam));
+	mouseY = (float)(GET_Y_LPARAM(lParam));
+}
+
+void InputManager::PressMouseKey(MOUSE_KEYS key)
+{
+	mouseKeys[key] = true;
+}
+
+void InputManager::ReleaseMouseKey(MOUSE_KEYS key)
+{
+	mouseKeys[key] = false;
+}
+
 
 void InputManager::Init()
 {
@@ -53,7 +76,11 @@ void InputManager::Init()
 
 void InputManager::Update(float delta_time)
 {
-
 	for (int i = 0; i < KEY_MAX; i++)
 		previousKeys[i] = keys[i];
+
+	for (int i = 0; i < MOUSE_KEY_MAX; i++)
+		previousMouseKeys[i] = mouseKeys[i];
+
+	previousCharPressed = charPressed;
 }

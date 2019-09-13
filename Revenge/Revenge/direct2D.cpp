@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "defines.h"
 #include "Renderer.h"
+#include "Manager.h"
 #include <d2d1.h>
 #include <dwrite_3.h>
 #include <wincodec.h>
@@ -396,6 +397,30 @@ bool Renderer::Resize(HWND hWnd)
 	InvalidateRect(hWnd, NULL, FALSE);
 
 	return true;
+}
+
+Point<float> Renderer::MeasureString(std::string text, float screenWidth, float screenHeight)
+{
+	IDWriteTextLayout* layout;
+
+	size_t ret, size = strlen(text.c_str() + 1);
+	wchar_t* wtext = new wchar_t[size];
+	mbstowcs_s(&ret, wtext, size, text.c_str(), size - 1);
+
+	HRESULT hr = elements->writeFactory->CreateTextLayout(
+		wtext,
+		(UINT32)strlen(text.c_str()),
+		elements->textFormat,
+		screenWidth,
+		screenHeight,
+		&layout
+	);
+
+	delete[] wtext;
+	DWRITE_TEXT_METRICS metrics;
+	layout->GetMetrics(&metrics);
+
+	return Point<float>(metrics.width, metrics.height);
 }
 
 bool Renderer::Impl_Elements::Begin()

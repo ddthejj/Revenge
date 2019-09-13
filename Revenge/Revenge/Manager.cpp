@@ -64,9 +64,45 @@ bool Manager::IsKeyPressed(KEYS index)
 	return InputManager::IsKeyPressed(index);
 }
 
+bool Manager::IsMouseKeyDown(MOUSE_KEYS index)
+{
+	return InputManager::IsMouseKeyDown(index);
+}
+
+bool Manager::IsPreviousMouseKeyDown(MOUSE_KEYS index)
+{
+	return InputManager::IsPreviousMouseKeyDown(index);
+}
+
+bool Manager::IsMouseKeyPressed(MOUSE_KEYS index)
+{
+	return InputManager::IsMouseKeyPressed(index);
+}
+
+char Manager::CharPressed()
+{
+	return InputManager::CharPressed();
+}
+
+float Manager::GetMouseX()
+{
+	return InputManager::GetMouseX();
+}
+
+float Manager::GetMouseY()
+{
+	return InputManager::GetMouseY();
+}
+
+Point<float> Manager::GetMousePosition()
+{
+	return InputManager::GetMousePos();
+}
+
 
 void Manager::MoveMouse(HWND hwnd, LPARAM lParam)
 {
+
 }
 
 void Manager::PressKey(WPARAM wParam)
@@ -77,6 +113,26 @@ void Manager::PressKey(WPARAM wParam)
 void Manager::ReleaseKey(WPARAM wParam)
 {
 	InputManager::ReleaseKey(wParam);
+}
+
+void Manager::RepeatKey()
+{
+	InputManager::RepeatKey();
+}
+
+void Manager::PressChar(WPARAM wParam)
+{
+	InputManager::PressChar(wParam);
+}
+
+void Manager::PressMouseKey(MOUSE_KEYS key)
+{
+	InputManager::PressMouseKey(key);
+}
+
+void Manager::ReleaseMouseKey(MOUSE_KEYS key)
+{
+	InputManager::ReleaseMouseKey(key);
 }
 
 void Manager::ResizeWindow(HWND hWnd)
@@ -100,6 +156,7 @@ void Manager::Init(HWND hwnd)
 	textures[TEX_BROWNFLOOR] = spriteBatch->Load(L"../Assets/TestTextures/BrownTile.png", 32, 32);
 	textures[TEX_REDWALL] = spriteBatch->Load(L"../Assets/TestTextures/RedTile.png", 32, 32);
 	textures[TEX_GREENDOOR] = spriteBatch->Load(L"../Assets/TestTextures/GreenTile.png", 32, 32);
+	textures[TEX_BLUETEXT] = spriteBatch->Load(L"../Assets/TestTextures/BlueTile.png", 32, 32);
 	textures[TEX_PLAYER] = spriteBatch->Load(L"../Assets/TestTextures/Player_Spritesheet.png", 32 * 4, 32 * 4);
 	textures[TEX_ARROW] = spriteBatch->Load(L"../Assets/TestTextures/Arrow.png", 15, 30);
 	// load the overworld
@@ -235,6 +292,12 @@ FADE_STATUS Manager::FadeScene()
 	else
 		return FADE_DONE;
 }
+
+Point<float> Manager::MeasureString(std::string text)
+{
+	return spriteBatch->MeasureString(text);
+}
+
 
 void Manager::FreezeScene()
 {

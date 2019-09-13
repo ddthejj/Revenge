@@ -98,55 +98,156 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	*/
 	return (int)msg.wParam;
 }
+
 LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam)
 {
-
 	switch (message)
 	{
+
+#pragma region Window Handling
+
 		//Window is activated or deactivated
 	case WM_ACTIVATE:
 		switch (wParam)
 		{
-			//Window is activated
+			// Window is activated
 		case WA_ACTIVE:
-			//Start capturing the mouse
 			break;
-			//Window is deactivated
+			// Window is deactivated
 		case WA_INACTIVE:
-			//Stop capturing the mouse
 			break;
 		}
 		break;
-		//Window is destroyed
+
+		// Window is destroyed
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
+
+		// Window is resized
+	case WM_SIZE:
+		Manager::ResizeWindow(hWnd);
+		break;
+
+	//	// Window is moved
+	//case WM_MOVE:
+	//	Manager::MoveWindow(hWnd);
+	//	break;
+
+#pragma endregion
+
+#pragma region Mouse Handling
+
 		//Mouse movement is detected
 	case WM_MOUSEMOVE:
 		if (hWnd == GetForegroundWindow())
 			Manager::MoveMouse(hWnd, lParam);
 		break;
+
+		// Left mouse button clicked
+	case WM_LBUTTONDOWN:
+		if (hWnd == GetForegroundWindow())
+			Manager::PressMouseKey(MOUSE_KEY_LEFT);
+		break;
+
+		// Left mouse button released
+	case WM_LBUTTONUP:
+		if (hWnd == GetForegroundWindow())
+			Manager::ReleaseMouseKey(MOUSE_KEY_LEFT);
+		break;
+
+		// Right mouse button clicked
+	case WM_RBUTTONDOWN:
+		if (hWnd == GetForegroundWindow())
+			Manager::PressMouseKey(MOUSE_KEY_RIGHT);
+		break;
+
+		// Right mouse button released
+	case WM_RBUTTONUP:
+		if (hWnd == GetForegroundWindow())
+			Manager::ReleaseMouseKey(MOUSE_KEY_RIGHT);
+		break;
+
+		// Middle mouse button clicked
+	case WM_MBUTTONDOWN:
+		if (hWnd == GetForegroundWindow())
+			Manager::PressMouseKey(MOUSE_KEY_MIDDLE);
+		break;
+
+		// Middle mouse button released
+	case WM_MBUTTONUP:
+		if (hWnd == GetForegroundWindow())
+			Manager::ReleaseMouseKey(MOUSE_KEY_MIDDLE);
+		break;
+
+#pragma endregion
+
+#pragma region Keyboard Handling
+
 		//Key is pressed down
 	case WM_KEYDOWN:
 		if (hWnd != GetForegroundWindow())
 			break;
+
+		// Repeat the key if it's held down
+		if (lParam & 15U)
+		{
+			Manager::RepeatKey();
+		}
+
 		switch (wParam)
 		{
-		case VK_ESCAPE:
-			DestroyWindow(hWnd);
-			break;
+			//case VK_ESCAPE:
+			//	DestroyWindow(hWnd);
+			//	break;
+
+		case 0:
+
+
+
 		default:
 			Manager::PressKey(wParam);
 			break;
 		}
+
+		return DefWindowProc(hWnd, message, wParam, lParam);
 		break;
+
 		//Key is released
 	case WM_KEYUP:
-		Manager::ReleaseKey(wParam);
+		switch (wParam)
+		{
+
+		case 0:
+
+		default:
+			Manager::ReleaseKey(wParam);
+			break;
+		}
 		break;
-	case WM_SIZE:
-		Manager::ResizeWindow(hWnd);
+
+		// System key is pressed
+	case WM_SYSKEYDOWN:
+
+		if (lParam & 1 << 29)
+		{
+			return DefWindowProc(hWnd, message, wParam, lParam);
+		}
+
 		break;
+
+		// System key is released
+	case WM_SYSKEYUP:
+
+		break;
+
+		// If key is pressed, send what character that represents
+	case WM_CHAR:
+		Manager::PressChar(wParam);
+		break;		
+
+#pragma endregion
+
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 		break;

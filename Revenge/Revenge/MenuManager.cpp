@@ -74,7 +74,7 @@ void MenuManager::OpenMenu(MENUS index)
 		{
 			texts[i] = party[i]->Name();
 			options[i] = i;
-			positions[i] = Point<float>(40, 30 * (i + 1));
+			positions[i] = Point<float>(40.f, 30.f * (float)(i + 1));
 			layouts[i] = Point<int>(0, i);
 		}
 

@@ -87,3 +87,10 @@ void SpriteBatch::Resize(native_handle hWnd)
 	
 	SetCamera((float)windowWidth / 2.f, (float)windowHeight / 2.f);
 }
+
+
+
+Point<float> SpriteBatch::MeasureString(std::string text)
+{
+	return renderer->MeasureString(text, windowWidth, windowHeight);
+}

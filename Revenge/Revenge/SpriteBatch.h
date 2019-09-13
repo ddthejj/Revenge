@@ -1,5 +1,6 @@
 #pragma once
 #include "defines.h"
+#include <string>
 
 using native_handle = void*;
 
@@ -47,6 +48,10 @@ public:
 	void SetCamera(float x, float y);
 	// resize the renderer
 	void Resize(native_handle hwnd);
+
+
+	// Measure a string
+	Point<float> MeasureString(std::string text);
 
 #pragma endregion
 

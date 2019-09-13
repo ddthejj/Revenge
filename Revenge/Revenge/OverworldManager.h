@@ -11,6 +11,7 @@ class Player;
 
 class OverworldManager
 {
+
 #pragma region Properties
 
 	static std::vector<Map*> maps;				// List of all maps possible
@@ -22,11 +23,12 @@ class OverworldManager
 
 	static bool isRoomTransitioning;			// Whether or not the game is switching between rooms
 
-
 #pragma endregion
 
-
 public:
+
+#pragma region Methods
+
 	// initialize the overworld manager
 	static void Init();
 	// clean the overworld manager
@@ -51,7 +53,13 @@ public:
 	// Get the current player
 	static Player* GetCurrentPlayer();
 
+	// Handle transitioning rooms when the player enters a door
 	static void HitDoor(Door* hit);
-	static void TransitionRoom();				// Fade the screen out, load the new room, fade the screen in
+	// Fade the screen out, load the new room, fade the screen in
+	static void TransitionRoom();
+	// Update the overworld manager
 	static void Update(float delta_time);
+
+#pragma endregion
+
 };

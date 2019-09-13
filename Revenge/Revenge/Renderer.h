@@ -3,6 +3,8 @@
 
 #include <Windows.h>
 
+#include <string>
+
 
 class Renderer
 {
@@ -42,6 +44,8 @@ public:
 	int LoadContent(const wchar_t* filePath, float height, float width);
 	// resize the renderer
 	bool Resize(HWND hwnd);
+	// return the dimensions of a string
+	Point<float> MeasureString(std::string text, float screenWidth, float screenHeight);
 
 #pragma endregion
 };

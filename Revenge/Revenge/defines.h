@@ -44,6 +44,7 @@ enum TILES				// Tiles
 	TILE_BROWNFLOOR,	// Test floor
 	TILE_REDWALL,		// Test wall
 	TILE_GREENDOOR,		// Test door
+	TILE_BLUETEXT,		// Test interaction tile
 	TILE_MAX
 };
 
@@ -55,6 +56,7 @@ enum TEXTURES			// Textures
 	TEX_BROWNFLOOR,		// Test floor 
 	TEX_REDWALL,		// Test wall
 	TEX_GREENDOOR,		// Test door
+	TEX_BLUETEXT,		// Test interaction tile
 	TEX_PLAYER,			// Test Player spritesheet
 	TEX_MAX
 };
@@ -69,14 +71,34 @@ enum KEYS				// Keybinds
 	KEY_INTERACT,		// Select / interact with tiles
 	KEY_MAX
 };
-
-enum FADE_STATUS
+	
+enum MOUSE_KEYS			// Mouse buttons
 {
-	FADE_START,
-	FADE_OUT,
-	FADE_SWITCH,
-	FADE_IN,
-	FADE_DONE
+	MOUSE_KEY_LEFT,		// Left mouse button
+	MOUSE_KEY_RIGHT,	// Right mouse button
+	MOUSE_KEY_MIDDLE,	// Middle mouse button
+	MOUSE_KEY_MAX
+};
+
+enum FADE_STATUS		// Fade in and out status
+{
+	FADE_START,			// first frame of the fade out
+	FADE_OUT,			// transitioning to black
+	FADE_SWITCH,		// first frame of the fade in
+	FADE_IN,			// transitioning the screen black in
+	FADE_DONE,			// transition over
+	FADE_MAX
+};
+
+enum GAME_STATE			// game state
+{
+	STATE_TITLE,		// title screen
+	STATE_LOADING,		// loading
+	STATE_OVERWORLD,	// overworld map
+	STATE_BATTLE,		// fighting 
+	STATE_CUTSCENE,		// in a cutscene
+	STATE_DIALOGUE,		// talking 
+	STATE_MAX
 };
 
 #pragma endregion

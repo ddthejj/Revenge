@@ -13,6 +13,9 @@ Room::Room(const char* filepath)
 
 	if (room.is_open())
 	{
+
+#pragma region Tiles
+
 		// set up temp variables
 		char word[255];
 		int whichChar = 0;
@@ -63,7 +66,7 @@ Room::Room(const char* filepath)
 					} while (word[whichChar] != ',' && word[whichChar++] != '\n' && !room.eof());
 
 					bool eol = false;
-					if (word[whichChar-1] == '\n')
+					if (word[whichChar - 1] == '\n')
 						eol = true;
 
 					word[whichChar] = '\0';
@@ -78,7 +81,11 @@ Room::Room(const char* filepath)
 			// move past the empty lines
 			room.get();
 		}
-		
+
+#pragma endregion
+
+#pragma region Doors
+
 		// get number of doors in the room
 		whichChar = 0;
 		do
@@ -115,13 +122,49 @@ Room::Room(const char* filepath)
 					break;
 				}
 			}
+			room.get();
 		}
+
+#pragma endregion
+
+#pragma region Interactable Tiles
+
+		// get number of interactable tiles in the room
+		whichChar = 0;
+		do
+		{
+			room.get(word[whichChar]);
+		} while (word[whichChar] != ',' && word[whichChar++] != '\n' && !room.eof());
+
+		word[whichChar] = '\0';
+		int interactableCount = atoi(word);
+		std::string* interactableText = new std::string[interactableCount];
+		// read into interactable tile list
+		for (int i = 0; i < interactableCount; i++)
+		{
+			room.get();
+
+			while (!room.eof())
+			{
+				char letter; room.get(letter);
+				if (letter == '\"')
+				{
+					room.get();
+					break;
+				}
+				interactableText[i] += letter;
+			}
+		}
+
+#pragma endregion
 
 		// reading done
 		room.close();
 
+#pragma region Translate Read Data into Tiles
+
 		// set up the tiles
-		int doorAt = 0;
+		int doorAt = 0, interactableAt = 0;
 
 		for (int l = 0; l < 3; l++)
 		{
@@ -137,12 +180,48 @@ Room::Room(const char* filepath)
 						ProtoTile* prototype = Manager::GetProtoTile(layers[l][i][j]);
 						if (prototype->door)
 						{
-							tiles[l][i][j] = new Door(prototype, (float)x, (float)y, .25f * (float)l, (int)doorLocations[doorAt][0], doorLocations[doorAt][1], doorLocations[doorAt][2]);
-							doorAt++;
+							if (doorAt < doorCount)
+							{
+								tiles[l][i][j] = new Door(prototype, (float)x, (float)y, .25f * (float)l, (int)doorLocations[doorAt][0], doorLocations[doorAt][1], doorLocations[doorAt][2]);
+								doorAt++;
+							}
+							else
+							{
+								OutputDebugString(L"ERROR READING DOOR DATA");
+							}
 						}
 						else if (prototype->interactable)
 						{
-							tiles[l][i][j] = new Interactable(prototype, (float)x, (float)y, .25f * (float)l);
+							if (interactableAt < interactableCount)
+							{
+								int lineCount = 1;
+								std::string line = interactableText[interactableAt];
+								for (int i = 0; i < line.length(); i++)
+								{
+									if (line.at(i) == '\n')
+										lineCount++;
+								}
+
+								std::string* lines = new std::string[lineCount];
+
+								int lineAt = 0;
+
+								for (int i = 0; i < line.length(); i++)
+								{
+									if (line.at(i) != '\n')
+										lines[lineAt]+= line.at(i);
+									else
+										lineAt++;
+								}
+
+
+								tiles[l][i][j] = new Interactable(prototype, (float)x, (float)y, .25f * (float)l, lines);
+								interactableAt++;
+							}
+							else
+							{
+								OutputDebugString(L"ERROR READING INTERACTABLE TILE DATA");
+							}
 						}
 						else
 							tiles[l][i][j] = new Tile(prototype, (float)x, (float)y, .25f * (float)l);
@@ -157,6 +236,10 @@ Room::Room(const char* filepath)
 			}
 		}
 
+#pragma endregion
+
+#pragma region Clean
+
 		for (int l = 0; l < 3; l++)
 		{
 			for (int i = 0; i < dimX; i++)
@@ -168,7 +251,11 @@ Room::Room(const char* filepath)
 			delete[] doorLocations[i];
 		}
 		delete doorLocations;
+
+		delete[] interactableText;
 	}
+
+#pragma endregion
 
 }
 

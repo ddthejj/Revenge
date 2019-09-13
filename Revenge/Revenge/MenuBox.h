@@ -79,4 +79,5 @@ public:
 	virtual void Freeze();
 
 #pragma endregion
+
 };

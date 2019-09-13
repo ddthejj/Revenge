@@ -229,6 +229,9 @@ int MenuBox::ChooseOption()
 
 void MenuBox::Update()
 {
+
+#pragma region Arrow key movement
+
 	if (Manager::IsKeyPressed(KEY_UP))
 	{
 		MenuOption* whichOption = options[optionAt->x][optionAt->y];
@@ -293,6 +296,25 @@ void MenuBox::Update()
 		UpdateArrowLocation();
 		ResetArrow();
 	}
+
+#pragma endregion
+
+#pragma region Mouse Key Selection
+
+	for (int i = 0; i < optionsWidth; i++)
+	{
+		for (int j = 0; j < optionsHeight; j++)
+		{
+			if (options[i][j])
+			{
+				//options[i][j]->text;
+			}
+		}
+
+	}
+
+
+#pragma endregion
 
 	arrowTimer++;
 	if (arrowTimer == 40)

@@ -4,18 +4,13 @@
 #include <Windows.h>
 #include <vector>
 
-
-
-class MyRectangle;
 class SpriteBatch;
 class Texture;
 class Sprite;
 struct ProtoTile;
 class Room;
-class Map;
 class Player;
 class Door;
-class MenuBox;
 class Character;
 
 // handles the entire game and all other managers
@@ -23,21 +18,16 @@ class Manager
 {
 public:
 
-
 private:
 
 #pragma region Properties
 
+	static GAME_STATE gameState;
 	static SpriteBatch* spriteBatch;			// Renderer class
 	static Texture* textures[TEX_MAX];			// List of all loaded textures
-	//static ProtoTile* protoTiles[TILE_MAX];		// List of all prototype tiles 
 	static std::vector<Sprite*> UpdateList;		// Items that are being updated
 	static std::vector<Sprite*> DrawList;		// Items that are being drawn
-	//static std::vector<Map*> maps;				// List of all maps possible
 	static std::vector<Character*> party;		// List of party members
-
-	//static Map* currentMap;						// Currently loaded map
-	//static Player* currentPlayer;				// Current active player
 
 	static bool fadingIn, fadingOut;			// Whether or not the screen is being faded in or out
 	static float fadeOpacity;					// What the current opacity of the fade is
@@ -61,17 +51,33 @@ public:
 	static std::vector<Character*> GetParty() { return party; }
 	// Get a texture
 	static Texture* GetTexture(int index) { if (index < TEX_MAX) return textures[index]; else return nullptr; }
+	// Get the game state
+	static GAME_STATE GetGameState() { return gameState; }
 
 #pragma endregion
 
 #pragma region InputManager Access
 	
 	// Check if a key is down this frame
-	static bool IsKeyDown(KEYS index);// { return keys[index]; }
+	static bool IsKeyDown(KEYS index);
 	// Check if a key was down last frame
-	static bool IsPreviousKeyDown(KEYS index);// { return previousKeys[index]; }
+	static bool IsPreviousKeyDown(KEYS index);
 	// Check if a key was just pressed this frame
 	static bool IsKeyPressed(KEYS index);
+	// Check if a mouse button is down this frame
+	static bool IsMouseKeyDown(MOUSE_KEYS index);
+	// Check if a mouse button was down last frame
+	static bool IsPreviousMouseKeyDown(MOUSE_KEYS index);
+	// Check if a mouse button was just pressed this frame
+	static bool IsMouseKeyPressed(MOUSE_KEYS index);
+	// Check what char was pressed this frame
+	static char CharPressed();
+	// Get the x value of the mouse position
+	static float GetMouseX();
+	// Get the y value of the mouse position
+	static float GetMouseY();
+	// Get the position of the mouse
+	static Point<float> GetMousePosition();
 
 #pragma endregion
 
@@ -83,6 +89,14 @@ public:
 	static void PressKey(WPARAM wParam);
 	// Update the keystates when a key is released
 	static void ReleaseKey(WPARAM wParam);
+	// Update which character was pressed
+	static void PressChar(WPARAM wParam);
+	// Repeat a key when it's held down
+	static void RepeatKey();
+	// Update the mouse keystates when a button is pressed
+	static void PressMouseKey(MOUSE_KEYS key);
+	// Update the mouse keystates when a button is released
+	static void ReleaseMouseKey(MOUSE_KEYS key);
 	// Update the window size and position when the window is moved / resized
 	static void ResizeWindow(HWND hwnd);
 
@@ -113,6 +127,8 @@ public:
 	static void UnfreezeScene();
 	// Fade the scene
 	static FADE_STATUS FadeScene();
+	// Measure the size of a string with a given font
+	static Point<float> MeasureString(std::string text);
 
 	// Update every object in the update list
 	static void Update(float delta_time);

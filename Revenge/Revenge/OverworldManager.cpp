@@ -24,6 +24,7 @@ void OverworldManager::Init()
 	protoTiles[TILE_BROWNFLOOR] = new ProtoTile(Manager::GetTexture(TEX_BROWNFLOOR), 32, 32);
 	protoTiles[TILE_REDWALL] = new ProtoTile(Manager::GetTexture(TEX_REDWALL), 32, 32, true);
 	protoTiles[TILE_GREENDOOR] = new ProtoTile(Manager::GetTexture(TEX_GREENDOOR), 32, 32, false, true);
+	protoTiles[TILE_BLUETEXT] = new ProtoTile(Manager::GetTexture(TEX_BLUETEXT), 32, 32, true, false, true);
 	// add maps
 	maps.push_back(new Map("../Assets/RoomData/TestRoom/TestRoom", 2));
 	currentMap = maps[0];
