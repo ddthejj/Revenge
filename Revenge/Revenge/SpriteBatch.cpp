@@ -92,5 +92,5 @@ void SpriteBatch::Resize(native_handle hWnd)
 
 Point<float> SpriteBatch::MeasureString(std::string text)
 {
-	return renderer->MeasureString(text, windowWidth, windowHeight);
+	return renderer->MeasureString(text, (float)windowWidth, (float)windowHeight);
 }

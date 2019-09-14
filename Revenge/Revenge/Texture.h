@@ -15,8 +15,8 @@ enum ROTATIONS
 
 class Texture
 {
-	unsigned int textureID;
-	float width, height;
+	unsigned int textureID = 0;
+	float width = 0.f, height = 0.f;
 
 public:
 
