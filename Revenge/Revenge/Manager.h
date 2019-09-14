@@ -3,6 +3,7 @@
 
 #include <Windows.h>
 #include <vector>
+#include <string>
 
 class SpriteBatch;
 class Texture;
