@@ -38,93 +38,19 @@ struct Renderer::Impl_Elements
 	std::vector<PCWSTR> filenames;						// list of loaded textures' file names
 	std::vector<Renderer::ToDraw*> draws;				// list of objects to draw
 
-	Impl_Elements(HWND hwnd)
-	{
-		HRESULT res;
-
-		// create the d2d factory
-		res = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &factory);
-
-		// create the d2d pixel format
-		D2D1_PIXEL_FORMAT pixelFormat = D2D1::PixelFormat(
-			DXGI_FORMAT_B8G8R8A8_UNORM,
-			D2D1_ALPHA_MODE_PREMULTIPLIED
-		);
-		D2D1_RENDER_TARGET_PROPERTIES rtp =
-			D2D1::RenderTargetProperties(
-				D2D1_RENDER_TARGET_TYPE_DEFAULT,
-				D2D1::PixelFormat(
-					DXGI_FORMAT_UNKNOWN,
-					D2D1_ALPHA_MODE_PREMULTIPLIED
-				)
-			);
-
-		RECT rc;
-		GetClientRect(hwnd, &rc);
-		res = factory->CreateHwndRenderTarget(
-			rtp,
-			D2D1::HwndRenderTargetProperties(hwnd, D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top)),
-			&renderTarget
-		);
-
-		res = DWriteCreateFactory(
-			DWRITE_FACTORY_TYPE_SHARED,
-			__uuidof(IDWriteFactory5),
-			reinterpret_cast<IUnknown**>(&writeFactory)
-		);
-
-		IDWriteFontSetBuilder1* fontSetBuilder;
-		res = writeFactory->CreateFontSetBuilder(&fontSetBuilder);
-		IDWriteFontFile* fontFile;
-		res = writeFactory->CreateFontFileReference(
-			L"../Assets/Fonts/APPLE_KID.TTF",
-			nullptr,
-			&fontFile
-		);
-		res = fontSetBuilder->AddFontFile(fontFile);
-		IDWriteFontSet* fontSet;
-		fontSetBuilder->CreateFontSet(&fontSet);
-		IDWriteFontCollection1* fontCollection;
-		writeFactory->CreateFontCollectionFromFontSet(fontSet, &fontCollection);
-
-
-		res = writeFactory->CreateTextFormat(
-			L"Apple Kid",
-			fontCollection,
-			DWRITE_FONT_WEIGHT_NORMAL,
-			DWRITE_FONT_STYLE_NORMAL,
-			DWRITE_FONT_STRETCH_NORMAL,
-			20.f,
-			L"en-us",
-			&textFormat
-		);
-
-		textFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_JUSTIFIED);
-		textFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
-
-		renderTarget->CreateSolidColorBrush(
-			D2D1::ColorF(D2D1::ColorF::White),
-			&textBrush
-		);
-
-		SafeRelease(&fontCollection);
-		SafeRelease(&fontSet);
-		SafeRelease(&fontFile);
-		SafeRelease(&fontSetBuilder);
-	}
-
+	Impl_Elements(HWND hwnd);
 	~Impl_Elements() { Clear(); }
 	void Clear();
 	bool Begin();
 	bool End();
 
-	void Draw(ObjectDraw* object);
-	void Draw(TextDraw* text);
+	void Draw(const ObjectDraw* object);
+	void Draw(const TextDraw* text);
 };
 
 struct Renderer::ToDraw
 {
-	float layer;
+	float layer = 0;
 	virtual ~ToDraw()
 	{
 
@@ -156,10 +82,7 @@ struct Renderer::ObjectDraw : public Renderer::ToDraw
 		textureID = _textureID; destination = _destination; opacity = _opacity; source = _source; layer = _layer; rotation = (ROTATIONS)0;//rot;
 	}
 	virtual ~ObjectDraw();
-	void Draw(Impl_Elements* elements)
-	{
-		elements->Draw(this);
-	}
+	void Draw(Impl_Elements* elements);
 };
 
 struct Renderer::TextDraw : public Renderer::ToDraw
@@ -169,10 +92,7 @@ struct Renderer::TextDraw : public Renderer::ToDraw
 
 	TextDraw(std::string* _text, D2D1_RECT_F _destination, float _layer) { text = _text; destination = _destination; layer = _layer; }
 	virtual ~TextDraw();
-	void Draw(Impl_Elements* elements)
-	{
-		elements->Draw(this);
-	}
+	void Draw(Impl_Elements* elements);
 };
 
 #pragma endregion
@@ -423,6 +343,83 @@ Point<float> Renderer::MeasureString(std::string text, float screenWidth, float 
 	return Point<float>(metrics.width, metrics.height);
 }
 
+Renderer::Impl_Elements::Impl_Elements(HWND hwnd)
+{
+	HRESULT res;
+
+	// create the d2d factory
+	res = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &factory);
+
+	// create the d2d pixel format
+	D2D1_PIXEL_FORMAT pixelFormat = D2D1::PixelFormat(
+		DXGI_FORMAT_B8G8R8A8_UNORM,
+		D2D1_ALPHA_MODE_PREMULTIPLIED
+	);
+	D2D1_RENDER_TARGET_PROPERTIES rtp =
+		D2D1::RenderTargetProperties(
+			D2D1_RENDER_TARGET_TYPE_DEFAULT,
+			D2D1::PixelFormat(
+				DXGI_FORMAT_UNKNOWN,
+				D2D1_ALPHA_MODE_PREMULTIPLIED
+			)
+		);
+
+	RECT rc;
+	GetClientRect(hwnd, &rc);
+	res = factory->CreateHwndRenderTarget(
+		rtp,
+		D2D1::HwndRenderTargetProperties(hwnd, D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top)),
+		&renderTarget
+	);
+
+	res = DWriteCreateFactory(
+		DWRITE_FACTORY_TYPE_SHARED,
+		__uuidof(IDWriteFactory5),
+		reinterpret_cast<IUnknown * *>(&writeFactory)
+	);
+
+	IDWriteFontSetBuilder1* fontSetBuilder;
+	res = writeFactory->CreateFontSetBuilder(&fontSetBuilder);
+	IDWriteFontFile* fontFile;
+	res = writeFactory->CreateFontFileReference(
+		L"../Assets/Fonts/APPLE_KID.TTF",
+		nullptr,
+		&fontFile
+	);
+	if (fontFile == 0)
+		return;
+	res = fontSetBuilder->AddFontFile(fontFile);
+	IDWriteFontSet* fontSet;
+	fontSetBuilder->CreateFontSet(&fontSet);
+	IDWriteFontCollection1* fontCollection;
+	writeFactory->CreateFontCollectionFromFontSet(fontSet, &fontCollection);
+
+
+	res = writeFactory->CreateTextFormat(
+		L"Apple Kid",
+		fontCollection,
+		DWRITE_FONT_WEIGHT_NORMAL,
+		DWRITE_FONT_STYLE_NORMAL,
+		DWRITE_FONT_STRETCH_NORMAL,
+		20.f,
+		L"en-us",
+		&textFormat
+	);
+
+	textFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_JUSTIFIED);
+	textFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+
+	renderTarget->CreateSolidColorBrush(
+		D2D1::ColorF(D2D1::ColorF::White),
+		&textBrush
+	);
+
+	SafeRelease(&fontCollection);
+	SafeRelease(&fontSet);
+	SafeRelease(&fontFile);
+	SafeRelease(&fontSetBuilder);
+}
+
 bool Renderer::Impl_Elements::Begin()
 {
 	renderTarget->BeginDraw();
@@ -484,7 +481,7 @@ void Renderer::Impl_Elements::Clear()
 	SafeRelease(&factory);
 }
 
-void Renderer::Impl_Elements::Draw(ObjectDraw* object)
+void Renderer::Impl_Elements::Draw(const ObjectDraw* object)
 {
 
 	if (object->rotation == ObjectDraw::NONE)
@@ -556,6 +553,8 @@ void Renderer::Impl_Elements::Draw(ObjectDraw* object)
 		{
 			D2D1_RECT_F newSource = D2D1::RectF(0, 0, 0, 0);
 			D2D1_RECT_F source = object->source;
+			if (!originalBitmap)
+				return;
 			float width = (float)originalBitmap->GetSize().width;
 			float height = (float)originalBitmap->GetSize().height;
 			float sourceHeight = (source.bottom - source.top);
@@ -626,10 +625,10 @@ void Renderer::Impl_Elements::Draw(ObjectDraw* object)
 				break;
 			}
 
-			newSource.left = round(newSource.left);
-			newSource.right = round(newSource.right);
-			newSource.top = round(newSource.top);
-			newSource.bottom = round(newSource.bottom);
+			newSource.left = (float)round(newSource.left);
+			newSource.right = (float)round(newSource.right);
+			newSource.top = (float)round(newSource.top);
+			newSource.bottom = (float)round(newSource.bottom);
 
 			if (SUCCEEDED(res))
 				res = converter->Initialize(
@@ -646,6 +645,8 @@ void Renderer::Impl_Elements::Draw(ObjectDraw* object)
 				&rotatedBitmap
 			);
 
+			if (!rotatedBitmap)
+				return;
 			renderTarget->DrawBitmap(
 				rotatedBitmap,
 				object->destination,
@@ -664,7 +665,7 @@ void Renderer::Impl_Elements::Draw(ObjectDraw* object)
 	}
 }
 
-void Renderer::Impl_Elements::Draw(TextDraw* text)
+void Renderer::Impl_Elements::Draw(const TextDraw* text)
 {
 	size_t ret, size = strlen(text->text->c_str()) + 1;
 	wchar_t* wtext = new wchar_t[size];
@@ -689,7 +690,17 @@ Renderer::TextDraw::~TextDraw()
 	delete text;
 }
 
+void Renderer::TextDraw::Draw(Impl_Elements* elements)
+{
+	elements->Draw(this);
+}
+
 Renderer::ObjectDraw::~ObjectDraw()
 {
 
+}
+
+void Renderer::ObjectDraw::Draw(Impl_Elements* elements)
+{
+	elements->Draw(this);
 }
