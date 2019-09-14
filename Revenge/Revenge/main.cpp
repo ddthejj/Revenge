@@ -11,14 +11,17 @@ LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, 
 
 int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
-
+	// Target framerate
 	const float FPS = 60.f;
 
 #ifdef _DEBUG
+	// Sets debug flag to have Windows dump memory leaks (not 100% reliable, trust Visual Leak Detector more with this)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	// Breaks on allocation of certain memory number. Useful when dealing with hard to find memory leaks
 	_CrtSetBreakAlloc(-1);
 #endif
 
+	// Create the window
 	HWND hWnd;
 	WNDCLASSEX wc;
 	ZeroMemory(&wc, sizeof(WNDCLASSEX));
