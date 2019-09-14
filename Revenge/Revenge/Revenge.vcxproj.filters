@@ -75,6 +75,9 @@
     <ClCompile Include="OverworldManager.cpp">
       <Filter>Managers</Filter>
     </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Texture.h">
