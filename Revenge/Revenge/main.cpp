@@ -4,18 +4,6 @@
 #include "Manager.h"
 #include <time.h>
 
-// MEMORY LEAK
-#ifdef _DEBUG
-struct MemLeak
-{
-	MemLeak() {}
-	~MemLeak()
-	{
-		_CrtDumpMemoryLeaks();
-	}
-};
-#endif
-
 
 int CALLBACK WinMain(_In_ HINSTANCE hInstance,_In_opt_ HINSTANCE hPrevInstance,_In_ LPSTR lpCmdLine,_In_ int nShowCmd);
 LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam);
@@ -27,10 +15,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	const float FPS = 60.f;
 
 #ifdef _DEBUG
-	MemLeak leaks;
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	_CrtSetBreakAlloc(-1);
 #endif
-	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	HWND hWnd;
 	WNDCLASSEX wc;
@@ -91,11 +78,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 		}
 	}
 	Manager::Clean();
-	/*
-#ifdef _DEBUG
-	_CrtDumpMemoryLeaks();
-#endif
-	*/
 	return (int)msg.wParam;
 }
 
