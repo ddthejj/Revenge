@@ -28,6 +28,8 @@ public:
 
 	// load a texture
 	Texture* Load(const wchar_t* filepath, float height, float width);
+	// unload all textures
+	bool UnloadTextures();
 	// begin drawing
 	void Begin();
 	// draw a texture with a source rectangle

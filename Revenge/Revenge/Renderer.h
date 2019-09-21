@@ -40,8 +40,10 @@ public:
 	// end rendering and draw the finalized frame
 	bool End();
 
-	// load a texture into permanent texture memory
+	// load a texture into texture memory
 	int LoadContent(const wchar_t* filePath, float height, float width);
+	// clears all texture memory
+	bool ClearTextures();
 	// resize the renderer
 	bool Resize(HWND hwnd);
 	// return the dimensions of a string

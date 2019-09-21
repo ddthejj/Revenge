@@ -41,6 +41,7 @@ struct Renderer::Impl_Elements
 	Impl_Elements(HWND hwnd);
 	~Impl_Elements() { Clear(); }
 	void Clear();
+	void ClearTextures();
 	bool Begin();
 	bool End();
 
@@ -302,6 +303,11 @@ int Renderer::LoadContent(const wchar_t* filePath, float height, float width)
 	return index;
 }
 
+bool Renderer::ClearTextures()
+{
+	elements->ClearTextures();
+}
+
 bool Renderer::Resize(HWND hWnd)
 {
 	if (!elements->factory)
@@ -479,6 +485,21 @@ void Renderer::Impl_Elements::Clear()
 	SafeRelease(&textFormat);
 	SafeRelease(&renderTarget);
 	SafeRelease(&factory);
+}
+
+void Renderer::Impl_Elements::ClearTextures()
+{
+	for (int i = 0; i < bitmaps.size(); i++)
+	{
+		SafeRelease(&bitmaps[i]);
+	}
+	for (int i = 0; i < draws.size(); i++)
+	{
+		delete draws[i];
+	}
+	draws.clear();
+	bitmaps.clear();
+	filenames.clear();
 }
 
 void Renderer::Impl_Elements::Draw(const ObjectDraw* object)

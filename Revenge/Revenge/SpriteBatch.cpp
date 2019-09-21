@@ -23,6 +23,11 @@ Texture* SpriteBatch::Load(const wchar_t* filepath, float height, float width)
 	return new Texture(renderer->LoadContent(filepath, height, width), height, width);;
 }
 
+void SpriteBatch::UnloadTextures()
+{
+	renderer->ClearTextures();
+}
+
 void SpriteBatch::Begin()
 {
 	renderer->Begin();
