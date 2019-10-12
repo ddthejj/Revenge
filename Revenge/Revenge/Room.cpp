@@ -224,7 +224,9 @@ Room::Room(const char* filepath)
 							}
 						}
 						else
+						{
 							tiles[l][i][j] = new Tile(prototype, (float)x, (float)y, .25f * (float)l);
+						}
 					}
 					else if (layers[l][i][j] == -2)
 						OutputDebugString(L"ERROR READING FILE");

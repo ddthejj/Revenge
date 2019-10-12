@@ -39,12 +39,12 @@ Room* Manager::GetRoom(int index)
 	return OverworldManager::GetRoom(index);
 }
 
-Room * Manager::GetCurrentRoom()
+Room* Manager::GetCurrentRoom()
 {
 	return OverworldManager::GetCurrentRoom();
 }
 
-Player * Manager::GetCurrentPlayer()
+Player* Manager::GetCurrentPlayer()
 {
 	return OverworldManager::GetCurrentPlayer();
 }
@@ -153,10 +153,17 @@ void Manager::Init(HWND hwnd)
 	// textures
 	textures[TEX_BLACK] = spriteBatch->Load(L"../Assets/TestTextures/Black.png", 32, 32);
 	textures[TEX_MENU] = spriteBatch->Load(L"../Assets/TestTextures/TextBox.png", 10 * 4, 10 * 3);
-	textures[TEX_BROWNFLOOR] = spriteBatch->Load(L"../Assets/TestTextures/BrownTile.png", 32, 32);
-	textures[TEX_REDWALL] = spriteBatch->Load(L"../Assets/TestTextures/RedTile.png", 32, 32);
-	textures[TEX_GREENDOOR] = spriteBatch->Load(L"../Assets/TestTextures/GreenTile.png", 32, 32);
-	textures[TEX_BLUETEXT] = spriteBatch->Load(L"../Assets/TestTextures/BlueTile.png", 32, 32);
+	textures[TEX_TESTROOM] = spriteBatch->Load(L"../Assets/TestTextures/TestRoom_Spritesheet.png", 128, 128);
+
+	//textures[TEX_BROWNFLOOR] = spriteBatch->Load(L"../Assets/TestTextures/BrownTile.png", 32, 32);
+	textures[TEX_BROWNFLOOR] = new Texture(textures[TEX_TESTROOM], MyRectangle(0, 0, 32, 32));
+	//textures[TEX_REDWALL] = spriteBatch->Load(L"../Assets/TestTextures/RedTile.png", 32, 32);
+	textures[TEX_REDWALL] = new Texture(textures[TEX_TESTROOM], MyRectangle(32, 0, 32, 32));
+	//textures[TEX_GREENDOOR] = spriteBatch->Load(L"../Assets/TestTextures/GreenTile.png", 32, 32);
+	textures[TEX_GREENDOOR] = new Texture(textures[TEX_TESTROOM], MyRectangle(64, 0, 32, 32));
+	//textures[TEX_BLUETEXT] = spriteBatch->Load(L"../Assets/TestTextures/BlueTile.png", 32, 32);
+	textures[TEX_BLUETEXT] = new Texture(textures[TEX_TESTROOM], MyRectangle(96, 0, 32, 32));
+
 	textures[TEX_PLAYER] = spriteBatch->Load(L"../Assets/TestTextures/Player_Spritesheet.png", 32 * 4, 32 * 4);
 	textures[TEX_ARROW] = spriteBatch->Load(L"../Assets/TestTextures/Arrow.png", 15, 30);
 	// load the overworld
@@ -190,13 +197,13 @@ void Manager::Clean()
 	UpdateList.clear();
 }
 
-bool Manager::AddUpdate(Sprite*that)
+bool Manager::AddUpdate(Sprite* that)
 {
 	UpdateList.push_back(that);
 	return true;
 }
 
-bool Manager::RemoveUpdate(Sprite*that)
+bool Manager::RemoveUpdate(Sprite* that)
 {
 	for (std::vector<Sprite*>::iterator it = UpdateList.begin(); it != UpdateList.end(); ++it)
 	{
@@ -209,13 +216,13 @@ bool Manager::RemoveUpdate(Sprite*that)
 	return false;
 }
 
-bool Manager::AddDraw(Sprite*that)
+bool Manager::AddDraw(Sprite* that)
 {
 	DrawList.push_back(that);
 	return true;
 }
 
-bool Manager::RemoveDraw(Sprite*that)
+bool Manager::RemoveDraw(Sprite* that)
 {
 	for (std::vector< Sprite*>::iterator it = DrawList.begin(); it != DrawList.end(); ++it)
 	{

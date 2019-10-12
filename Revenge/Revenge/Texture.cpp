@@ -12,3 +12,13 @@ Texture::~Texture()
 {
 	SafeDelete(source);
 }
+
+Texture::Texture(Texture* that) : Texture(that->textureID, that->height, that->width, that->source->X(), that->source->Y(), that->source->Width(), that->source->Height())
+{
+
+}
+
+Texture::Texture(Texture* that, MyRectangle source) : Texture(that->textureID, that->height, that->width, source.X(), source.Y(), source.Width(), source.Height())
+{
+
+}

@@ -24,6 +24,8 @@ public:
 
 	Texture(int id, float _height, float _width) { textureID = id; width = _width; height = _height; source = nullptr; }
 	Texture(int id, float _height, float _width, float sourceX, float sourceY, float sourceWidth, float sourceHeight);
+	Texture(Texture* that);
+	Texture(Texture* that, MyRectangle source);
 	~Texture();
 
 	float Width() { return width; }

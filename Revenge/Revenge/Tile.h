@@ -15,6 +15,7 @@ struct ProtoTile
 	{
 		texture = _texture; height = _height; width = _width; collidable = _collidable; door = _door; interactable = _interactable;
 	}
+	ProtoTile(ProtoTile* that);
 };
 
 class Tile : public Sprite

@@ -3,12 +3,23 @@
 #include "SpriteBatch.h"
 #include "Manager.h"
 #include "Character.h"
+#include "Texture.h"
 
+
+#pragma region ProtoTile
+
+ProtoTile::ProtoTile(ProtoTile* that) : ProtoTile(that->texture, that->height, that->width, that->collidable, that->door, that->interactable)
+{
+
+}
+
+
+#pragma endregion
 
 #pragma region Tile
 
 Tile::Tile(ProtoTile* prototype, float _x, float _y, float _layer) : Sprite(_x, _y, prototype->height, prototype->width, prototype->texture, _layer)
-{
+{	
 	collidable = prototype->collidable;
 }
 

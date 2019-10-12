@@ -306,6 +306,7 @@ int Renderer::LoadContent(const wchar_t* filePath, float height, float width)
 bool Renderer::ClearTextures()
 {
 	elements->ClearTextures();
+	return true;
 }
 
 bool Renderer::Resize(HWND hWnd)
@@ -504,7 +505,6 @@ void Renderer::Impl_Elements::ClearTextures()
 
 void Renderer::Impl_Elements::Draw(const ObjectDraw* object)
 {
-
 	if (object->rotation == ObjectDraw::NONE)
 	{
 		renderTarget->DrawBitmap(

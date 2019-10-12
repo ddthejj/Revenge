@@ -53,6 +53,7 @@ enum TEXTURES			// Textures
 	TEX_BLACK,			// 1 black pixel
 	TEX_MENU,			// Menus borders, corners, and backgrounds
 	TEX_ARROW,			// Menu arrow
+	TEX_TESTROOM,		// Test room spritesheet
 	TEX_BROWNFLOOR,		// Test floor 
 	TEX_REDWALL,		// Test wall
 	TEX_GREENDOOR,		// Test door

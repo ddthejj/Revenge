@@ -3,10 +3,12 @@
 #include "Manager.h"
 #include "SpriteBatch.h"
 #include "Texture.h"
+#include "Rectangle.h"
 
-Sprite::Sprite(float x, float y, float width, float height, Texture* _texture, float _layer, float _opacity) : Sprite(x, y, width, height, 0, 0, _texture->Width(), _texture->Height(), _texture, _layer, _opacity)
+Sprite::Sprite(float x, float y, float width, float height, Texture* _texture, float _layer, float _opacity) : Sprite(x, y, width, height, 0, 0,
+	_texture->SourceRectangle() ? _texture->SourceRectangle()->Width() : _texture->Width(), _texture->SourceRectangle() ? _texture->SourceRectangle()->Height() : _texture->Height(), _texture, _layer, _opacity)
 {
-
+	
 }
 
 Sprite::Sprite(float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, Texture * _texture, float _layer, float _opacity)
@@ -94,9 +96,13 @@ void Sprite::Unfreeze()
 void Sprite::Draw(SpriteBatch* spriteBatch)
 {
 	if (!sourceRectangle)
+	{
 		spriteBatch->Draw(texture, rectangle, opacity, layer);
+	}
 	else
+	{
 		spriteBatch->Draw(texture, rectangle, sourceRectangle, opacity, layer);
+	}
 }
 
 void Sprite::DrawUI(SpriteBatch* spriteBatch)
