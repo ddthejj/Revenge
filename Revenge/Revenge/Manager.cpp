@@ -155,13 +155,9 @@ void Manager::Init(HWND hwnd)
 	textures[TEX_MENU] = spriteBatch->Load(L"../Assets/TestTextures/TextBox.png", 10 * 4, 10 * 3);
 	textures[TEX_TESTROOM] = spriteBatch->Load(L"../Assets/TestTextures/TestRoom_Spritesheet.png", 128, 128);
 
-	//textures[TEX_BROWNFLOOR] = spriteBatch->Load(L"../Assets/TestTextures/BrownTile.png", 32, 32);
 	textures[TEX_BROWNFLOOR] = new Texture(textures[TEX_TESTROOM], MyRectangle(0, 0, 32, 32));
-	//textures[TEX_REDWALL] = spriteBatch->Load(L"../Assets/TestTextures/RedTile.png", 32, 32);
 	textures[TEX_REDWALL] = new Texture(textures[TEX_TESTROOM], MyRectangle(32, 0, 32, 32));
-	//textures[TEX_GREENDOOR] = spriteBatch->Load(L"../Assets/TestTextures/GreenTile.png", 32, 32);
 	textures[TEX_GREENDOOR] = new Texture(textures[TEX_TESTROOM], MyRectangle(64, 0, 32, 32));
-	//textures[TEX_BLUETEXT] = spriteBatch->Load(L"../Assets/TestTextures/BlueTile.png", 32, 32);
 	textures[TEX_BLUETEXT] = new Texture(textures[TEX_TESTROOM], MyRectangle(96, 0, 32, 32));
 
 	textures[TEX_PLAYER] = spriteBatch->Load(L"../Assets/TestTextures/Player_Spritesheet.png", 32 * 4, 32 * 4);
