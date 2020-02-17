@@ -1,0 +1,11 @@
+9
+BLACK,../Assets/TestTextures/Black.png,32,32
+MENU,../Assets/TestTextures/TextBox.png,40,30
+ARROW,../Assets/TestTextures/Arrow.png,15,30
+TESTROOM,../Assets/TestTextures/TestRoom_Spritesheet.png,128,128
+BROWNFLOOR,3,0,0,32,32
+REDWALL,3,32,0,32,32
+GREENDOOR,3,64,0,32,32
+BLUETEXT,3,96,0,32,32
+PLAYER,../Assets/TestTextures/Player_Spritesheet.png,128,128
+

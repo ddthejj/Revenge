@@ -2,6 +2,7 @@
 #include "Tile.h"
 #include "SpriteBatch.h"
 #include "Manager.h"
+#include "OverworldManager.h"
 #include "Character.h"
 #include "Texture.h"
 
@@ -52,7 +53,7 @@ Door::~Door()
 
 void Door::Update()
 {
-	if (rectangle->Intersects(*(Manager::GetCurrentPlayer()->GetRectangle())))
+	if (rectangle->Intersects(*(OverworldManager::GetCurrentPlayer()->GetRectangle())))
 	{
 		Manager::HitDoor(this);
 	}

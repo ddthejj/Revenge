@@ -11,9 +11,10 @@
 #include "MenuManager.h"
 #include "InputManager.h"
 #include "OverworldManager.h"
+#include "TextureManager.h"
 
 SpriteBatch* Manager::spriteBatch = nullptr;
-Texture* Manager::textures[TEX_MAX];
+//Texture* Manager::textures[TEX_MAX];
 //ProtoTile* Manager::protoTiles[TILE_MAX];
 
 std::vector<Sprite*> Manager::UpdateList;
@@ -29,24 +30,34 @@ bool Manager::fadingOut = false;
 
 Sprite* Manager::fadeRectangle = nullptr;
 
-ProtoTile* Manager::GetProtoTile(int index)
+//ProtoTile* Manager::GetProtoTile(int index)
+//{
+//	return OverworldManager::GetProtoTile(index);
+//}
+
+//Room* Manager::GetRoom(int index)
+//{
+//	return OverworldManager::GetRoom(index);
+//}
+
+//Room* Manager::GetCurrentRoom()
+//{
+//	return OverworldManager::GetCurrentRoom();
+//}
+
+///Player* Manager::GetCurrentPlayer()
+///{
+///	return OverworldManager::GetCurrentPlayer();
+///}
+
+Texture* Manager::GetTexture(int index)
 {
-	return OverworldManager::GetProtoTile(index);
+	return TextureManager::GetTexture(index);
 }
 
-Room* Manager::GetRoom(int index)
+Texture* Manager::GetTexture(const char* name)
 {
-	return OverworldManager::GetRoom(index);
-}
-
-Room* Manager::GetCurrentRoom()
-{
-	return OverworldManager::GetCurrentRoom();
-}
-
-Player* Manager::GetCurrentPlayer()
-{
-	return OverworldManager::GetCurrentPlayer();
+	return TextureManager::GetTexture(name);
 }
 
 bool Manager::IsKeyDown(KEYS index)
@@ -151,6 +162,9 @@ void Manager::Init(HWND hwnd)
 	// spritebatch
 	spriteBatch = new SpriteBatch(hwnd);
 	// textures
+	TextureManager::LoadTextures(L"../Assets/TestTextures/TestTexture_List.txt", spriteBatch);
+
+	/*
 	textures[TEX_BLACK] = spriteBatch->Load(L"../Assets/TestTextures/Black.png", 32, 32);
 	textures[TEX_MENU] = spriteBatch->Load(L"../Assets/TestTextures/TextBox.png", 10 * 4, 10 * 3);
 	textures[TEX_TESTROOM] = spriteBatch->Load(L"../Assets/TestTextures/TestRoom_Spritesheet.png", 128, 128);
@@ -162,10 +176,17 @@ void Manager::Init(HWND hwnd)
 
 	textures[TEX_PLAYER] = spriteBatch->Load(L"../Assets/TestTextures/Player_Spritesheet.png", 32 * 4, 32 * 4);
 	textures[TEX_ARROW] = spriteBatch->Load(L"../Assets/TestTextures/Arrow.png", 15, 30);
+	*/
+
+	InitOverworld();
+}
+
+void Manager::InitOverworld()
+{
 	// load the overworld
 	OverworldManager::Init();
 
-	fadeRectangle = new Sprite(0, 0, WIDTH, HEIGHT, textures[TEX_BLACK], 1.f, 0.f);
+	fadeRectangle = new Sprite(0, 0, WIDTH, HEIGHT, GetTexture("BLACK"), 1.f, 0.f);
 	party.push_back(OverworldManager::GetCurrentPlayer());
 
 	MenuManager::Init();
@@ -177,15 +198,17 @@ void Manager::Clean()
 	MenuManager::Clean();
 	// overworld 
 	OverworldManager::Clean();
+	// textures
+	TextureManager::Clean();
 	// fade rectangle
 	delete fadeRectangle;
 	// spritebatch 
 	delete spriteBatch;
 	// textures
-	for (int i = 0; i < TEX_MAX; i++)
-	{
-		delete textures[i];
-	}
+	//for (int i = 0; i < TEX_MAX; i++)
+	//{
+	//	delete textures[i];
+	//}
 
 	// draw list (probably unesseccary)
 	DrawList.clear();

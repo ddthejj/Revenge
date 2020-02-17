@@ -17,15 +17,13 @@ class Character;
 // handles the entire game and all other managers
 class Manager
 {
-public:
-
 private:
 
 #pragma region Properties
 
 	static GAME_STATE gameState;
 	static SpriteBatch* spriteBatch;			// Renderer class
-	static Texture* textures[TEX_MAX];			// List of all loaded textures
+	//static Texture* textures[TEX_MAX];			// List of all loaded textures
 	static std::vector<Sprite*> UpdateList;		// Items that are being updated
 	static std::vector<Sprite*> DrawList;		// Items that are being drawn
 	static std::vector<Character*> party;		// List of party members
@@ -41,17 +39,19 @@ public:
 #pragma region GameManager Access
 
 	// Get a prototyle
-	static ProtoTile* GetProtoTile(int index);
+	//static ProtoTile* GetProtoTile(int index);
 	// Get a room
-	static Room* GetRoom(int index);
+	//static Room* GetRoom(int index);
 	// Get the current room
-	static Room* GetCurrentRoom();
+	//static Room* GetCurrentRoom();
 	// Get the current player
-	static Player* GetCurrentPlayer();
+	//static Player* GetCurrentPlayer();
 	// Get the party list
 	static std::vector<Character*> GetParty() { return party; }
-	// Get a texture
-	static Texture* GetTexture(int index) { if (index < TEX_MAX) return textures[index]; else return nullptr; }
+	// Get a texture with index
+	static Texture* GetTexture(int index);
+	// Get a texture with string
+	static Texture* GetTexture(const char* name);
 	// Get the game state
 	static GAME_STATE GetGameState() { return gameState; }
 
@@ -107,6 +107,8 @@ public:
 
 	// Initialize the whole game
 	static void Init(HWND hwnd);
+	// Initialize the overworld manager
+	static void InitOverworld();
 	// Destroy the whole game
 	static void Clean();
 	// Add an object to the list of objects being updated

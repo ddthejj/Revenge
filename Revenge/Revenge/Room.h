@@ -5,8 +5,8 @@ class Tile;
 
 class Room : public Object
 {
-	Tile*** tiles[3];
-	int dimX, dimY;
+	Tile*** tiles[3] = { nullptr, nullptr, nullptr };
+	int dimX = 0, dimY = 0;
 
 public:
 	Room(const char* filepath);

@@ -3,6 +3,7 @@
 #include "SpriteBatch.h"
 #include "Texture.h"
 #include "Manager.h"
+#include "OverworldManager.h"
 #include "Room.h"
 #include "Tile.h"
 #include "SpriteBatch.h"
@@ -42,7 +43,7 @@ void Player::Update()
 
 void Player::Move()
 {
-	Room* currentRoom = Manager::GetCurrentRoom();
+	Room* currentRoom = OverworldManager::GetCurrentRoom();
 
 	if (!currentRoom)
 		return;

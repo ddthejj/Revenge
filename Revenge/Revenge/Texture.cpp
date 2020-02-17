@@ -3,6 +3,11 @@
 #include "Rectangle.h"
 #include "defines.h"
 
+Texture::Texture(int id, float _height, float _width)
+{
+	textureID = id; width = _width; height = _height; source = new MyRectangle(0, 0, _width, _height);
+}
+
 Texture::Texture(int id, float _height, float _width, float sourceX, float sourceY, float sourceWidth, float sourceHeight)
 {
 	textureID = id; height = _height; width = _width; source = new MyRectangle(sourceX, sourceY, sourceWidth, sourceHeight);
