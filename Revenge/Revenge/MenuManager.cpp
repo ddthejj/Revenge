@@ -7,25 +7,28 @@
 #include "Sprite.h"
 #include "Character.h"
 
-MenuBox** MenuManager::menuList = new MenuBox*[MENU_MAX];
+MenuBox** MenuManager::menuList = nullptr; 
 MenuBox* MenuManager::activeMenu = nullptr;
 Texture* MenuManager::menuTex = nullptr;
 
 void MenuManager::Init()
 {
+	menuList = new MenuBox* [MENU_MAX];
 	menuTex = Manager::GetTexture(TEX_MENU);
 
 	for (int i = 0; i < MENU_MAX; i++)
 		menuList[i] = nullptr;
 
-	menuList[MENU_BASE] = new MenuBox(50, 50, 200, 150, menuTex, "../Assets/Menus/Menu_Base.txt");
-	menuList[MENU_CHARACTER] = new MenuBox(50, 50, 100, 100, menuTex);
+	menuList[MENU_BASE] = new MenuBox(50, 50, 150, 200, menuTex, "../Assets/Menus/Menu_Base.txt");
+	menuList[MENU_CHARACTER] = new MenuBox(50, 50, 10, 10, menuTex);
 	//menuList[MENU_INVENTORY] = new MenuBox(250, 50, 100, 100, menuTex, "../Assets/Menus/Menu_Inventory.txt");
 	//menuList[MENU_OPTIONS] = new MenuBox(250, 50, 100, 100, menuTex, "../Assets/Menus/Menu_Options.txt");
 }
 
 void MenuManager::Clean()
 {
+	if (!menuList) return;
+
 	for (int i = 0; i < MENU_MAX; i++)
 	{
 		if (menuList[i])
@@ -79,7 +82,7 @@ void MenuManager::OpenMenu(MENUS index)
 		}
 
 		menuList[MENU_CHARACTER]->SetOptions(texts, options, positions, layouts, 1, (int)party.size());
-		menuList[MENU_CHARACTER]->SetRectangle(MyRectangle(Point<float>(activeMenu->GetRectangle()->Right(), activeMenu->GetRectangle()->Top()), 200, 150));
+		menuList[MENU_CHARACTER]->SetRectangle(MyRectangle(Point<float>(activeMenu->GetRectangle()->Right(), activeMenu->GetRectangle()->Top()), 150, 150));
 
 		delete[] texts;
 		delete[] options;

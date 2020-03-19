@@ -23,6 +23,8 @@ Map::Map(const char * filepath, unsigned int _roomCount)
 
 Map::~Map()
 {
+	if (active) Deactivate();
+
 	for (unsigned int i = 0; i < roomCount; i++)
 	{
 		delete rooms[i];

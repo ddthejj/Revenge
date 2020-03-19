@@ -27,7 +27,7 @@ struct Point
 	Point(T _x, T _y) { x = _x; y = _y; }
 };
 
-template <class T> void SafeDelete(T *p)
+template <class T> void SafeDelete(T* &p)
 {
 	if (p)
 	{
@@ -100,6 +100,26 @@ enum GAME_STATE			// game state
 	STATE_CUTSCENE,		// in a cutscene
 	STATE_DIALOGUE,		// talking 
 	STATE_MAX
+};
+
+enum class ANCHOR_POINT : unsigned char
+{
+	TOP = (0) << 2,
+	VCENTER = (1) << 2,
+	BOTTOM = (1 << 1) << 2,
+	LEFT = 0,
+	HCENTER = 1,
+	RIGHT = 1 << 1,
+
+	ANCHOR_TOP_LEFT = TOP | LEFT,
+	ANCHOR_TOP_CENTER = TOP | HCENTER,
+	ANCHOR_TOP_RIGHT = TOP | RIGHT,
+	ANCHOR_CENTER_LEFT = VCENTER | LEFT,
+	ANCHOR_CENTER = VCENTER | HCENTER,
+	ANCHOR_CENTER_RIGHT = VCENTER | RIGHT,
+	ANCHOR_BOTTOM_LEFT = BOTTOM | LEFT,
+	ANCHOR_BOTTOM_CENTER = BOTTOM | HCENTER,
+	ANCHOR_BOTTOM_RIGHT = BOTTOM | RIGHT
 };
 
 #pragma endregion

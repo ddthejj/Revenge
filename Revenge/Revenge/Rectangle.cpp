@@ -7,7 +7,7 @@ MyRectangle::MyRectangle()
 	height = 0; width = 0;
 }
 
-MyRectangle::MyRectangle(float _x, float _y, float _height, float _width)
+MyRectangle::MyRectangle(float _x, float _y, float _width, float _height)
 {
 	location = new Point<float>(_x, _y);
 	height = _height;
@@ -39,6 +39,7 @@ float MyRectangle::Left() const { return location->x; }
 float MyRectangle::Right() const { return location->x + width; }
 float MyRectangle::CenterX() const { return location->x + (width / 2.f); }
 float MyRectangle::CenterY() const { return location->y + (height / 2.f); }
+
 
 void MyRectangle::SetX(float _x) { location->x = _x; }
 void MyRectangle::SetY(float _y) { location->y = _y; }

@@ -46,13 +46,13 @@ public:
 
 	// return the main rectangle
 	MyRectangle* GetRectangle() const;
+	// return the main rectangle's position
+	Point<float> GetPos() const;
 	// return the opacity
 	float Opacity() { return opacity; }
 
-	// draw the sprite
+	// draw the sprite in the world
 	virtual void Draw(SpriteBatch* spriteBatch);
-	// draw the sprite as UI
-	virtual void DrawUI(SpriteBatch* spriteBatch);
 	// update the sprite
 	virtual void Update() {}
 	// activate the sprite
@@ -68,3 +68,18 @@ public:
 
 };
 
+class UISprite : public Sprite
+{
+	ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT;
+
+public: 
+
+	// create a sprite without a source rectangle
+	UISprite(float x, float y, float width, float height, Texture* _texture, float _layer, float _opacity = 1.f, ANCHOR_POINT _anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
+	// create a sprite with a source rectangle
+	UISprite(float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, Texture* _texture, float _layer, float _opacity = 1.f, ANCHOR_POINT _anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
+	
+	virtual void Deactivate();
+	// draw the sprite as UI
+	virtual void Draw(SpriteBatch* spriteBatch);
+};

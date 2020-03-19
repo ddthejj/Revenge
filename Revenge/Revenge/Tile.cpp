@@ -26,7 +26,7 @@ Tile::Tile(ProtoTile* prototype, float _x, float _y, float _layer) : Sprite(_x, 
 
 Tile::~Tile()
 {
-
+	if (active) Deactivate();
 }
 
 
@@ -47,7 +47,7 @@ Door::Door(ProtoTile* prototype, float _x, float _y, float _layer, int _destinat
 
 Door::~Door()
 {
-
+	if (active) Deactivate();
 }
 
 
@@ -58,6 +58,7 @@ void Door::Update()
 		Manager::HitDoor(this);
 	}
 }
+
 #pragma endregion
 
 #pragma region Interactable
@@ -69,6 +70,7 @@ Interactable::Interactable(ProtoTile* prototype, float _x, float _y, float _laye
 
 Interactable::~Interactable()
 {
+	if (active) Deactivate();
 	delete[] lines;
 }
 

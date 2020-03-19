@@ -21,7 +21,7 @@ public:
 #pragma region Methods
 
 	MyRectangle();
-	MyRectangle(float _x, float _y, float _height, float _width);
+	MyRectangle(float _x, float _y, float _width, float _height);
 	MyRectangle(Point<float> _location, float height, float width);
 	MyRectangle(const MyRectangle& that);
 	~MyRectangle();

@@ -32,9 +32,9 @@ protected:
 	MenuOption*** options = nullptr;				// list of options the menu has (options can be nullptr)
 	int optionsWidth = 0, optionsHeight = 0;		// dimensions of the options array
 	Point<int>* optionAt = nullptr;					// which option is currently selected
-	Sprite* arrow = nullptr;						// the sprite for the arrow 
+	UISprite* arrow = nullptr;						// the sprite for the arrow 
 	int arrowTimer = 0;								// the timer to blink the arrow
-	MenuBox* previousMenu;							// pointer to the previous menu (if nullptr, no previous menu)
+	MenuBox* previousMenu = nullptr;				// pointer to the previous menu (if nullptr, no previous menu)
 
 #pragma endregion
 	
@@ -62,7 +62,7 @@ public:
 	// set the options of a menu to passed in values
 	void SetOptions(char** texts, int* option, Point<float>* positions, Point<int>* layout, int sizeX, int sizeY);
 	// resize the menu box
-	void Resize(float x, float y, float height, float width);
+	void Resize(float x, float y, float width, float height);
 	// move the menu box
 	void Move(float x, float y);
 

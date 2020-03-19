@@ -263,6 +263,8 @@ Room::Room(const char* filepath)
 
 Room::~Room()
 {
+	if (active) Deactivate();
+
 	for (int l = 0; l < 3; l++)
 	{
 		for (int i = 0; i < dimX; i++)

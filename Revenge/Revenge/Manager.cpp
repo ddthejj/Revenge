@@ -11,44 +11,20 @@
 #include "MenuManager.h"
 #include "InputManager.h"
 #include "OverworldManager.h"
+#include "TitleManager.h"
 #include "TextureManager.h"
 
+GAME_STATE Manager::gameState = GAME_STATE::STATE_TITLE;
 SpriteBatch* Manager::spriteBatch = nullptr;
-//Texture* Manager::textures[TEX_MAX];
-//ProtoTile* Manager::protoTiles[TILE_MAX];
-
 std::vector<Sprite*> Manager::UpdateList;
 std::vector<Sprite*> Manager::DrawList;
 std::vector<Character*> Manager::party;
-
-//std::vector<Map*> Manager::maps;
-//Map* Manager::currentMap;
-//Player* Manager::currentPlayer = nullptr;
 
 bool Manager::fadingIn = false;
 bool Manager::fadingOut = false;
 
 Sprite* Manager::fadeRectangle = nullptr;
 
-//ProtoTile* Manager::GetProtoTile(int index)
-//{
-//	return OverworldManager::GetProtoTile(index);
-//}
-
-//Room* Manager::GetRoom(int index)
-//{
-//	return OverworldManager::GetRoom(index);
-//}
-
-//Room* Manager::GetCurrentRoom()
-//{
-//	return OverworldManager::GetCurrentRoom();
-//}
-
-///Player* Manager::GetCurrentPlayer()
-///{
-///	return OverworldManager::GetCurrentPlayer();
-///}
 
 Texture* Manager::GetTexture(int index)
 {
@@ -155,60 +131,89 @@ void Manager::ResizeWindow(HWND hWnd)
 	GetClientRect(hWnd, &rc);
 }
 
+int Manager::GetScreenWidth()
+{
+	if (spriteBatch)
+		return spriteBatch->ScreenWidth();
+	else
+		return 0;
+}
+
+int Manager::GetScreenHeight()
+{
+	if (spriteBatch)
+		return spriteBatch->ScreenHeight();
+	else
+		return 0;
+}
+
 
 void Manager::Init(HWND hwnd)
 {
 	InputManager::Init();
 	// spritebatch
 	spriteBatch = new SpriteBatch(hwnd);
-	// textures
-	TextureManager::LoadTextures(L"../Assets/TestTextures/TestTexture_List.txt", spriteBatch);
 
-	/*
-	textures[TEX_BLACK] = spriteBatch->Load(L"../Assets/TestTextures/Black.png", 32, 32);
-	textures[TEX_MENU] = spriteBatch->Load(L"../Assets/TestTextures/TextBox.png", 10 * 4, 10 * 3);
-	textures[TEX_TESTROOM] = spriteBatch->Load(L"../Assets/TestTextures/TestRoom_Spritesheet.png", 128, 128);
+	if (gameState == GAME_STATE::STATE_OVERWORLD)
+	{
+		// create the overworld
+		InitOverworld();
+	}
+	else if (gameState == GAME_STATE::STATE_TITLE)
+	{
+		// create the title menu
+		InitTitle();
+	}
 
-	textures[TEX_BROWNFLOOR] = new Texture(textures[TEX_TESTROOM], MyRectangle(0, 0, 32, 32));
-	textures[TEX_REDWALL] = new Texture(textures[TEX_TESTROOM], MyRectangle(32, 0, 32, 32));
-	textures[TEX_GREENDOOR] = new Texture(textures[TEX_TESTROOM], MyRectangle(64, 0, 32, 32));
-	textures[TEX_BLUETEXT] = new Texture(textures[TEX_TESTROOM], MyRectangle(96, 0, 32, 32));
+	// create the rectangle used for fading the screen in and out
+	fadeRectangle = new Sprite(0, 0, WIDTH, HEIGHT, GetTexture("BLACK"), 1.f, 0.f);
+}
 
-	textures[TEX_PLAYER] = spriteBatch->Load(L"../Assets/TestTextures/Player_Spritesheet.png", 32 * 4, 32 * 4);
-	textures[TEX_ARROW] = spriteBatch->Load(L"../Assets/TestTextures/Arrow.png", 15, 30);
-	*/
+void Manager::InitTitle()
+{
+	// load title textures
+	TextureManager::LoadTextures(L"../Assets/TestTextures/TestTexture_Title_List.txt", spriteBatch);
 
-	InitOverworld();
+	TitleManager::Init();
+
+	gameState = GAME_STATE::STATE_TITLE;
 }
 
 void Manager::InitOverworld()
 {
+	// load overworld textures
+	TextureManager::LoadTextures(L"../Assets/TestTextures/TestTexture_List.txt", spriteBatch);
 	// load the overworld
 	OverworldManager::Init();
-
-	fadeRectangle = new Sprite(0, 0, WIDTH, HEIGHT, GetTexture("BLACK"), 1.f, 0.f);
 	party.push_back(OverworldManager::GetCurrentPlayer());
 
 	MenuManager::Init();
+
+	gameState = GAME_STATE::STATE_OVERWORLD;
 }
 
 void Manager::Clean()
 {
-	// menu
-	MenuManager::Clean();
-	// overworld 
-	OverworldManager::Clean();
+	if (gameState == GAME_STATE::STATE_OVERWORLD)
+	{
+		// menu
+		MenuManager::Clean();
+		// overworld 
+		OverworldManager::Clean();
+	}
+	else if (gameState == GAME_STATE::STATE_TITLE)
+	{
+		// menu
+		MenuManager::Clean();
+		// title
+		TitleManager::Clean();
+	}
 	// textures
 	TextureManager::Clean();
 	// fade rectangle
-	delete fadeRectangle;
+	SafeDelete(fadeRectangle);
 	// spritebatch 
-	delete spriteBatch;
-	// textures
-	//for (int i = 0; i < TEX_MAX; i++)
-	//{
-	//	delete textures[i];
-	//}
+	SafeDelete(spriteBatch);
 
 	// draw list (probably unesseccary)
 	DrawList.clear();
@@ -275,39 +280,29 @@ FADE_STATUS Manager::FadeScene()
 	{
 		// begin fade
 		fadeRectangle->Activate();
-		//currentMap->Freeze();
-		//currentPlayer->Freeze();
 		fadeRectangle->IncreaseOpacity(ROOM_FADE_SPEED);
-		return FADE_START;
+		return FADE_STATUS::FADE_START;
 	}
 	else if (fadingOut && fadeRectangle->Opacity() >= 1.f)
 	{
 		// when fade out is done
-		//currentMap->Deactivate();
-		//currentMap->SetRoom(doorHit->Destination());
-		//currentPlayer->GetRectangle()->SetX(doorHit->DestinationX());
-		//currentPlayer->GetRectangle()->SetY(doorHit->DestinationY());
-		//currentMap->Activate();
-		//currentMap->Freeze();
 		fadingOut = false;
 		fadingIn = true;
 		fadeRectangle->DecreaseOpacity(ROOM_FADE_SPEED);
-		return FADE_SWITCH;
+		return FADE_STATUS::FADE_SWITCH;
 	}
 	else if (fadingIn && fadeRectangle->Opacity() <= 0.f)
 	{
 		// fading done
 		fadingIn = false;
-		//currentMap->Unfreeze();
-		//currentPlayer->Unfreeze();
 		fadeRectangle->Deactivate();
-		return FADE_DONE;
+		return FADE_STATUS::FADE_DONE;
 	}
 	else if (fadingOut)
 	{
 		// fade out slowly
 		fadeRectangle->IncreaseOpacity(ROOM_FADE_SPEED);
-		return FADE_OUT;
+		return FADE_STATUS::FADE_OUT;
 	}
 	else if (fadingIn)
 	{
@@ -316,7 +311,7 @@ FADE_STATUS Manager::FadeScene()
 		return FADE_IN;
 	}
 	else
-		return FADE_DONE;
+		return FADE_STATUS::FADE_DONE;
 }
 
 Point<float> Manager::MeasureString(std::string text)
@@ -344,22 +339,24 @@ void Manager::Update(float delta_time)
 		Sprite* sprite = (*it);
 		sprite->Update();
 	}
+	if (gameState == GAME_STATE::STATE_OVERWORLD)
+	{
 	OverworldManager::Update(delta_time);
+	}
+	else if (gameState == GAME_STATE::STATE_TITLE)
+	{
+		TitleManager::Update(delta_time);
+	}
 	InputManager::Update(delta_time);
 }
 
 void Manager::Draw()
 {
 	spriteBatch->Begin();
-	// test
-	//MyRectangle* test = new MyRectangle(100, 100, 32, 32);
-	//spriteBatch->Draw(textures[0], test);
 
 	for (std::vector< Sprite*>::iterator it = DrawList.begin(); it != DrawList.end(); ++it)
 	{
 		(*it)->Draw(spriteBatch);
 	}
 	spriteBatch->End();
-
-	//delete test;
 }

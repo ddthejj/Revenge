@@ -21,7 +21,7 @@ public:
 #pragma region Methods
 
 	Object() {}
-	~Object() {}
+	~Object() { if (active) Deactivate(); }
 
 	// activate the object
 	virtual void Activate() { active = true; frozen = false; }

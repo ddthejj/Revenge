@@ -1,7 +1,7 @@
 9
 BLACK,../Assets/TestTextures/Black.png,32,32
-MENU,../Assets/TestTextures/TextBox.png,40,30
-ARROW,../Assets/TestTextures/Arrow.png,15,30
+MENU,../Assets/TestTextures/TextBox.png,30,40
+ARROW,../Assets/TestTextures/Arrow.png,30,15
 TESTROOM,../Assets/TestTextures/TestRoom_Spritesheet.png,128,128
 BROWNFLOOR,3,0,0,32,32
 REDWALL,3,32,0,32,32

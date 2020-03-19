@@ -16,7 +16,7 @@ Character::Character(float x, float y, float height, float width, Texture* _text
 
 Character::~Character()
 {
-
+	if (active) Deactivate();
 }
 
 void Character::Draw(SpriteBatch* spriteBatch)
@@ -33,7 +33,7 @@ Player::Player(float x, float y, float height, float width, Texture* _texture, f
 
 Player::~Player()
 {
-
+	if (active) Deactivate();
 }
 
 void Player::Update()
@@ -288,7 +288,7 @@ NonPlayer::NonPlayer(float x, float y, float height, float width, Texture* _text
 
 NonPlayer::~NonPlayer()
 {
-
+	if (active) Deactivate();
 }
 
 void NonPlayer::Update()

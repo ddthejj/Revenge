@@ -129,5 +129,8 @@
     <ClInclude Include="TextureManager.h">
       <Filter>Managers</Filter>
     </ClInclude>
+    <ClInclude Include="Math.h">
+      <Filter>Essentials</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -10,7 +10,7 @@
 MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _texture) : Sprite(_x, _y, _width, _height, _texture, 0.f)
 {
 	optionAt = new Point<int>();
-	arrow = new Sprite(0, 0, 7, 7, 0, 0, 15, 15, Manager::GetTexture(TEX_ARROW), .81f);
+	arrow = new UISprite(0, 0, 7, 7, 0, 0, 15, 15, Manager::GetTexture(TEX_ARROW), .81f);
 	// options need to be set later
 }
 
@@ -115,6 +115,8 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _text
 
 MenuBox::~MenuBox()
 {
+	if (active) Deactivate();
+
 	for (int i = 0; i < optionsWidth; i++)
 	{
 		for (int j = 0; j < optionsHeight; j++)
@@ -189,7 +191,7 @@ void MenuBox::SetOptions(char** texts, int* option, Point<float>* positions, Poi
 	}
 }
 
-void MenuBox::Resize(float x, float y, float height, float width)
+void MenuBox::Resize(float x, float y, float width, float height)
 {
 	rectangle->SetX(x);
 	rectangle->SetY(y);
@@ -336,21 +338,21 @@ void MenuBox::Draw(SpriteBatch* spriteBatch)
 	// background
 	spriteBatch->DrawUI(texture, rectangle, &backgroundSource, 1.0f, .8f, 0);
 	// edges
-	spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Y(), rectangle->Height(), borderSource.Width()), &borderSource, 1.f, .82f); // left
+	spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Y(), borderSource.Width(), rectangle->Height()), &borderSource, 1.f, .82f); // left
 	borderSource.SetY(10);
-	spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Y(), borderSource.Height(), rectangle->Width()), &borderSource, 1.0f, .82f, (int)ROTATIONS::ROT_90); // top
+	spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Y(), rectangle->Width(), borderSource.Height()), &borderSource, 1.0f, .82f, (int)ROTATIONS::ROT_90); // top
 	borderSource.SetY(20);
-	spriteBatch->DrawUI(texture, &MyRectangle(rectangle->Right() - borderSource.Width(), rectangle->Y(), rectangle->Height(), borderSource.Width()), &borderSource, 1.f, .82f, (int)ROTATIONS::HORIZONTAL); // right
+	spriteBatch->DrawUI(texture, &MyRectangle(rectangle->Right() - borderSource.Width(), rectangle->Y(), borderSource.Width(), rectangle->Height()), &borderSource, 1.f, .82f, (int)ROTATIONS::HORIZONTAL); // right
 	borderSource.SetY(30);
-	spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Bottom() - borderSource.Height(), borderSource.Height(), rectangle->Width()), &borderSource, 1.0f, .82f, (int)ROTATIONS::ROT_270); // bottom
+	spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Bottom() - borderSource.Height(), rectangle->Width(), borderSource.Height()), &borderSource, 1.0f, .82f, (int)ROTATIONS::ROT_270); // bottom
 	// corners
-	spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Y(), cornerSource.Height(), cornerSource.Width()), &cornerSource, 1.0f, .83f); // top left
+	spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Y(), cornerSource.Width(), cornerSource.Height()), &cornerSource, 1.0f, .83f); // top left
 	cornerSource.SetY(10);
-	spriteBatch->DrawUI(texture, &MyRectangle(rectangle->Right() - cornerSource.Width(), rectangle->Y(), cornerSource.Height(), cornerSource.Width()), &cornerSource, 1.0f, .83f, (int)ROTATIONS::ROT_90); // top right
+	spriteBatch->DrawUI(texture, &MyRectangle(rectangle->Right() - cornerSource.Width(), rectangle->Y(), cornerSource.Width(), cornerSource.Height()), &cornerSource, 1.0f, .83f, (int)ROTATIONS::ROT_90); // top right
 	cornerSource.SetY(20);
-	spriteBatch->DrawUI(texture, &MyRectangle(rectangle->Right() - cornerSource.Width(), rectangle->Bottom() - cornerSource.Height(), cornerSource.Height(), cornerSource.Width()), &cornerSource, 1.0f, .83f, (int)ROTATIONS::ROT_180); // bottom right
+	spriteBatch->DrawUI(texture, &MyRectangle(rectangle->Right() - cornerSource.Width(), rectangle->Bottom() - cornerSource.Height(), cornerSource.Width(), cornerSource.Height()), &cornerSource, 1.0f, .83f, (int)ROTATIONS::ROT_180); // bottom right
 	cornerSource.SetY(30);
-	spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Bottom() - cornerSource.Height(), cornerSource.Height(), cornerSource.Width()), &cornerSource, 1.0f, .83f, (int)ROTATIONS::ROT_270); // bottom left
+	spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Bottom() - cornerSource.Height(), cornerSource.Width(), cornerSource.Height()), &cornerSource, 1.0f, .83f, (int)ROTATIONS::ROT_270); // bottom left
 	// text
 	//spriteBatch->WriteText(L"Menu", &MyRectangle(rectangle->X() + 20, rectangle->Y() + 20, 30, 10), .81f);
 	for (int i = 0; i < optionsWidth; i++)
@@ -369,7 +371,7 @@ void MenuBox::Draw(SpriteBatch* spriteBatch)
 			}
 		}
 	}
-	arrow->DrawUI(spriteBatch);
+	arrow->Draw(spriteBatch);
 }
 
 

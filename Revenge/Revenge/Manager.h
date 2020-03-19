@@ -21,9 +21,8 @@ private:
 
 #pragma region Properties
 
-	static GAME_STATE gameState;
+	static GAME_STATE gameState;				// Current mode the game is in
 	static SpriteBatch* spriteBatch;			// Renderer class
-	//static Texture* textures[TEX_MAX];			// List of all loaded textures
 	static std::vector<Sprite*> UpdateList;		// Items that are being updated
 	static std::vector<Sprite*> DrawList;		// Items that are being drawn
 	static std::vector<Character*> party;		// List of party members
@@ -38,14 +37,6 @@ public:
 
 #pragma region GameManager Access
 
-	// Get a prototyle
-	//static ProtoTile* GetProtoTile(int index);
-	// Get a room
-	//static Room* GetRoom(int index);
-	// Get the current room
-	//static Room* GetCurrentRoom();
-	// Get the current player
-	//static Player* GetCurrentPlayer();
 	// Get the party list
 	static std::vector<Character*> GetParty() { return party; }
 	// Get a texture with index
@@ -103,10 +94,21 @@ public:
 
 #pragma endregion
 
+#pragma region SpriteBatch Access
+
+	// Returns the height of the game window
+	static int GetScreenWidth();
+	//Returns the width of the game window
+	static int GetScreenHeight();
+
+#pragma endregion
+
 #pragma region Methods
 
 	// Initialize the whole game
 	static void Init(HWND hwnd);
+	// Initialize the title screen
+	static void InitTitle();
 	// Initialize the overworld manager
 	static void InitOverworld();
 	// Destroy the whole game

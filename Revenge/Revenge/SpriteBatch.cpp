@@ -9,8 +9,16 @@
 SpriteBatch::SpriteBatch(native_handle hwnd)
 {
 	renderer = new Renderer((HWND)hwnd);
-	camera[0] = WIDTH / 2.0f;
-	camera[1] = HEIGHT / 2.0f;
+	//camera[0] = WIDTH / 2.0f;
+	//camera[1] = HEIGHT / 2.0f;
+
+	RECT rc;
+	GetClientRect((HWND)hwnd, &rc);
+
+	windowWidth = rc.right - rc.left;
+	windowHeight = rc.bottom - rc.top;
+
+	SetCamera((float)windowWidth / 2.f, (float)windowHeight / 2.f);
 }
 
 SpriteBatch::~SpriteBatch()
@@ -18,9 +26,9 @@ SpriteBatch::~SpriteBatch()
 	delete renderer;
 }
 
-Texture* SpriteBatch::Load(const wchar_t* filepath, float height, float width)
+Texture* SpriteBatch::Load(const wchar_t* filepath, float width, float height)
 {
-	return new Texture(renderer->LoadContent(filepath, height, width), height, width);;
+	return new Texture(renderer->LoadContent(filepath, height, width), width, height);
 }
 
 void SpriteBatch::UnloadTextures()
@@ -45,9 +53,9 @@ void SpriteBatch::Draw(Texture* texture, MyRectangle* rectangle, MyRectangle* so
 				((windowHeight / 2.0f) - camera[1]) + rectangle->Y(),
 				(int)rectangle->Width(),
 				(int)rectangle->Height(),
-				texture->SourceRectangle()->X(), 
+				texture->SourceRectangle()->X(),
 				texture->SourceRectangle()->Y(),
-				(int)texture->SourceRectangle()->Width(), 
+				(int)texture->SourceRectangle()->Width(),
 				(int)texture->SourceRectangle()->Height(),
 				opacity, layer, rot);
 		}
@@ -71,9 +79,9 @@ void SpriteBatch::Draw(Texture* texture, MyRectangle* rectangle, MyRectangle* so
 				((windowWidth / 2.0f) - camera[0]) + rectangle->X(),
 				((windowHeight / 2.0f) - camera[1]) + rectangle->Y(),
 				(int)rectangle->Width(), (int)rectangle->Height(),
-				source->X() + texture->SourceRectangle()->X(), 
-				source->Y() + texture->SourceRectangle()->Y(), 
-				(int)source->Height(), 
+				source->X() + texture->SourceRectangle()->X(),
+				source->Y() + texture->SourceRectangle()->Y(),
+				(int)source->Height(),
 				(int)source->Width(),
 				opacity, layer, rot);
 		}
@@ -89,23 +97,44 @@ void SpriteBatch::Draw(Texture* texture, MyRectangle* rectangle, MyRectangle* so
 	}
 }
 
-void SpriteBatch::DrawUI(Texture* texture, MyRectangle* rectangle, MyRectangle* source, float opacity, float layer, int rot)
+void SpriteBatch::DrawUI(Texture* texture, MyRectangle* rectangle, MyRectangle* source, float opacity, float layer, int rot, ANCHOR_POINT anchor)
 {
+	Point<float> drawLocation = Point<float>(rectangle->X(), rectangle->Y());
+
+
+	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::HCENTER)
+	{
+		drawLocation.x = ((float)windowWidth / 2.f) - (rectangle->Width() / 2.f) - drawLocation.x;
+	}
+	else if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::RIGHT)
+	{
+		drawLocation.x = windowWidth - rectangle->Width() - drawLocation.x;
+	}
+
+	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::VCENTER)
+	{
+		drawLocation.y = ((float)windowHeight / 2.f) - (rectangle->Height() / 2.f) - drawLocation.y;
+	}
+	else if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::BOTTOM)
+	{
+		drawLocation.y = windowHeight - drawLocation.y - rectangle->Height();
+	}
+
 	if (!source)
 		renderer->Draw(texture->ID(),
-			rectangle->X(), rectangle->Y(), (int)rectangle->Width(), (int)rectangle->Height(),
+			drawLocation.x, drawLocation.y, (int)rectangle->Width(), (int)rectangle->Height(),
 			0.f, 0.f, (int)texture->Width(), (int)texture->Height(),
 			opacity, layer, rot);
 	else
 		renderer->Draw(texture->ID(),
-			rectangle->X(), rectangle->Y(), (int)rectangle->Width(), (int)rectangle->Height(),
+			drawLocation.x, drawLocation.y, (int)rectangle->Width(), (int)rectangle->Height(),
 			source->X(), source->Y(), (int)source->Width(), (int)source->Height(),
 			opacity, layer, rot);
 }
 
 void SpriteBatch::WriteText(const char* text, MyRectangle* rectangle, float layer)
 {
-	renderer->Write(text, rectangle->X(), rectangle->Y(), rectangle->Height(), rectangle->Width(), layer);
+	renderer->Write(text, rectangle->X(), rectangle->Y(), rectangle->Width(), rectangle->Height(), layer);
 }
 
 void SpriteBatch::End()
@@ -135,9 +164,8 @@ void SpriteBatch::Resize(native_handle hWnd)
 	SetCamera((float)windowWidth / 2.f, (float)windowHeight / 2.f);
 }
 
-
-
 Point<float> SpriteBatch::MeasureString(std::string text)
 {
 	return renderer->MeasureString(text, (float)windowWidth, (float)windowHeight);
 }
+

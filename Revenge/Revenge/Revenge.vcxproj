@@ -178,6 +178,7 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Math.h" />
     <ClInclude Include="MenuBox.h" />
     <ClInclude Include="MenuManager.h" />
     <ClInclude Include="Object.h" />
