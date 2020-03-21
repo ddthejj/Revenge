@@ -39,16 +39,16 @@ template <class T> void SafeDelete(T* &p)
 
 #pragma region ENUMS 
 
-enum TILES				// Tiles
+enum class TILES : int	// Tiles
 {
-	TILE_BROWNFLOOR,	// Test floor
+	TILE_BROWNFLOOR = 0,	// Test floor
 	TILE_REDWALL,		// Test wall
 	TILE_GREENDOOR,		// Test door
 	TILE_BLUETEXT,		// Test interaction tile
 	TILE_MAX
 };
 
-enum TEXTURES			// Textures
+enum class TEXTURES		// Textures
 {
 	TEX_BLACK,			// 1 black pixel
 	TEX_MENU,			// Menus borders, corners, and backgrounds
@@ -62,7 +62,7 @@ enum TEXTURES			// Textures
 	TEX_MAX
 };
 
-enum KEYS				// Keybinds
+enum class KEYS			// Keybinds
 {
 	KEY_UP,				// Up key
 	KEY_DOWN,			// Down key
@@ -73,7 +73,7 @@ enum KEYS				// Keybinds
 	KEY_MAX
 };
 	
-enum MOUSE_KEYS			// Mouse buttons
+enum class MOUSE_KEYS	// Mouse buttons
 {
 	MOUSE_KEY_LEFT,		// Left mouse button
 	MOUSE_KEY_RIGHT,	// Right mouse button
@@ -81,7 +81,7 @@ enum MOUSE_KEYS			// Mouse buttons
 	MOUSE_KEY_MAX
 };
 
-enum FADE_STATUS		// Fade in and out status
+enum class FADE_STATUS	// Fade in and out status
 {
 	FADE_START,			// first frame of the fade out
 	FADE_OUT,			// transitioning to black
@@ -91,7 +91,7 @@ enum FADE_STATUS		// Fade in and out status
 	FADE_MAX
 };
 
-enum GAME_STATE			// game state
+enum class GAME_STATE	// game state
 {
 	STATE_TITLE,		// title screen
 	STATE_LOADING,		// loading

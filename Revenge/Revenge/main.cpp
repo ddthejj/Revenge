@@ -132,37 +132,37 @@ LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, 
 		// Left mouse button clicked
 	case WM_LBUTTONDOWN:
 		if (hWnd == GetForegroundWindow())
-			Manager::PressMouseKey(MOUSE_KEY_LEFT);
+			Manager::PressMouseKey(MOUSE_KEYS::MOUSE_KEY_LEFT);
 		break;
 
 		// Left mouse button released
 	case WM_LBUTTONUP:
 		if (hWnd == GetForegroundWindow())
-			Manager::ReleaseMouseKey(MOUSE_KEY_LEFT);
+			Manager::ReleaseMouseKey(MOUSE_KEYS::MOUSE_KEY_LEFT);
 		break;
 
 		// Right mouse button clicked
 	case WM_RBUTTONDOWN:
 		if (hWnd == GetForegroundWindow())
-			Manager::PressMouseKey(MOUSE_KEY_RIGHT);
+			Manager::PressMouseKey(MOUSE_KEYS::MOUSE_KEY_RIGHT);
 		break;
 
 		// Right mouse button released
 	case WM_RBUTTONUP:
 		if (hWnd == GetForegroundWindow())
-			Manager::ReleaseMouseKey(MOUSE_KEY_RIGHT);
+			Manager::ReleaseMouseKey(MOUSE_KEYS::MOUSE_KEY_RIGHT);
 		break;
 
 		// Middle mouse button clicked
 	case WM_MBUTTONDOWN:
 		if (hWnd == GetForegroundWindow())
-			Manager::PressMouseKey(MOUSE_KEY_MIDDLE);
+			Manager::PressMouseKey(MOUSE_KEYS::MOUSE_KEY_MIDDLE);
 		break;
 
 		// Middle mouse button released
 	case WM_MBUTTONUP:
 		if (hWnd == GetForegroundWindow())
-			Manager::ReleaseMouseKey(MOUSE_KEY_MIDDLE);
+			Manager::ReleaseMouseKey(MOUSE_KEYS::MOUSE_KEY_MIDDLE);
 		break;
 
 #pragma endregion

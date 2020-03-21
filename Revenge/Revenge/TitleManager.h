@@ -7,17 +7,19 @@ class UISprite;
 
 class TitleManager
 {
-	enum TITLE_STATE
+	enum class TITLE_STATE
 	{
 		TITLE_COMPANY_LOGO,
 		TITLE_TITLE_FADEIN,
-		TITLE_BACKGROUND_FADEIN,
+		TITLE_PRESS_TO_CONTINUE,
+		TITLE_MENU_FADEIN,
 		TITLE_DONE,
 		TITLE_MAX
 	};
 
 	static UISprite* logo;
 	static UISprite* title;
+	static UISprite* titleBackground;
 
 	static TITLE_STATE titleState;
 	static float timer;

@@ -13,14 +13,14 @@ Texture* MenuManager::menuTex = nullptr;
 
 void MenuManager::Init()
 {
-	menuList = new MenuBox* [MENU_MAX];
-	menuTex = Manager::GetTexture(TEX_MENU);
+	menuList = new MenuBox* [(int)MENUS::MENU_MAX];
+	menuTex = Manager::GetTexture((int)TEXTURES::TEX_MENU);
 
-	for (int i = 0; i < MENU_MAX; i++)
+	for (int i = 0; i < (int)MENUS::MENU_MAX; i++)
 		menuList[i] = nullptr;
 
-	menuList[MENU_BASE] = new MenuBox(50, 50, 150, 200, menuTex, "../Assets/Menus/Menu_Base.txt");
-	menuList[MENU_CHARACTER] = new MenuBox(50, 50, 10, 10, menuTex);
+	menuList[(int)MENUS::MENU_BASE] = new MenuBox(50, 50, 150, 200, menuTex, "../Assets/Menus/Menu_Base.txt");
+	menuList[(int)MENUS::MENU_CHARACTER] = new MenuBox(50, 50, 10, 10, menuTex);
 	//menuList[MENU_INVENTORY] = new MenuBox(250, 50, 100, 100, menuTex, "../Assets/Menus/Menu_Inventory.txt");
 	//menuList[MENU_OPTIONS] = new MenuBox(250, 50, 100, 100, menuTex, "../Assets/Menus/Menu_Options.txt");
 }
@@ -29,7 +29,7 @@ void MenuManager::Clean()
 {
 	if (!menuList) return;
 
-	for (int i = 0; i < MENU_MAX; i++)
+	for (int i = 0; i < (int)MENUS::MENU_MAX; i++)
 	{
 		if (menuList[i])
 			delete menuList[i];
@@ -39,13 +39,13 @@ void MenuManager::Clean()
 
 void MenuManager::OpenMenu(MENUS index)
 {
-	if (index == MENU_PREVIOUS)
+	if (index == MENUS::MENU_PREVIOUS)
 	{
 		CloseMenu();
 		return;
 	}
 
-	if (!menuList[index])
+	if (!menuList[(int)index])
 		return;
 
 	if (activeMenu)
@@ -53,12 +53,12 @@ void MenuManager::OpenMenu(MENUS index)
 
 	switch (index)
 	{
-	case MENU_BASE:
+	case MENUS::MENU_BASE:
 	{
 
 		break;
 	}
-	case MENU_CHARACTER:
+	case MENUS::MENU_CHARACTER:
 	{
 		std::vector<Character*> party = Manager::GetParty();
 
@@ -81,8 +81,8 @@ void MenuManager::OpenMenu(MENUS index)
 			layouts[i] = Point<int>(0, i);
 		}
 
-		menuList[MENU_CHARACTER]->SetOptions(texts, options, positions, layouts, 1, (int)party.size());
-		menuList[MENU_CHARACTER]->SetRectangle(MyRectangle(Point<float>(activeMenu->GetRectangle()->Right(), activeMenu->GetRectangle()->Top()), 150, 150));
+		menuList[(int)MENUS::MENU_CHARACTER]->SetOptions(texts, options, positions, layouts, 1, (int)party.size());
+		menuList[(int)MENUS::MENU_CHARACTER]->SetRectangle(MyRectangle(Point<float>(activeMenu->GetRectangle()->Right(), activeMenu->GetRectangle()->Top()), 150, 150));
 
 		delete[] texts;
 		delete[] options;
@@ -90,20 +90,20 @@ void MenuManager::OpenMenu(MENUS index)
 		delete[] layouts;
 		break;
 	}
-	case MENU_INVENTORY:
+	case MENUS::MENU_INVENTORY:
 	{
 
 		break;
 	}
-	case MENU_OPTIONS:
+	case MENUS::MENU_OPTIONS:
 	{
 		break;
 
 	}
 	}
 
-	menuList[index]->Open(activeMenu);
-	activeMenu = menuList[index];
+	menuList[(int)index]->Open(activeMenu);
+	activeMenu = menuList[(int)index];
 }
 
 void MenuManager::CloseMenu()
@@ -135,38 +135,38 @@ void MenuManager::Update(float delta_time)
 {
 	if (!activeMenu)
 	{
-		if (Manager::IsKeyPressed(KEY_MENU))
+		if (Manager::IsKeyPressed(KEYS::KEY_MENU))
 		{
 			Manager::FreezeScene();
-			OpenMenu(MENU_BASE);
+			OpenMenu(MENUS::MENU_BASE);
 		}
 	}
 	else
 	{
-		if (Manager::IsKeyPressed(KEY_MENU))
+		if (Manager::IsKeyPressed(KEYS::KEY_MENU))
 		{
 			Manager::UnfreezeScene();
 			CloseAllMenus();
 		}
-		else if (Manager::IsKeyPressed(KEY_INTERACT))
+		else if (Manager::IsKeyPressed(KEYS::KEY_INTERACT))
 		{
 			int option = activeMenu->ChooseOption();
-			if (option == MENUS::MENU_PREVIOUS)
+			if (option == (int)MENUS::MENU_PREVIOUS)
 				OpenMenu((MENUS)option);
 
-			if (activeMenu == menuList[MENU_BASE])
+			if (activeMenu == menuList[(int)MENUS::MENU_BASE])
 			{
 				OpenMenu((MENUS)option);
 			}
-			else if (activeMenu == menuList[MENU_CHARACTER])
+			else if (activeMenu == menuList[(int)MENUS::MENU_CHARACTER])
 			{
 
 			}
-			else if (activeMenu == menuList[MENU_INVENTORY])
+			else if (activeMenu == menuList[(int)MENUS::MENU_INVENTORY])
 			{
 
 			}
-			else if (activeMenu == menuList[MENU_OPTIONS])
+			else if (activeMenu == menuList[(int)MENUS::MENU_OPTIONS])
 			{
 
 			}

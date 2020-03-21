@@ -3,28 +3,28 @@
 #include <Windowsx.h>
 
 
-bool InputManager::keys[KEY_MAX];
-bool InputManager::previousKeys[KEY_MAX];
-char InputManager::keyOptions[KEY_MAX];
-bool InputManager::mouseKeys[MOUSE_KEY_MAX];
-bool InputManager::previousMouseKeys[MOUSE_KEY_MAX];
+bool InputManager::keys[(int)KEYS::KEY_MAX];
+bool InputManager::previousKeys[(int)KEYS::KEY_MAX];
+char InputManager::keyOptions[(int)KEYS::KEY_MAX];
+bool InputManager::mouseKeys[(int)MOUSE_KEYS::MOUSE_KEY_MAX];
+bool InputManager::previousMouseKeys[(int)MOUSE_KEYS::MOUSE_KEY_MAX];
 float InputManager::mouseX = 0.f, InputManager::mouseY = 0.f;
 char InputManager::charPressed = '\0', InputManager::previousCharPressed = '\0';
 
 bool InputManager::IsKeyPressed(KEYS index)
 {
-	return (keys[index] == true && previousKeys[index] == false);
+	return (keys[(int)index] == true && previousKeys[(int)index] == false);
 }
 
 bool InputManager::IsMouseKeyPressed(MOUSE_KEYS index)
 {
-	return mouseKeys[index]== true && previousMouseKeys[index] == false;
+	return mouseKeys[(int)index]== true && previousMouseKeys[(int)index] == false;
 }
 
 
 void InputManager::PressKey(WPARAM wParam)
 {
-	for (int key = 0; key < KEY_MAX; key++)
+	for (int key = 0; key < (int)KEYS::KEY_MAX; key++)
 	{
 		if (wParam == keyOptions[key])
 		{
@@ -36,7 +36,7 @@ void InputManager::PressKey(WPARAM wParam)
 
 void InputManager::ReleaseKey(WPARAM wParam)
 {
-	for (int key = 0; key < KEY_MAX; key++)
+	for (int key = 0; key < (int)KEYS::KEY_MAX; key++)
 	{
 		if (wParam == keyOptions[key])
 		{
@@ -54,32 +54,32 @@ void InputManager::MoveMouse(HWND hwnd, LPARAM lParam)
 
 void InputManager::PressMouseKey(MOUSE_KEYS key)
 {
-	mouseKeys[key] = true;
+	mouseKeys[(int)key] = true;
 }
 
 void InputManager::ReleaseMouseKey(MOUSE_KEYS key)
 {
-	mouseKeys[key] = false;
+	mouseKeys[(int)key] = false;
 }
 
 
 void InputManager::Init()
 {
 	// key options
-	keyOptions[KEY_UP] = 'W';
-	keyOptions[KEY_DOWN] = 'S';
-	keyOptions[KEY_LEFT] = 'A';
-	keyOptions[KEY_RIGHT] = 'D';
-	keyOptions[KEY_MENU] = 'E';
-	keyOptions[KEY_INTERACT] = VK_SPACE;
+	keyOptions[(int)KEYS::KEY_UP] = 'W';
+	keyOptions[(int)KEYS::KEY_DOWN] = 'S';
+	keyOptions[(int)KEYS::KEY_LEFT] = 'A';
+	keyOptions[(int)KEYS::KEY_RIGHT] = 'D';
+	keyOptions[(int)KEYS::KEY_MENU] = 'E';
+	keyOptions[(int)KEYS::KEY_INTERACT] = VK_SPACE;
 }
 
 void InputManager::Update(float delta_time)
 {
-	for (int i = 0; i < KEY_MAX; i++)
+	for (int i = 0; i < (int)KEYS::KEY_MAX; i++)
 		previousKeys[i] = keys[i];
 
-	for (int i = 0; i < MOUSE_KEY_MAX; i++)
+	for (int i = 0; i < (int)MOUSE_KEYS::MOUSE_KEY_MAX; i++)
 		previousMouseKeys[i] = mouseKeys[i];
 
 	previousCharPressed = charPressed;

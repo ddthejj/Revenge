@@ -5,7 +5,7 @@
 #include "Character.h"
 #include "Manager.h"
 
-ProtoTile* OverworldManager::protoTiles[TILE_MAX];
+ProtoTile* OverworldManager::protoTiles[(int)TILES::TILE_MAX];
 std::vector<Map*> OverworldManager::maps;
 
 Map* OverworldManager::currentMap = nullptr;
@@ -18,13 +18,13 @@ bool OverworldManager::isRoomTransitioning = false;
 void OverworldManager::Init()
 {
 	// test player
-	currentPlayer = new Player(240, 240, 32, 32, Manager::GetTexture(TEX_PLAYER), .6f);
+	currentPlayer = new Player(240, 240, 32, 32, Manager::GetTexture((int)TEXTURES::TEX_PLAYER), .6f);
 	currentPlayer->Activate();
 	// prototype tiles
-	protoTiles[TILE_BROWNFLOOR] = new ProtoTile(Manager::GetTexture(TEX_BROWNFLOOR), 32, 32);
-	protoTiles[TILE_REDWALL] = new ProtoTile(Manager::GetTexture(TEX_REDWALL), 32, 32, true);
-	protoTiles[TILE_GREENDOOR] = new ProtoTile(Manager::GetTexture(TEX_GREENDOOR), 32, 32, false, true);
-	protoTiles[TILE_BLUETEXT] = new ProtoTile(Manager::GetTexture(TEX_BLUETEXT), 32, 32, true, false, true);
+	protoTiles[(int)TILES::TILE_BROWNFLOOR] = new ProtoTile(Manager::GetTexture((int)TEXTURES::TEX_BROWNFLOOR), 32, 32);
+	protoTiles[(int)TILES::TILE_REDWALL] = new ProtoTile(Manager::GetTexture((int)TEXTURES::TEX_REDWALL), 32, 32, true);
+	protoTiles[(int)TILES::TILE_GREENDOOR] = new ProtoTile(Manager::GetTexture((int)TEXTURES::TEX_GREENDOOR), 32, 32, false, true);
+	protoTiles[(int)TILES::TILE_BLUETEXT] = new ProtoTile(Manager::GetTexture((int)TEXTURES::TEX_BLUETEXT), 32, 32, true, false, true);
 	// add maps
 	maps.push_back(new Map("../Assets/RoomData/TestRoom/TestRoom", 2));
 	currentMap = maps[0];
@@ -34,7 +34,7 @@ void OverworldManager::Init()
 void OverworldManager::Clean()
 {
 	// prototype tiles
-	for (int i = 0; i < TILE_MAX; i++)
+	for (int i = 0; i < (int)TILES::TILE_MAX; i++)
 	{
 		delete protoTiles[i];
 	}
@@ -73,7 +73,7 @@ void OverworldManager::DeactivateScene()
 
 ProtoTile * OverworldManager::GetProtoTile(int index)
 {
-	if (index < TILES::TILE_MAX)
+	if (index < (int)TILES::TILE_MAX)
 		return protoTiles[index];
 	else
 		return nullptr;
@@ -113,12 +113,12 @@ void OverworldManager::TransitionRoom()
 
 	switch (fade)
 	{
-	case FADE_START:
+	case FADE_STATUS::FADE_START:
 		// begin fade
 		currentMap->Freeze();
 		currentPlayer->Freeze();
 		break;
-	case FADE_SWITCH:
+	case FADE_STATUS::FADE_SWITCH:
 		// when fade out is done
 		currentMap->Deactivate();
 		currentMap->SetRoom(doorHit->Destination());
@@ -127,17 +127,17 @@ void OverworldManager::TransitionRoom()
 		currentMap->Activate();
 		currentMap->Freeze();
 		break;
-	case FADE_DONE:
+	case FADE_STATUS::FADE_DONE:
 		// fading done
 		currentMap->Unfreeze();
 		currentPlayer->Unfreeze();
 		doorHit = nullptr;
 		isRoomTransitioning = false;
 		break;
-	case FADE_OUT:
+	case FADE_STATUS::FADE_OUT:
 		// fade out slowly
 		break;
-	case FADE_IN:
+	case FADE_STATUS::FADE_IN:
 		// fade in slowly
 		break;
 	}

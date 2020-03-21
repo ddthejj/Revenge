@@ -308,7 +308,7 @@ FADE_STATUS Manager::FadeScene()
 	{
 		// fade in slowly
 		fadeRectangle->DecreaseOpacity(ROOM_FADE_SPEED);
-		return FADE_IN;
+		return FADE_STATUS::FADE_IN;
 	}
 	else
 		return FADE_STATUS::FADE_DONE;

@@ -6,14 +6,14 @@ class InputManager
 {
 #pragma region Properties
 
-	static char keyOptions[KEY_MAX];				// list of keybinds
-	static bool keys[KEY_MAX];						// whether a key is down or not this frame
-	static bool previousKeys[KEY_MAX];				// whether a key was down or not last frame
-	static bool mouseKeys[MOUSE_KEY_MAX];			// whether a mouse key is down or not this frame
-	static bool previousMouseKeys[MOUSE_KEY_MAX];	// whether a mouse key was down or not last frame
-	static float mouseX, mouseY;					// the position of the mouse
-	static char charPressed;						// which character was pressed this frame
-	static char previousCharPressed;				// which character was pressed last frame
+	static char keyOptions[(int)KEYS::KEY_MAX];						// list of keybinds
+	static bool keys[(int)KEYS::KEY_MAX];							// whether a key is down or not this frame
+	static bool previousKeys[(int)KEYS::KEY_MAX];					// whether a key was down or not last frame
+	static bool mouseKeys[(int)MOUSE_KEYS::MOUSE_KEY_MAX];			// whether a mouse key is down or not this frame
+	static bool previousMouseKeys[(int)MOUSE_KEYS::MOUSE_KEY_MAX];	// whether a mouse key was down or not last frame
+	static float mouseX, mouseY;								// the position of the mouse
+	static char charPressed;									// which character was pressed this frame
+	static char previousCharPressed;							// which character was pressed last frame
 
 #pragma endregion
 
@@ -42,18 +42,18 @@ public:
 
 	// Whether or not a key is down this frame
 	static bool IsKeyDown(KEYS index) 
-	{ return keys[index]; }					
+	{ return keys[(int)index]; }
 	// Whether or not a key was down last frame
 	static bool IsPreviousKeyDown(KEYS index) 
-	{ return previousKeys[index]; }	
+	{ return previousKeys[(int)index]; }
 	// Whether or not a key was first pressed this frame
 	static bool IsKeyPressed(KEYS index);										
 	// Whether or not a mouse button is down this frame
 	static bool IsMouseKeyDown(MOUSE_KEYS index) 
-	{ return mouseKeys[index]; }
+	{ return mouseKeys[(int)index]; }
 	// Whether or not a mouse button was down last frame
 	static bool IsPreviousMouseKeyDown(MOUSE_KEYS index) 
-	{ return previousMouseKeys[index]; }
+	{ return previousMouseKeys[(int)index]; }
 	// Whether or not a mouse button was first pressed this frame
 	static bool IsMouseKeyPressed(MOUSE_KEYS index);
 	// Which character was last pressed

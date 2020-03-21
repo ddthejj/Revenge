@@ -53,22 +53,22 @@ void Player::Move()
 	bool up = false, down = false, left = false, right = false;
 
 
-	if (Manager::IsKeyDown(KEY_UP))
+	if (Manager::IsKeyDown(KEYS::KEY_UP))
 	{
 		up = true;
 	}
-	if (Manager::IsKeyDown(KEY_DOWN))
+	if (Manager::IsKeyDown(KEYS::KEY_DOWN))
 	{
 		if (!up)
 			down = true;
 		else
 			up = false;
 	}
-	if (Manager::IsKeyDown(KEY_LEFT))
+	if (Manager::IsKeyDown(KEYS::KEY_LEFT))
 	{
 		left = true;
 	}
-	if (Manager::IsKeyDown(KEY_RIGHT))
+	if (Manager::IsKeyDown(KEYS::KEY_RIGHT))
 	{
 		if (!left)
 			right = true;

@@ -15,7 +15,7 @@ class OverworldManager
 #pragma region Properties
 
 	static std::vector<Map*> maps;				// List of all maps possible
-	static ProtoTile* protoTiles[TILE_MAX];		// List of all prototype tiles 
+	static ProtoTile* protoTiles[(int)TILES::TILE_MAX];		// List of all prototype tiles 
 
 	static Map* currentMap;						// Currently loaded map
 	static Door* doorHit;						// The door that the player hit

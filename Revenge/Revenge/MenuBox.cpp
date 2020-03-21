@@ -10,7 +10,7 @@
 MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _texture) : Sprite(_x, _y, _width, _height, _texture, 0.f)
 {
 	optionAt = new Point<int>();
-	arrow = new UISprite(0, 0, 7, 7, 0, 0, 15, 15, Manager::GetTexture(TEX_ARROW), .81f);
+	arrow = new UISprite(0, 0, 7, 7, 0, 0, 15, 15, Manager::GetTexture((int)TEXTURES::TEX_ARROW), .81f);
 	// options need to be set later
 }
 
@@ -234,7 +234,7 @@ void MenuBox::Update()
 
 #pragma region Arrow key movement
 
-	if (Manager::IsKeyPressed(KEY_UP))
+	if (Manager::IsKeyPressed(KEYS::KEY_UP))
 	{
 		MenuOption* whichOption = options[optionAt->x][optionAt->y];
 
@@ -250,7 +250,7 @@ void MenuBox::Update()
 		UpdateArrowLocation();
 		ResetArrow();
 	}
-	else if (Manager::IsKeyPressed(KEY_DOWN))
+	else if (Manager::IsKeyPressed(KEYS::KEY_DOWN))
 	{
 		MenuOption* whichOption = options[optionAt->x][optionAt->y];
 
@@ -266,7 +266,7 @@ void MenuBox::Update()
 		UpdateArrowLocation();
 		ResetArrow();
 	}
-	else if (Manager::IsKeyPressed(KEY_RIGHT))
+	else if (Manager::IsKeyPressed(KEYS::KEY_RIGHT))
 	{
 		MenuOption* whichOption = options[optionAt->x][optionAt->y];
 

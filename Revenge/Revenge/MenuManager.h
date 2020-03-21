@@ -8,7 +8,7 @@ class Sprite;
 template <typename T>
 struct Point;
 
-enum MENUS					// ths list of menus
+enum class MENUS			// the list of menus
 {
 	MENU_PREVIOUS = -1,		// Return to the previous menu
 	MENU_BASE,				// The menu that opens when you hit pause
