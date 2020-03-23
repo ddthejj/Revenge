@@ -29,6 +29,7 @@ public:
 	static void Clean();
 
 	static void EndSplash();
+	static void GoToTitleMenu();
 
 	static void Update(float delta_time);
 };

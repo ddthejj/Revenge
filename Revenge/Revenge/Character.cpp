@@ -7,11 +7,15 @@
 #include "Room.h"
 #include "Tile.h"
 #include "SpriteBatch.h"
+#include "InputManager.h"
 
 #pragma region Character
 Character::Character(float x, float y, float height, float width, Texture* _texture, float _layer) : Sprite(x, y, height, width, 0, 0, 32, 32, _texture, _layer)
 {
-
+	for (int i = 0; i < (int)DIRECTION::MAX; i++)
+	{
+		moving[i] = false;
+	}
 }
 
 Character::~Character()
@@ -26,19 +30,102 @@ void Character::Draw(SpriteBatch* spriteBatch)
 #pragma endregion
 
 #pragma region Player Character
+
 Player::Player(float x, float y, float height, float width, Texture* _texture, float _layer) : Character(x, y, height, width, _texture, _layer)
 {
+	InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_UP, &Player::UpPressedCallbackStatic, this);
+	InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_DOWN, &Player::DownPressedCallbackStatic, this);
+	InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_LEFT, &Player::LeftPressedCallbackStatic, this);
+	InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_RIGHT, &Player::RightPressedCallbackStatic, this);
 
+	InputManager::KeyReleasedCallbacks_Attatch(KEYS::KEY_UP, &Player::UpReleasedCallbackStatic, this);
+	InputManager::KeyReleasedCallbacks_Attatch(KEYS::KEY_DOWN, &Player::DownReleasedCallbackStatic, this);
+	InputManager::KeyReleasedCallbacks_Attatch(KEYS::KEY_LEFT, &Player::LeftReleasedCallbackStatic, this);
+	InputManager::KeyReleasedCallbacks_Attatch(KEYS::KEY_RIGHT, &Player::RightReleasedCallbackStatic, this);
 }
 
 Player::~Player()
 {
 	if (active) Deactivate();
+
+	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_UP, &Player::UpPressedCallbackStatic, this);
+	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_DOWN, &Player::DownPressedCallbackStatic, this);
+	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_LEFT, &Player::LeftPressedCallbackStatic, this);
+	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_RIGHT, &Player::RightPressedCallbackStatic, this);
+
+	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_UP, &Player::UpPressedCallbackStatic, this);
+	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_DOWN, &Player::DownPressedCallbackStatic, this);
+	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_LEFT, &Player::LeftPressedCallbackStatic, this);
+	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_RIGHT, &Player::RightPressedCallbackStatic, this);
 }
 
 void Player::Update()
 {
 	Move();
+}
+
+void Player::UpPressedCallback()
+{
+	if (!moving[(int)DIRECTION::DOWN])
+		moving[(int)DIRECTION::UP] = true;
+	else
+		moving[(int)DIRECTION::DOWN] = false;
+}
+
+void Player::DownPressedCallback()
+{
+	if (!moving[(int)DIRECTION::UP])
+		moving[(int)DIRECTION::DOWN] = true;
+	else
+		moving[(int)DIRECTION::UP] = false;
+}
+
+void Player::LeftPressedCallback()
+{
+	if (!moving[(int)DIRECTION::RIGHT])
+		moving[(int)DIRECTION::LEFT] = true;
+	else
+		moving[(int)DIRECTION::RIGHT] = false;
+}
+
+void Player::RightPressedCallback()
+{
+	if (!moving[(int)DIRECTION::LEFT])
+		moving[(int)DIRECTION::RIGHT] = true;
+	else
+		moving[(int)DIRECTION::LEFT] = false;
+}
+
+void Player::UpReleasedCallback()
+{
+	if (!moving[(int)DIRECTION::UP])
+		moving[(int)DIRECTION::DOWN] = true;
+	else
+		moving[(int)DIRECTION::UP] = false;
+}
+
+void Player::DownReleasedCallback()
+{
+	if (!moving[(int)DIRECTION::DOWN])
+		moving[(int)DIRECTION::UP] = true;
+	else
+		moving[(int)DIRECTION::DOWN] = false;
+}
+
+void Player::LeftReleasedCallback()
+{
+	if (!moving[(int)DIRECTION::LEFT])
+		moving[(int)DIRECTION::RIGHT] = true;
+	else
+		moving[(int)DIRECTION::LEFT] = false;
+}
+
+void Player::RightReleasedCallback()
+{
+	if (!moving[(int)DIRECTION::RIGHT])
+		moving[(int)DIRECTION::LEFT] = true;
+	else
+		moving[(int)DIRECTION::RIGHT] = false;
 }
 
 void Player::Move()
@@ -48,46 +135,29 @@ void Player::Move()
 	if (!currentRoom)
 		return;
 
-	WayFacing preciousWayFacing = wayFacing;
-
-	bool up = false, down = false, left = false, right = false;
+	DIRECTION preciousWayFacing = wayFacing;
 
 
-	if (Manager::IsKeyDown(KEYS::KEY_UP))
+	OutputDebugString((moving[(int)DIRECTION::UP] ? L"true\n" : L"false\n"));
+
+	if (!moving[(int)DIRECTION::UP] && !moving[(int)DIRECTION::DOWN] && !moving[(int)DIRECTION::LEFT] && !moving[(int)DIRECTION::RIGHT])
 	{
-		up = true;
-	}
-	if (Manager::IsKeyDown(KEYS::KEY_DOWN))
-	{
-		if (!up)
-			down = true;
-		else
-			up = false;
-	}
-	if (Manager::IsKeyDown(KEYS::KEY_LEFT))
-	{
-		left = true;
-	}
-	if (Manager::IsKeyDown(KEYS::KEY_RIGHT))
-	{
-		if (!left)
-			right = true;
-		else
-			left = false;
+		int i = 0;
 	}
 
+	bool up = moving[(int)DIRECTION::UP], down = moving[(int)DIRECTION::DOWN], left = moving[(int)DIRECTION::LEFT], right = moving[(int)DIRECTION::RIGHT];
 	TestCollision(&up, &down, &left, &right, currentRoom);
 
-	bool moving = false;
+	bool ismoving = false;
 	if (up || down || left || right)
 	{
 		animTimer += .05f;
-		moving = true;
+		ismoving = true;
 	}
 	else
 		animTimer = 0.f;
 
-	if (wayFacing != preciousWayFacing || (moving && animTimer < 1.f))
+	if (wayFacing != preciousWayFacing || (ismoving && animTimer < 1.f))
 	{
 		animTimer = 1.f;
 	}
@@ -138,8 +208,7 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, Room* 
 		if (!collided)
 		{
 			rectangle->MoveY(-mvmntSpeed);
-			//if (!*right && !*left)
-			wayFacing = UP;
+			wayFacing = DIRECTION::UP;
 		}
 		else
 		{
@@ -183,7 +252,7 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, Room* 
 		{
 			rectangle->MoveY(mvmntSpeed);
 			//if (!*right && !*left)
-			wayFacing = DOWN;
+			wayFacing = DIRECTION::DOWN;
 		}
 		else
 		{
@@ -226,7 +295,7 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, Room* 
 		{
 			rectangle->MoveX(-mvmntSpeed);
 			//if (!*up && !*down)
-			wayFacing = LEFT;
+			wayFacing = DIRECTION::LEFT;
 		}
 		else
 		{
@@ -269,7 +338,7 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, Room* 
 		{
 			rectangle->MoveX(mvmntSpeed);
 			//if (!*up && !*down)
-			wayFacing = RIGHT;
+			wayFacing = DIRECTION::RIGHT;
 		}
 		else
 		{
@@ -278,6 +347,7 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, Room* 
 	}
 #pragma endregion
 }
+
 #pragma endregion
 
 #pragma region NonPlayer Character

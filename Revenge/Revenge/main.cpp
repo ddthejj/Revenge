@@ -174,24 +174,27 @@ LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, 
 		if (hWnd != GetForegroundWindow())
 			break;
 
-		// Repeat the key if it's held down
-		if (lParam & 15U)
-		{
-			Manager::RepeatKey();
-		}
-
+		
+		// Switch on which key is pressed (maybe want to do special actions for certain keys? like handling alt+f4
 		switch (wParam)
 		{
 			//case VK_ESCAPE:
 			//	DestroyWindow(hWnd);
 			//	break;
 
+
 		case 0:
 
-
+			
 
 		default:
-			Manager::PressKey(wParam);
+			// the 31st bit of this lParam is whether or not the key was pressed the previous frame
+			if (!(lParam & (1 << 30)))
+				Manager::PressKey(wParam);
+			else
+				// every 15 frames, repeat the key that was held down (the first 16 bytes are the repeat count)
+				if (lParam & 15U)
+					Manager::RepeatKey();
 			break;
 		}
 

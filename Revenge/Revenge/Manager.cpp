@@ -14,7 +14,7 @@
 #include "TitleManager.h"
 #include "TextureManager.h"
 
-GAME_STATE Manager::gameState = GAME_STATE::STATE_TITLE;
+GAME_STATE Manager::gameState = GAME_STATE::STATE_OVERWORLD;
 SpriteBatch* Manager::spriteBatch = nullptr;
 std::vector<Sprite*> Manager::UpdateList;
 std::vector<Sprite*> Manager::DrawList;
@@ -210,6 +210,8 @@ void Manager::Clean()
 	}
 	// textures
 	TextureManager::Clean();
+	// input
+	InputManager::Clean();
 	// fade rectangle
 	SafeDelete(fadeRectangle);
 	// spritebatch 

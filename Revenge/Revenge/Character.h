@@ -10,8 +10,8 @@ protected:
 #pragma region Enums
 
 	// Which way the character is facing
-	enum WayFacing 
-	{ UP, DOWN, LEFT, RIGHT };
+	enum class DIRECTION 
+	{ UP, DOWN, LEFT, RIGHT, MAX };
 
 #pragma endregion
 
@@ -22,7 +22,8 @@ protected:
 	float attack = 0, defense = 0, mind = 0, spirit = 0, speed = 0, dexterity = 0, accuracy = 0;	// the characters stats
 	//MyRectangle* sourceRectangle = new MyRectangle(0, 0, 32, 32);
 
-	WayFacing wayFacing = DOWN;
+	bool moving[(int)DIRECTION::MAX];
+	DIRECTION wayFacing = DIRECTION::DOWN;
 	float animTimer = 0;
 
 #pragma endregion
@@ -64,6 +65,28 @@ public:
 #pragma endregion
 
 protected:
+
+#pragma region Callback Methods
+
+	static void UpPressedCallbackStatic(void* this_ptr) { static_cast<Player*>(this_ptr)->UpPressedCallback(); }
+	static void UpReleasedCallbackStatic(void* this_ptr) { static_cast<Player*>(this_ptr)->UpReleasedCallback(); }
+	static void DownPressedCallbackStatic(void* this_ptr) { static_cast<Player*>(this_ptr)->DownPressedCallback(); }
+	static void DownReleasedCallbackStatic(void* this_ptr) { static_cast<Player*>(this_ptr)->DownReleasedCallback(); }
+	static void LeftPressedCallbackStatic(void* this_ptr) { static_cast<Player*>(this_ptr)->LeftPressedCallback(); }
+	static void LeftReleasedCallbackStatic(void* this_ptr) { static_cast<Player*>(this_ptr)->LeftReleasedCallback(); }
+	static void RightPressedCallbackStatic(void* this_ptr) { static_cast<Player*>(this_ptr)->RightPressedCallback(); }
+	static void RightReleasedCallbackStatic(void* this_ptr) { static_cast<Player*>(this_ptr)->RightReleasedCallback(); }
+
+	void UpPressedCallback();
+	void UpReleasedCallback();
+	void DownPressedCallback();
+	void DownReleasedCallback();
+	void LeftPressedCallback();
+	void LeftReleasedCallback();
+	void RightPressedCallback();
+	void RightReleasedCallback();
+
+#pragma endregion
 
 #pragma region Methods
 

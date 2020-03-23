@@ -5,6 +5,7 @@
 #include "Manager.h"
 #include "Texture.h"
 #include "Math.h"
+#include "InputManager.h"
 
 UISprite* TitleManager::logo = nullptr;
 UISprite* TitleManager::title = nullptr;
@@ -62,6 +63,15 @@ void TitleManager::EndSplash()
 	timer = 0.f;
 }
 
+void TitleManager::GoToTitleMenu()
+{
+	timer = 0.f;
+	titleBackground->SetOpacity(1.f);
+	title->SetOpacity(1.f);
+	title->SetPos(Point<float>(0, (Manager::GetScreenHeight() / 2.f) - (title->GetRectangle()->Height() / 2.f) - (Manager::GetScreenHeight() * .05f)));
+	titleState = TITLE_STATE::TITLE_DONE;
+}
+
 void TitleManager::Update(float delta_time)
 {
 	switch (titleState)
@@ -108,7 +118,7 @@ void TitleManager::Update(float delta_time)
 		else if (timer < SPLASH_TIME * 2.5f)
 		{
 			// move title sprite
-			float startpos = 0, endpos = (Manager::GetScreenHeight() / 2.f) - (title->GetRectangle()->Height() / 2.f) - (Manager::GetScreenHeight() * .05f);\
+			float startpos = 0, endpos = (Manager::GetScreenHeight() / 2.f) - (title->GetRectangle()->Height() / 2.f) - (Manager::GetScreenHeight() * .05f);
 			title->SetPos(Point<float>(title->GetPos().x, LerpToRangeClamped(SPLASH_TIME, SPLASH_TIME * 2.5f, startpos, endpos, timer)));
 			// fade in background sprite
 			if (titleBackground->Opacity() != 1.f)
@@ -127,7 +137,8 @@ void TitleManager::Update(float delta_time)
 	}
 	case TITLE_STATE::TITLE_PRESS_TO_CONTINUE:
 	{
-
+		//if (InputManager::IsKeyDown())
+		//	titleState = TITLE_STATE::TITLE_DONE;
 	}
 	case TITLE_STATE::TITLE_MENU_FADEIN:
 	{
