@@ -60,7 +60,7 @@ public:
 	~Player();
 
 	// update the player
-	void Update();
+	void Update(float delta_time);
 
 #pragma endregion
 
@@ -68,6 +68,7 @@ protected:
 
 #pragma region Callback Methods
 
+	// static functions to be passed to the input manager
 	static void UpPressedCallbackStatic(void* this_ptr) { static_cast<Player*>(this_ptr)->UpPressedCallback(); }
 	static void UpReleasedCallbackStatic(void* this_ptr) { static_cast<Player*>(this_ptr)->UpReleasedCallback(); }
 	static void DownPressedCallbackStatic(void* this_ptr) { static_cast<Player*>(this_ptr)->DownPressedCallback(); }
@@ -76,7 +77,7 @@ protected:
 	static void LeftReleasedCallbackStatic(void* this_ptr) { static_cast<Player*>(this_ptr)->LeftReleasedCallback(); }
 	static void RightPressedCallbackStatic(void* this_ptr) { static_cast<Player*>(this_ptr)->RightPressedCallback(); }
 	static void RightReleasedCallbackStatic(void* this_ptr) { static_cast<Player*>(this_ptr)->RightReleasedCallback(); }
-
+	// call from the static functions with a pointer to the object
 	void UpPressedCallback();
 	void UpReleasedCallback();
 	void DownPressedCallback();
@@ -109,7 +110,7 @@ public:
 	~NonPlayer();
 
 	// update the NPC
-	void Update();
+	void Update(float delta_time);
 
 #pragma endregion
 };

@@ -6,7 +6,7 @@ class Tile;
 class Room : public Object
 {
 	Tile*** tiles[3] = { nullptr, nullptr, nullptr };
-	int dimX = 0, dimY = 0;
+	Point<int> dimensions;
 
 public:
 	Room(const char* filepath);
@@ -16,6 +16,8 @@ public:
 	void Deactivate();
 	void Freeze();
 	void Unfreeze();
+	void Draw(SpriteBatch* spriteBatch) {}
+	void Update(float delta_time) {}
 
 	Tile* GetTile(int layer, int x, int y);
 };

@@ -28,6 +28,8 @@ public:
 	static void Init();						// initialize the menu manager and load all menus
 	static void Clean();					// clean all menus
 
+	static void LoadOverworldMenus();		// load the overworld menus
+
 	static void OpenMenu(MENUS index);		// open a menu
 	static void CloseMenu();				// close the current menu
 	static void CloseAllMenus();			// close all menus and unpause the game

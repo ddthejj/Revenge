@@ -36,7 +36,7 @@ public:
 	// draw an object
 	bool Draw(unsigned int textureID, float x, float y, int width, int height, float x_S, float y_S, int width_S, int height_S, float opacity, float layer, int rot);
 	// write text
-	bool Write(const char* text, float x, float y, float width, float height, float layer);
+	bool Write(const char* text, float x, float y, float width, float height, float layer, float opacity);
 	// end rendering and draw the finalized frame
 	bool End();
 

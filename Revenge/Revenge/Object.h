@@ -32,6 +32,9 @@ public:
 	// unfreeze the object
 	virtual void Unfreeze() { frozen = false; }
 
+	virtual void Draw(SpriteBatch* spriteBatch) = 0;
+	virtual void Update(float delta_time) = 0;
+
 	// returns whether or not the object is active 
 	bool IsActive() { return active; }
 	// returns whether or not the object is frozen

@@ -30,7 +30,7 @@ Tile::~Tile()
 }
 
 
-void Tile::Update()
+void Tile::Update(float delta_time)
 {
 
 }
@@ -51,7 +51,7 @@ Door::~Door()
 }
 
 
-void Door::Update()
+void Door::Update(float delta_time)
 {
 	if (rectangle->Intersects(*(OverworldManager::GetCurrentPlayer()->GetRectangle())))
 	{
@@ -63,7 +63,7 @@ void Door::Update()
 
 #pragma region Interactable
 
-Interactable::Interactable(ProtoTile* prototype, float _x, float _y, float _layer, std::string* _lines) : Tile(prototype, _x, _y, _layer)
+Interactable::Interactable(ProtoTile* prototype, float _x, float _y, float _layer, std::vector<std::string> _lines) : Tile(prototype, _x, _y, _layer)
 {
 	lines = _lines;
 }
@@ -71,7 +71,6 @@ Interactable::Interactable(ProtoTile* prototype, float _x, float _y, float _laye
 Interactable::~Interactable()
 {
 	if (active) Deactivate();
-	delete[] lines;
 }
 
 
@@ -80,7 +79,7 @@ void Interactable::Interact()
 
 }
 
-void Interactable::Update()
+void Interactable::Update(float delta_time)
 {
 
 }

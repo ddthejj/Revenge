@@ -18,6 +18,8 @@ public:
 	virtual void Deactivate();
 	virtual void Freeze();
 	virtual void Unfreeze();
+	virtual void Update(float delta_time) {}
+	virtual void Draw(SpriteBatch* spriteBatch) {}
 
 	Room* CurrentRoom() { return currentRoom; }
 	Room* GetRoom(unsigned int index);

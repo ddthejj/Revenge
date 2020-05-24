@@ -1,6 +1,7 @@
 #pragma once
 #include "Sprite.h"
 #include <string>
+#include <vector>
 class Texture;
 class MyRectangle;
 class Room;
@@ -29,7 +30,7 @@ public:
 	bool Collidable() { return collidable; }
 
 	virtual void Interact() {}
-	virtual void Update();
+	virtual void Update(float delta_time);
 };
 
 class Door : public Tile
@@ -45,17 +46,17 @@ public:
 	float DestinationX() { return destX; }
 	float DestinationY() { return destY; }
 
-	virtual void Update();
+	virtual void Update(float delta_time);
 };
 
 class Interactable : public Tile
 {
-	std::string* lines;
+	std::vector<std::string> lines;
 
 public:
-	Interactable(ProtoTile* prototype, float _x, float _y, float _layer, std::string* _lines);
+	Interactable(ProtoTile* prototype, float _x, float _y, float _layer, std::vector<std::string> _lines);
 	virtual ~Interactable();
 
 	virtual void Interact();
-	virtual void Update();
+	virtual void Update(float delta_time);
 };

@@ -61,7 +61,7 @@ struct Renderer::ToDraw
 
 struct Renderer::ObjectDraw : public Renderer::ToDraw
 {
-	enum ROTATIONS
+	enum  class ROTATIONS
 	{
 		NONE = 0,
 		HORIZONTAL,
@@ -76,7 +76,7 @@ struct Renderer::ObjectDraw : public Renderer::ToDraw
 	unsigned int textureID;
 	D2D1_RECT_F destination, source;
 	float opacity;
-	ROTATIONS rotation = NONE;
+	ROTATIONS rotation = ROTATIONS::NONE;
 
 	ObjectDraw(unsigned int _textureID, D2D1_RECT_F _destination, float _opacity, D2D1_RECT_F _source, float _layer, int rot = 0)
 	{
@@ -90,8 +90,9 @@ struct Renderer::TextDraw : public Renderer::ToDraw
 {
 	std::string* text;
 	D2D1_RECT_F destination;
+	float opacity = 1.f;
 
-	TextDraw(std::string* _text, D2D1_RECT_F _destination, float _layer) { text = _text; destination = _destination; layer = _layer; }
+	TextDraw(std::string* _text, D2D1_RECT_F _destination, float _layer, float _opacity) { text = _text; destination = _destination; layer = _layer; opacity = _opacity; }
 	virtual ~TextDraw();
 	void Draw(Impl_Elements* elements);
 };
@@ -258,12 +259,12 @@ bool Renderer::Draw(unsigned int textureID,
 	return true;
 }
 
-bool Renderer::Write(const char* text, float x, float y, float width, float height, float layer)
+bool Renderer::Write(const char* text, float x, float y, float width, float height, float layer, float opacity)
 {
 	elements->draws.push_back(
 		new TextDraw(new std::string(text),
 			D2D1::RectF(x, y, x + width, y + height),
-			layer
+			layer, opacity
 		)
 	);
 
@@ -505,7 +506,7 @@ void Renderer::Impl_Elements::ClearTextures()
 
 void Renderer::Impl_Elements::Draw(const ObjectDraw* object)
 {
-	if (object->rotation == ObjectDraw::NONE)
+	if (object->rotation == ObjectDraw::ROTATIONS::NONE)
 	{
 		renderTarget->DrawBitmap(
 			bitmaps[object->textureID],
@@ -585,28 +586,28 @@ void Renderer::Impl_Elements::Draw(const ObjectDraw* object)
 			// y′ = ycosθ + xsinθ
 			switch (object->rotation)
 			{
-			case ObjectDraw::HORIZONTAL:
+			case ObjectDraw::ROTATIONS::HORIZONTAL:
 				res = rotator->Initialize(frame, WICBitmapTransformFlipHorizontal);
 				newSource.left = width - source.left - sourceWidth;
 				newSource.right = newSource.left + sourceWidth;
 				newSource.top = source.top;
 				newSource.bottom = source.bottom;
 				break;
-			case ObjectDraw::VERTICAL:
+			case ObjectDraw::ROTATIONS::VERTICAL:
 				res = rotator->Initialize(frame, WICBitmapTransformFlipVertical);
 				newSource.left = source.left;
 				newSource.right = source.right;
 				newSource.top = height - source.top - sourceHeight;
 				newSource.bottom = newSource.bottom + sourceHeight;
 				break;
-			case ObjectDraw::ROT_90:
+			case ObjectDraw::ROTATIONS::ROT_90:
 				res = rotator->Initialize(frame, WICBitmapTransformRotate90);
 				newSource.left = height - source.bottom;
 				newSource.right = height - source.top;
 				newSource.top = source.left;
 				newSource.bottom = source.right;
 				break;
-			case ObjectDraw::ROT_90_VERTICAL:
+			case ObjectDraw::ROTATIONS::ROT_90_VERTICAL:
 				res = rotator->Initialize(frame, (WICBitmapTransformOptions)(WICBitmapTransformRotate90 | WICBitmapTransformFlipVertical));
 				newSource.left = source.left;
 				newSource.right = source.right;
@@ -618,21 +619,21 @@ void Renderer::Impl_Elements::Draw(const ObjectDraw* object)
 				newSource.top = source.left;
 				newSource.bottom = source.right;
 				break;
-			case ObjectDraw::ROT_180:
+			case ObjectDraw::ROTATIONS::ROT_180:
 				res = rotator->Initialize(frame, WICBitmapTransformRotate180);
 				newSource.left = width - source.left - (source.right - source.left);
 				newSource.right = newSource.left + (source.right - source.left);
 				newSource.top = height - source.top - (source.bottom - source.top);
 				newSource.bottom = newSource.bottom + (source.bottom - source.top);
 				break;
-			case ObjectDraw::ROT_270:
+			case ObjectDraw::ROTATIONS::ROT_270:
 				res = rotator->Initialize(frame, WICBitmapTransformRotate270);
 				newSource.left = source.top;
 				newSource.right = source.bottom;
 				newSource.top = width - source.right;
 				newSource.bottom = width - source.left;
 				break;
-			case ObjectDraw::ROT_270_VERTICAL:
+			case ObjectDraw::ROTATIONS::ROT_270_VERTICAL:
 				res = rotator->Initialize(frame, (WICBitmapTransformOptions)(WICBitmapTransformRotate270 | WICBitmapTransformFlipVertical));
 				newSource.left = source.left;
 				newSource.right = source.right;
@@ -692,7 +693,7 @@ void Renderer::Impl_Elements::Draw(const TextDraw* text)
 	wchar_t* wtext = new wchar_t[size];
 
 	mbstowcs_s(&ret, wtext, size, text->text->c_str(), size - 1);
-
+	textBrush->SetOpacity(text->opacity);
 
 	renderTarget->DrawTextW(
 		wtext,

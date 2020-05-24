@@ -229,7 +229,7 @@ int MenuBox::ChooseOption()
 }
 
 
-void MenuBox::Update()
+void MenuBox::Update(float delta_time)
 {
 
 #pragma region Arrow key movement

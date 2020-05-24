@@ -13,7 +13,25 @@ Texture* MenuManager::menuTex = nullptr;
 
 void MenuManager::Init()
 {
-	menuList = new MenuBox* [(int)MENUS::MENU_MAX];
+	
+}
+
+void MenuManager::Clean()
+{
+	if (menuList)
+	{
+		for (int i = 0; i < (int)MENUS::MENU_MAX; i++)
+		{
+			if (menuList[i])
+				SafeDelete(menuList[i]);
+		}
+		SafeDelete(menuList);
+	}
+}
+
+void MenuManager::LoadOverworldMenus()
+{
+	menuList = new MenuBox * [(int)MENUS::MENU_MAX];
 	menuTex = Manager::GetTexture((int)TEXTURES::TEX_MENU);
 
 	for (int i = 0; i < (int)MENUS::MENU_MAX; i++)
@@ -23,18 +41,6 @@ void MenuManager::Init()
 	menuList[(int)MENUS::MENU_CHARACTER] = new MenuBox(50, 50, 10, 10, menuTex);
 	//menuList[MENU_INVENTORY] = new MenuBox(250, 50, 100, 100, menuTex, "../Assets/Menus/Menu_Inventory.txt");
 	//menuList[MENU_OPTIONS] = new MenuBox(250, 50, 100, 100, menuTex, "../Assets/Menus/Menu_Options.txt");
-}
-
-void MenuManager::Clean()
-{
-	if (!menuList) return;
-
-	for (int i = 0; i < (int)MENUS::MENU_MAX; i++)
-	{
-		if (menuList[i])
-			delete menuList[i];
-	}
-	delete menuList;
 }
 
 void MenuManager::OpenMenu(MENUS index)

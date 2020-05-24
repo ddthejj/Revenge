@@ -6,6 +6,7 @@
 #include "Texture.h"
 #include "Math.h"
 #include "InputManager.h"
+#include "Text.h"
 
 UISprite* TitleManager::logo = nullptr;
 UISprite* TitleManager::title = nullptr;
@@ -14,8 +15,45 @@ UISprite* TitleManager::titleBackground = nullptr;
 TitleManager::TITLE_STATE TitleManager::titleState = TitleManager::TITLE_STATE::TITLE_COMPANY_LOGO;
 float TitleManager::timer = 0.0f;
 
+std::vector<Text*> TitleManager::textList = std::vector<Text*>();
+
+void TitleManager::AnyKeyPressed(char key, void* this_ptr)
+{
+	switch (titleState)
+	{
+	case TITLE_STATE::TITLE_COMPANY_LOGO:
+		// skip logo
+		EndSplash();
+		titleState = TITLE_STATE::TITLE_TITLE_FADEIN;
+		break;
+	case TITLE_STATE::TITLE_TITLE_FADEIN:
+		// skip title fade in
+		GoToTitleMenu();
+		titleState = TITLE_STATE::TITLE_DONE;
+		break;
+	case TITLE_STATE::TITLE_PRESS_TO_CONTINUE:
+	{
+		// go to the next screen
+		titleState = TITLE_STATE::TITLE_MENU_FADEIN;
+		break;
+	}
+	case TITLE_STATE::TITLE_MENU_FADEIN:
+	{
+
+		break;
+	}
+	case TITLE_STATE::TITLE_DONE:
+	{
+
+		break;
+	}
+	}
+}
+
 void TitleManager::Init()
 {
+	InputManager::AnyKeyPressedCallback_Attatch(&TitleManager::AnyKeyPressed, nullptr);
+
 	Texture* logoTexture = Manager::GetTexture("LOGO");
 	float desiredheight = logoTexture->Height() * ((float)(Manager::GetScreenWidth() * .75f) / (float)logoTexture->Width());
 
@@ -28,6 +66,14 @@ void TitleManager::Clean()
 	SafeDelete(logo);
 	SafeDelete(title);
 	SafeDelete(titleBackground);
+
+	for (int i = 0; i < textList.size(); i++)
+	{
+		SafeDelete(textList[i]);
+		textList[i] = nullptr;
+	}
+
+	textList.clear();
 }
 
 void TitleManager::EndSplash()
@@ -44,7 +90,7 @@ void TitleManager::EndSplash()
 	// make the title background sprite
 	Texture* titleBackgroundTexture = Manager::GetTexture("TITLE_BACKGROUND");
 	float widthRatio = (float)Manager::GetScreenWidth() / (float)titleBackgroundTexture->Width(),
-		  heightRatio = (float) Manager::GetScreenHeight() / (float)titleBackgroundTexture->Height();
+		heightRatio = (float)Manager::GetScreenHeight() / (float)titleBackgroundTexture->Height();
 	float titleBackgroundHeight, titleBackgroundWidth;
 	if (std::abs(widthRatio - 1.f) > std::abs(heightRatio - 1.f)) // resize the image so it fits the whole screen without stretching
 	{
@@ -65,18 +111,38 @@ void TitleManager::EndSplash()
 
 void TitleManager::GoToTitleMenu()
 {
-	timer = 0.f;
+	// instantly finish fading in the title background and the title 
 	titleBackground->SetOpacity(1.f);
 	title->SetOpacity(1.f);
+	// move the title to its final position
 	title->SetPos(Point<float>(0, (Manager::GetScreenHeight() / 2.f) - (title->GetRectangle()->Height() / 2.f) - (Manager::GetScreenHeight() * .05f)));
+	// reset the timer
+	timer = 0.f;
+	// create the title screen menu
+	CreateTitleMenu();
+	// set the state to done
 	titleState = TITLE_STATE::TITLE_DONE;
+}
+
+void TitleManager::FadeInMenu()
+{
+	// erase "Press any key to continue" text
+	SafeDelete(textList[0]);
+	textList.clear();
+	// create the title screen menu
+	CreateTitleMenu();
+}
+
+void TitleManager::CreateTitleMenu()
+{
+
 }
 
 void TitleManager::Update(float delta_time)
 {
 	switch (titleState)
 	{
-	// showing the initial logo splash screen
+		// showing the initial logo splash screen
 	case TITLE_STATE::TITLE_COMPANY_LOGO:
 	{
 		// the amount to change the fade of the logo by
@@ -98,6 +164,7 @@ void TitleManager::Update(float delta_time)
 			EndSplash();
 			titleState = TITLE_STATE::TITLE_TITLE_FADEIN;
 		}
+
 		break;
 	}
 	// 
@@ -130,15 +197,43 @@ void TitleManager::Update(float delta_time)
 		}
 		else
 		{
+			// everything is done fading / moving
+			// init the "press any key to continue" text block and reset the timer
 			titleState = TITLE_STATE::TITLE_PRESS_TO_CONTINUE;
+			std::string text = "PRESS ANY KEY TO BEGIN";
+			Point<float> textDim = Manager::MeasureString(text);
+			Text* presstobegin = new Text(0, 0, textDim.x, textDim.y, text, 1.f, 0.f, ANCHOR_POINT::ANCHOR_CENTER);
+			presstobegin->Activate();
+			textList.push_back(presstobegin);
+			timer = 0.f;
 		}
 
 		break;
 	}
 	case TITLE_STATE::TITLE_PRESS_TO_CONTINUE:
 	{
-		//if (InputManager::IsKeyDown())
-		//	titleState = TITLE_STATE::TITLE_DONE;
+		// fade the "press any key" in and out
+		if (timer < 1.5f)
+		{
+			// fade in
+			textList[0]->SetOpacity(timer / 1.5f);
+		}
+		else if (timer < 2.f)
+		{
+			// pause
+		}
+		else if (timer < 3.5f)
+		{
+			// fade out
+			textList[0]->SetOpacity((3.5f - timer) / 1.5f);
+		}
+		else
+		{
+			// reset
+			timer = 0.f;
+		}
+
+		break;
 	}
 	case TITLE_STATE::TITLE_MENU_FADEIN:
 	{
@@ -148,6 +243,7 @@ void TitleManager::Update(float delta_time)
 	case TITLE_STATE::TITLE_DONE:
 	{
 
+		break;
 	}
 	}
 

@@ -56,7 +56,7 @@ public:
 	// draw the sprite in the world
 	virtual void Draw(SpriteBatch* spriteBatch);
 	// update the sprite
-	virtual void Update() {}
+	virtual void Update(float delta_time) {}
 	// activate the sprite
 	virtual void Activate();
 	// deactivate the sprite

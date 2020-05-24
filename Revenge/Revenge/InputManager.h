@@ -54,7 +54,7 @@ public:
 	// mouse key released reaction
 	static void ReleaseMouseKey(MOUSE_KEYS key);
 	// check what letter has been pressed
-	static void PressChar(WPARAM wParam) { charPressed = (char)wParam; }
+	static void PressChar(WPARAM wParam);
 	// repeat a key when it's held down
 	static void RepeatKey() { previousCharPressed = '\0'; }
 

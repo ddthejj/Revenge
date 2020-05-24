@@ -73,7 +73,7 @@ public:
 	// draw the menu box
 	virtual void Draw(SpriteBatch* spriteBatch);
 	// update the menu box
-	virtual void Update();
+	virtual void Update(float delta_time);
 
 	// freeze the menu box
 	virtual void Freeze();

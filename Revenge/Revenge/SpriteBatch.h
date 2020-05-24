@@ -7,6 +7,7 @@ using native_handle = void*;
 class Texture;
 class MyRectangle;
 class Renderer;
+class Text;
 
 // the access for the renderer
 class SpriteBatch
@@ -41,7 +42,9 @@ public:
 	// draw a ui object without a source rectangle
 	void DrawUI(Texture* texture, MyRectangle* rectangle, float opacity, float layer, int rot = 0, ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT) { DrawUI(texture, rectangle, nullptr, opacity, layer, rot, anchor); }
 	// write text
-	void WriteText(const char* text, MyRectangle* rectangle, float layer);
+	void WriteText(const char* text, MyRectangle* rectangle, float layer, float opacity = 1.f, ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
+	// write text with a text object
+	void WriteText(Text* text);
 	// end drawing
 	void End();
 	// move the camera

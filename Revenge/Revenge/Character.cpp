@@ -59,7 +59,7 @@ Player::~Player()
 	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_RIGHT, &Player::RightPressedCallbackStatic, this);
 }
 
-void Player::Update()
+void Player::Update(float delta_time)
 {
 	Move();
 }
@@ -137,9 +137,6 @@ void Player::Move()
 
 	DIRECTION preciousWayFacing = wayFacing;
 
-
-	OutputDebugString((moving[(int)DIRECTION::UP] ? L"true\n" : L"false\n"));
-
 	if (!moving[(int)DIRECTION::UP] && !moving[(int)DIRECTION::DOWN] && !moving[(int)DIRECTION::LEFT] && !moving[(int)DIRECTION::RIGHT])
 	{
 		int i = 0;
@@ -157,7 +154,7 @@ void Player::Move()
 	else
 		animTimer = 0.f;
 
-	if (wayFacing != preciousWayFacing || (ismoving && animTimer < 1.f))
+	if (/*wayFacing != preciousWayFacing || (*/ismoving && animTimer < 1.f)/*)*/
 	{
 		animTimer = 1.f;
 	}
@@ -212,6 +209,8 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, Room* 
 		}
 		else
 		{
+			if (wayFacing != DIRECTION::UP)
+				wayFacing = DIRECTION::UP;
 			*up = false;
 		}
 
@@ -256,6 +255,8 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, Room* 
 		}
 		else
 		{
+			if (wayFacing != DIRECTION::DOWN)
+				wayFacing = DIRECTION::DOWN;
 			*down = false;
 		}
 	}
@@ -299,6 +300,8 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, Room* 
 		}
 		else
 		{
+			if (wayFacing != DIRECTION::LEFT)
+				wayFacing = DIRECTION::LEFT;
 			*left = false;
 		}
 	}
@@ -342,6 +345,8 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, Room* 
 		}
 		else
 		{
+			if (wayFacing != DIRECTION::RIGHT)
+				wayFacing = DIRECTION::RIGHT;
 			*right = false;
 		}
 	}
@@ -361,7 +366,7 @@ NonPlayer::~NonPlayer()
 	if (active) Deactivate();
 }
 
-void NonPlayer::Update()
+void NonPlayer::Update(float delta_time)
 {
 
 }

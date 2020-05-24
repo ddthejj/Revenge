@@ -7,6 +7,7 @@
 
 class SpriteBatch;
 class Texture;
+class Object;
 class Sprite;
 struct ProtoTile;
 class Room;
@@ -23,8 +24,8 @@ private:
 
 	static GAME_STATE gameState;				// Current mode the game is in
 	static SpriteBatch* spriteBatch;			// Renderer class
-	static std::vector<Sprite*> UpdateList;		// Items that are being updated
-	static std::vector<Sprite*> DrawList;		// Items that are being drawn
+	static std::vector<Object*> UpdateList;		// Items that are being updated
+	static std::vector<Object*> DrawList;		// Items that are being drawn
 	static std::vector<Character*> party;		// List of party members
 
 	static bool fadingIn, fadingOut;			// Whether or not the screen is being faded in or out
@@ -114,13 +115,13 @@ public:
 	// Destroy the whole game
 	static void Clean();
 	// Add an object to the list of objects being updated
-	static bool AddUpdate(Sprite*that);
+	static bool AddUpdate(Object*that);
 	// Remove an object from the list of objects being updated
-	static bool RemoveUpdate(Sprite*that);
+	static bool RemoveUpdate(Object*that);
 	// Add an object to the list of objects being drawn
-	static bool AddDraw(Sprite*that);
+	static bool AddDraw(Object*that);
 	// Remove an object from the list of objects being drawn
-	static bool RemoveDraw(Sprite*that);
+	static bool RemoveDraw(Object*that);
 
 	// Center the camera on an object
 	static void CenterCamera(float x, float y);

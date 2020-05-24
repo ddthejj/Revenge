@@ -16,8 +16,8 @@
 
 GAME_STATE Manager::gameState = GAME_STATE::STATE_OVERWORLD;
 SpriteBatch* Manager::spriteBatch = nullptr;
-std::vector<Sprite*> Manager::UpdateList;
-std::vector<Sprite*> Manager::DrawList;
+std::vector<Object*> Manager::UpdateList;
+std::vector<Object*> Manager::DrawList;
 std::vector<Character*> Manager::party;
 
 bool Manager::fadingIn = false;
@@ -175,6 +175,7 @@ void Manager::InitTitle()
 	TextureManager::LoadTextures(L"../Assets/TestTextures/TestTexture_Title_List.txt", spriteBatch);
 
 	TitleManager::Init();
+	MenuManager::Init();
 
 	gameState = GAME_STATE::STATE_TITLE;
 }
@@ -223,15 +224,15 @@ void Manager::Clean()
 	UpdateList.clear();
 }
 
-bool Manager::AddUpdate(Sprite* that)
+bool Manager::AddUpdate(Object* that)
 {
 	UpdateList.push_back(that);
 	return true;
 }
 
-bool Manager::RemoveUpdate(Sprite* that)
+bool Manager::RemoveUpdate(Object* that)
 {
-	for (std::vector<Sprite*>::iterator it = UpdateList.begin(); it != UpdateList.end(); ++it)
+	for (std::vector<Object*>::iterator it = UpdateList.begin(); it != UpdateList.end(); ++it)
 	{
 		if (*it == that)
 		{
@@ -242,15 +243,15 @@ bool Manager::RemoveUpdate(Sprite* that)
 	return false;
 }
 
-bool Manager::AddDraw(Sprite* that)
+bool Manager::AddDraw(Object* that)
 {
 	DrawList.push_back(that);
 	return true;
 }
 
-bool Manager::RemoveDraw(Sprite* that)
+bool Manager::RemoveDraw(Object* that)
 {
-	for (std::vector< Sprite*>::iterator it = DrawList.begin(); it != DrawList.end(); ++it)
+	for (std::vector< Object*>::iterator it = DrawList.begin(); it != DrawList.end(); ++it)
 	{
 		if (*it == that)
 		{
@@ -336,10 +337,10 @@ void Manager::Update(float delta_time)
 {
 	MenuManager::Update(delta_time);
 
-	for (std::vector<Sprite*>::iterator it = UpdateList.begin(); it != UpdateList.end(); ++it)
+	for (std::vector<Object*>::iterator it = UpdateList.begin(); it != UpdateList.end(); ++it)
 	{
-		Sprite* sprite = (*it);
-		sprite->Update();
+		Object* object = (*it);
+		object->Update(delta_time);
 	}
 	if (gameState == GAME_STATE::STATE_OVERWORLD)
 	{
@@ -356,7 +357,7 @@ void Manager::Draw()
 {
 	spriteBatch->Begin();
 
-	for (std::vector< Sprite*>::iterator it = DrawList.begin(); it != DrawList.end(); ++it)
+	for (std::vector< Object*>::iterator it = DrawList.begin(); it != DrawList.end(); ++it)
 	{
 		(*it)->Draw(spriteBatch);
 	}

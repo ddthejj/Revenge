@@ -4,6 +4,7 @@
 #include "Texture.h"
 #include "Rectangle.h"
 #include "Renderer.h"
+#include "Text.h"
 
 
 SpriteBatch::SpriteBatch(native_handle hwnd)
@@ -132,9 +133,34 @@ void SpriteBatch::DrawUI(Texture* texture, MyRectangle* rectangle, MyRectangle* 
 			opacity, layer, rot);
 }
 
-void SpriteBatch::WriteText(const char* text, MyRectangle* rectangle, float layer)
+void SpriteBatch::WriteText(const char* text, MyRectangle* rectangle, float layer, float opacity, ANCHOR_POINT anchor)
 {
-	renderer->Write(text, rectangle->X(), rectangle->Y(), rectangle->Width(), rectangle->Height(), layer);
+	Point<float> writeLocation = Point<float>(rectangle->X(), rectangle->Y());
+
+	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::HCENTER)
+	{
+		writeLocation.x = ((float)windowWidth / 2.f) - (rectangle->Width() / 2.f) - writeLocation.x;
+	}
+	else if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::RIGHT)
+	{
+		writeLocation.x = windowWidth - rectangle->Width() - writeLocation.x;
+	}
+
+	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::VCENTER)
+	{
+		writeLocation.y = ((float)windowHeight / 2.f) - (rectangle->Height() / 2.f) - writeLocation.y;
+	}
+	else if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::BOTTOM)
+	{
+		writeLocation.y = windowHeight - writeLocation.y - rectangle->Height();
+	}
+
+	renderer->Write(text, writeLocation.x, writeLocation.y, rectangle->Width(), rectangle->Height(), layer, opacity);
+}
+
+void SpriteBatch::WriteText(Text* text)
+{
+	WriteText(text->GetText().c_str(), text->Rectangle(), text->Layer(), text->Opacity(), text->Anchor());
 }
 
 void SpriteBatch::End()

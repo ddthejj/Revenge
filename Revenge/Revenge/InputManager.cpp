@@ -87,6 +87,17 @@ void InputManager::ReleaseMouseKey(MOUSE_KEYS key)
 	}
 }
 
+void InputManager::PressChar(WPARAM wParam)
+{
+	charPressed = (char)wParam; 
+
+	for (int j = 0; j < anyKeyPressedCallback.size(); j++)
+	{
+		anyKeyPressedCallback[j].func((char)wParam, anyKeyPressedCallback[j].object);
+	}
+
+}
+
 
 bool InputManager::AnyKeyPressedCallback_Attatch(void(*func)(char, void*), void* this_ptr)
 {
@@ -147,8 +158,6 @@ bool InputManager::MouseKeyReleasedCallbacks_Remove(MOUSE_KEYS whichKey, void(*f
 {
 	return RemoveFunctionFromCallbackList(&mouseKeyReleasedCallbacks[(int)whichKey], func, this_ptr);
 }
-
-
 
 
 void InputManager::Init()

@@ -2,8 +2,11 @@
 
 #define SPLASH_TIME 2.f
 
+#include <vector>
+
 class Sprite;
 class UISprite;
+class Text;
 
 class TitleManager
 {
@@ -24,12 +27,19 @@ class TitleManager
 	static TITLE_STATE titleState;
 	static float timer;
 
+	static std::vector<Text*> textList;
+
 public:
+
+	static void AnyKeyPressed(char key, void* this_ptr);
+
 	static void Init();
 	static void Clean();
 
 	static void EndSplash();
 	static void GoToTitleMenu();
+	static void FadeInMenu();
+	static void CreateTitleMenu();
 
 	static void Update(float delta_time);
 };
