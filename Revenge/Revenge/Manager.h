@@ -104,6 +104,12 @@ public:
 
 #pragma endregion
 
+#pragma region SoundManager Access
+
+	static void PlayWAV(int index);
+
+#pragma endregion
+
 #pragma region Methods
 
 	// Initialize the whole game

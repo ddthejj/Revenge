@@ -23,6 +23,7 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _text
 		char word[255];
 		int whichChar = 0;
 
+		// read options width
 		whichChar = 0;
 		do
 		{
@@ -32,6 +33,7 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _text
 
 		optionsWidth = atoi(word);
 
+		// read options height
 		whichChar = 0;
 		do
 		{
@@ -41,19 +43,21 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _text
 
 		optionsHeight = atoi(word);
 
-		options = new MenuOption**[optionsWidth];
+		// create the array of options using the read dimensions 
+		options = new MenuOption * *[optionsWidth];
 		for (int i = 0; i < optionsWidth; i++)
 		{
-			options[i] = new MenuOption*[optionsHeight];
+			options[i] = new MenuOption * [optionsHeight];
 			for (int j = 0; j < optionsHeight; j++)
 				options[i][j] = nullptr;
 		}
 
-
+		// for every row left, read all the options
 		while (!menu.eof())
 		{
 			MenuOption* option = new MenuOption();
 
+			// read the text of the option
 			whichChar = 0;
 			do
 			{
@@ -63,6 +67,7 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _text
 			word[whichChar] = '\0';
 			option->text = std::string(word);
 
+			// read the returned value of the option
 			whichChar = 0;
 			do
 			{
@@ -72,6 +77,7 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _text
 			word[whichChar] = '\0';
 			option->option = atoi(word);
 
+			// read the x position of the option
 			whichChar = 0;
 			do
 			{
@@ -81,6 +87,7 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _text
 			word[whichChar] = '\0';
 			option->x = (float)atof(word);
 
+			// read the y position of the option
 			whichChar = 0;
 			do
 			{
@@ -90,6 +97,7 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _text
 			word[whichChar] = '\0';
 			option->y = (float)atof(word);
 
+			// read the x location of the option within the 2d array of options
 			whichChar = 0;
 			do
 			{
@@ -99,6 +107,7 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _text
 			word[whichChar] = '\0';
 			int optionX = atoi(word);
 
+			// read the y location of the option within the 2d array of options
 			whichChar = 0;
 			do
 			{
@@ -110,6 +119,10 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _text
 
 			options[optionX][optionY] = option;
 		}
+	}
+	else
+	{
+		OutputDebugStringW(L"Failed to open menu file.");
 	}
 }
 
@@ -176,10 +189,10 @@ void MenuBox::SetOptions(char** texts, int* option, Point<float>* positions, Poi
 	optionsWidth = sizeX;
 	optionsHeight = sizeY;
 
-	options = new MenuOption**[optionsWidth];
+	options = new MenuOption * *[optionsWidth];
 	for (int i = 0; i < optionsWidth; i++)
 	{
-		options[i] = new MenuOption*[optionsHeight];
+		options[i] = new MenuOption * [optionsHeight];
 		for (int j = 0; j < optionsWidth; j++)
 			options[i][j] = nullptr;
 	}
@@ -249,6 +262,7 @@ void MenuBox::Update(float delta_time)
 
 		UpdateArrowLocation();
 		ResetArrow();
+		MenuManager::PlayHoverSound();
 	}
 	else if (Manager::IsKeyPressed(KEYS::KEY_DOWN))
 	{
@@ -265,6 +279,7 @@ void MenuBox::Update(float delta_time)
 
 		UpdateArrowLocation();
 		ResetArrow();
+		MenuManager::PlayHoverSound();
 	}
 	else if (Manager::IsKeyPressed(KEYS::KEY_RIGHT))
 	{
@@ -281,6 +296,7 @@ void MenuBox::Update(float delta_time)
 
 		UpdateArrowLocation();
 		ResetArrow();
+		MenuManager::PlayHoverSound();
 	}
 	else if (Manager::IsKeyPressed(KEYS::KEY_LEFT))
 	{
@@ -297,6 +313,7 @@ void MenuBox::Update(float delta_time)
 
 		UpdateArrowLocation();
 		ResetArrow();
+		MenuManager::PlayHoverSound();
 	}
 
 #pragma endregion
@@ -335,24 +352,27 @@ void MenuBox::Draw(SpriteBatch* spriteBatch)
 	MyRectangle borderSource(10, 0, 10, 10);
 	MyRectangle backgroundSource(20, 0, 10, 10);
 
-	// background
-	spriteBatch->DrawUI(texture, rectangle, &backgroundSource, 1.0f, .8f, 0);
-	// edges
-	spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Y(), borderSource.Width(), rectangle->Height()), &borderSource, 1.f, .82f); // left
-	borderSource.SetY(10);
-	spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Y(), rectangle->Width(), borderSource.Height()), &borderSource, 1.0f, .82f, (int)ROTATIONS::ROT_90); // top
-	borderSource.SetY(20);
-	spriteBatch->DrawUI(texture, &MyRectangle(rectangle->Right() - borderSource.Width(), rectangle->Y(), borderSource.Width(), rectangle->Height()), &borderSource, 1.f, .82f, (int)ROTATIONS::HORIZONTAL); // right
-	borderSource.SetY(30);
-	spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Bottom() - borderSource.Height(), rectangle->Width(), borderSource.Height()), &borderSource, 1.0f, .82f, (int)ROTATIONS::ROT_270); // bottom
-	// corners
-	spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Y(), cornerSource.Width(), cornerSource.Height()), &cornerSource, 1.0f, .83f); // top left
-	cornerSource.SetY(10);
-	spriteBatch->DrawUI(texture, &MyRectangle(rectangle->Right() - cornerSource.Width(), rectangle->Y(), cornerSource.Width(), cornerSource.Height()), &cornerSource, 1.0f, .83f, (int)ROTATIONS::ROT_90); // top right
-	cornerSource.SetY(20);
-	spriteBatch->DrawUI(texture, &MyRectangle(rectangle->Right() - cornerSource.Width(), rectangle->Bottom() - cornerSource.Height(), cornerSource.Width(), cornerSource.Height()), &cornerSource, 1.0f, .83f, (int)ROTATIONS::ROT_180); // bottom right
-	cornerSource.SetY(30);
-	spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Bottom() - cornerSource.Height(), cornerSource.Width(), cornerSource.Height()), &cornerSource, 1.0f, .83f, (int)ROTATIONS::ROT_270); // bottom left
+	if (texture)
+	{
+		// background
+		spriteBatch->DrawUI(texture, rectangle, &backgroundSource, 1.0f, .8f, 0);
+		// edges
+		spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Y(), borderSource.Width(), rectangle->Height()), &borderSource, 1.f, .82f); // left
+		borderSource.SetY(10);
+		spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Y(), rectangle->Width(), borderSource.Height()), &borderSource, 1.0f, .82f, (int)ROTATIONS::ROT_90); // top
+		borderSource.SetY(20);
+		spriteBatch->DrawUI(texture, &MyRectangle(rectangle->Right() - borderSource.Width(), rectangle->Y(), borderSource.Width(), rectangle->Height()), &borderSource, 1.f, .82f, (int)ROTATIONS::HORIZONTAL); // right
+		borderSource.SetY(30);
+		spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Bottom() - borderSource.Height(), rectangle->Width(), borderSource.Height()), &borderSource, 1.0f, .82f, (int)ROTATIONS::ROT_270); // bottom
+		// corners
+		spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Y(), cornerSource.Width(), cornerSource.Height()), &cornerSource, 1.0f, .83f); // top left
+		cornerSource.SetY(10);
+		spriteBatch->DrawUI(texture, &MyRectangle(rectangle->Right() - cornerSource.Width(), rectangle->Y(), cornerSource.Width(), cornerSource.Height()), &cornerSource, 1.0f, .83f, (int)ROTATIONS::ROT_90); // top right
+		cornerSource.SetY(20);
+		spriteBatch->DrawUI(texture, &MyRectangle(rectangle->Right() - cornerSource.Width(), rectangle->Bottom() - cornerSource.Height(), cornerSource.Width(), cornerSource.Height()), &cornerSource, 1.0f, .83f, (int)ROTATIONS::ROT_180); // bottom right
+		cornerSource.SetY(30);
+		spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Bottom() - cornerSource.Height(), cornerSource.Width(), cornerSource.Height()), &cornerSource, 1.0f, .83f, (int)ROTATIONS::ROT_270); // bottom left
+	}
 	// text
 	//spriteBatch->WriteText(L"Menu", &MyRectangle(rectangle->X() + 20, rectangle->Y() + 20, 30, 10), .81f);
 	for (int i = 0; i < optionsWidth; i++)

@@ -122,4 +122,12 @@ enum class ANCHOR_POINT : unsigned char
 	ANCHOR_BOTTOM_RIGHT = BOTTOM | RIGHT
 };
 
+enum class SOUND_CHANNEL
+{
+	MASTER,
+	MUSIC,
+	SFX,
+	SOUND_CHANNEL_MAX
+};
+
 #pragma endregion

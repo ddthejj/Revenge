@@ -7,6 +7,8 @@
 #include "Math.h"
 #include "InputManager.h"
 #include "Text.h"
+#include "SoundManager.h"
+#include "MenuManager.h"
 
 UISprite* TitleManager::logo = nullptr;
 UISprite* TitleManager::title = nullptr;
@@ -85,7 +87,7 @@ void TitleManager::EndSplash()
 	// make the actual title sprite
 	Texture* titleTexture = Manager::GetTexture("TITLE");
 	float desiredHeight = titleTexture->Height() * ((float)(Manager::GetScreenWidth() * .75f) / (float)titleTexture->Width());
-	title = new UISprite(0, 0, Manager::GetScreenWidth() * .75f, desiredHeight, titleTexture, 1.f, 0.f, ANCHOR_POINT::ANCHOR_CENTER);
+	title = new UISprite(0, 0, Manager::GetScreenWidth() * .75f, desiredHeight, titleTexture, .1f, 0.f, ANCHOR_POINT::ANCHOR_CENTER);
 	title->Activate();
 	// make the title background sprite
 	Texture* titleBackgroundTexture = Manager::GetTexture("TITLE_BACKGROUND");
@@ -103,7 +105,7 @@ void TitleManager::EndSplash()
 		titleBackgroundHeight = titleBackgroundTexture->Height() * widthRatio;
 	}
 
-	titleBackground = new UISprite(0, 0, titleBackgroundWidth, titleBackgroundHeight, titleBackgroundTexture, .9f, 0.f, ANCHOR_POINT::ANCHOR_CENTER);
+	titleBackground = new UISprite(0, 0, titleBackgroundWidth, titleBackgroundHeight, titleBackgroundTexture, 0.f, 0.f, ANCHOR_POINT::ANCHOR_CENTER);
 	titleBackground->Activate();
 
 	timer = 0.f;
@@ -135,7 +137,8 @@ void TitleManager::FadeInMenu()
 
 void TitleManager::CreateTitleMenu()
 {
-
+	MenuManager::LoadTitleMenus();
+	MenuManager::OpenMenu((int)TITLE_MENUS::MENU_TITLE);
 }
 
 void TitleManager::Update(float delta_time)

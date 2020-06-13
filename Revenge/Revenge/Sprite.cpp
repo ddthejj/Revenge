@@ -7,7 +7,9 @@
 
 Sprite::Sprite(float x, float y, float width, float height, Texture* _texture, float _layer, float _opacity) : Sprite(x, y, width, height, 0, 0,
 	// if the texture has a default source rectangle, use it as the sprite's source rectangle, but if it doesn't, just use the normal texture height / width 
-	_texture->SourceRectangle() ? _texture->SourceRectangle()->Width() : _texture->Width(), _texture->SourceRectangle() ? _texture->SourceRectangle()->Height() : _texture->Height(), _texture, _layer, _opacity)
+	_texture ? (_texture->SourceRectangle() ? _texture->SourceRectangle()->Width() : _texture->Width()) : 0, 
+	_texture ? (_texture->SourceRectangle() ? _texture->SourceRectangle()->Height() : _texture->Height()) : 0, 
+	_texture, _layer, _opacity)
 {
 	// just call the constructor of Object and don't do anything special in the sprite class itself
 }

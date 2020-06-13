@@ -7,20 +7,31 @@
 #include "Sprite.h"
 #include "Character.h"
 
-MenuBox** MenuManager::menuList = nullptr; 
+MenuBox** MenuManager::menuList = nullptr;
 MenuBox* MenuManager::activeMenu = nullptr;
 Texture* MenuManager::menuTex = nullptr;
 
 void MenuManager::Init()
 {
-	
+
 }
 
 void MenuManager::Clean()
 {
+	int menuCount = 0; 
+	switch (Manager::GetGameState())
+	{
+	case GAME_STATE::STATE_TITLE:
+		menuCount = (int)TITLE_MENUS::MENU_MAX;
+		break;
+	case GAME_STATE::STATE_OVERWORLD:
+		menuCount = (int)OVERWORLD_MENUS::MENU_MAX;
+		break;
+	}
+
 	if (menuList)
 	{
-		for (int i = 0; i < (int)MENUS::MENU_MAX; i++)
+		for (int i = 0; i < menuCount; i++)
 		{
 			if (menuList[i])
 				SafeDelete(menuList[i]);
@@ -29,87 +40,144 @@ void MenuManager::Clean()
 	}
 }
 
-void MenuManager::LoadOverworldMenus()
-{
-	menuList = new MenuBox * [(int)MENUS::MENU_MAX];
-	menuTex = Manager::GetTexture((int)TEXTURES::TEX_MENU);
 
-	for (int i = 0; i < (int)MENUS::MENU_MAX; i++)
+void MenuManager::LoadTitleMenus()
+{
+	UnloadMenus();
+
+	menuList = new MenuBox * [(int)TITLE_MENUS::MENU_MAX];
+
+	for (int i = 0; i < (int)TITLE_MENUS::MENU_MAX; i++)
 		menuList[i] = nullptr;
 
-	menuList[(int)MENUS::MENU_BASE] = new MenuBox(50, 50, 150, 200, menuTex, "../Assets/Menus/Menu_Base.txt");
-	menuList[(int)MENUS::MENU_CHARACTER] = new MenuBox(50, 50, 10, 10, menuTex);
+  	menuList[(int)TITLE_MENUS::MENU_TITLE] = new MenuBox(0, 0, 300, 300, nullptr, "../Assets/Menus/Menu_Title_Base.txt");
+}
+
+void MenuManager::LoadOverworldMenus()
+{
+	UnloadMenus();
+
+	menuList = new MenuBox * [(int)OVERWORLD_MENUS::MENU_MAX];
+	menuTex = Manager::GetTexture((int)TEXTURES::TEX_MENU);
+
+	for (int i = 0; i < (int)OVERWORLD_MENUS::MENU_MAX; i++)
+		menuList[i] = nullptr;
+
+	menuList[(int)OVERWORLD_MENUS::MENU_BASE] = new MenuBox(50, 50, 150, 200, menuTex, "../Assets/Menus/Menu_Base.txt");
+	menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER] = new MenuBox(50, 50, 10, 10, menuTex);
 	//menuList[MENU_INVENTORY] = new MenuBox(250, 50, 100, 100, menuTex, "../Assets/Menus/Menu_Inventory.txt");
 	//menuList[MENU_OPTIONS] = new MenuBox(250, 50, 100, 100, menuTex, "../Assets/Menus/Menu_Options.txt");
 }
 
-void MenuManager::OpenMenu(MENUS index)
+void MenuManager::UnloadMenus()
 {
-	if (index == MENUS::MENU_PREVIOUS)
+	if (menuList)
+	{
+		for (int i = 0; i < (int)OVERWORLD_MENUS::MENU_MAX; i++)
+		{
+			if (menuList[i])
+				SafeDelete(menuList[i]);
+		}
+		SafeDelete(menuList);
+	}
+}
+
+
+void MenuManager::OpenMenu(int index)
+{
+	if (index == -1)
 	{
 		CloseMenu();
 		return;
 	}
 
-	if (!menuList[(int)index])
+	if (!menuList || !menuList[index])
 		return;
 
 	if (activeMenu)
 		activeMenu->Freeze();
 
-	switch (index)
+	switch (Manager::GetGameState())
 	{
-	case MENUS::MENU_BASE:
+	case GAME_STATE::STATE_OVERWORLD:
 	{
+#pragma region Overworld Menu Handling
+		switch ((OVERWORLD_MENUS)index)
+		{
+		case OVERWORLD_MENUS::MENU_BASE:
+		{
 
+			break;
+		}
+		case OVERWORLD_MENUS::MENU_CHARACTER:
+		{
+			std::vector<Character*> party = Manager::GetParty();
+
+			if (party.size() <= 0)
+			{
+				activeMenu->Unfreeze();
+				return;
+			}
+
+			char** texts = new char* [party.size()];
+			int* options = new int[party.size()];
+			Point<float>* positions = new Point<float>[party.size()];
+			Point<int>* layouts = new Point<int>[party.size()];
+
+			for (int i = 0; i < (int)party.size(); i++)
+			{
+				texts[i] = party[i]->Name();
+				options[i] = i;
+				positions[i] = Point<float>(40.f, 30.f * (float)(i + 1));
+				layouts[i] = Point<int>(0, i);
+			}
+
+			menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER]->SetOptions(texts, options, positions, layouts, 1, (int)party.size());
+			menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER]->SetRectangle(MyRectangle(Point<float>(activeMenu->GetRectangle()->Right(), activeMenu->GetRectangle()->Top()), 150, 150));
+
+			delete[] texts;
+			delete[] options;
+			delete[] positions;
+			delete[] layouts;
+			break;
+		}
+		case OVERWORLD_MENUS::MENU_INVENTORY:
+		{
+
+			break;
+		}
+		case OVERWORLD_MENUS::MENU_OPTIONS:
+		{
+
+			break;
+		}
+		}
+#pragma endregion
 		break;
 	}
-	case MENUS::MENU_CHARACTER:
+	case GAME_STATE::STATE_TITLE:
 	{
-		std::vector<Character*> party = Manager::GetParty();
+#pragma region Title Menu Handling
 
-		if (party.size() <= 0)
+		switch ((TITLE_MENUS)index)
 		{
-			activeMenu->Unfreeze();
-			return;
+		case TITLE_MENUS::MENU_TITLE:
+		{
+			
+			break;
+		}
 		}
 
-		char** texts = new char*[party.size()];
-		int* options = new int[party.size()];
-		Point<float>* positions = new Point<float>[party.size()];
-		Point<int>* layouts = new Point<int>[party.size()];
-
-		for (int i = 0; i < (int)party.size(); i++)
-		{
-			texts[i] = party[i]->Name();
-			options[i] = i;
-			positions[i] = Point<float>(40.f, 30.f * (float)(i + 1));
-			layouts[i] = Point<int>(0, i);
-		}
-
-		menuList[(int)MENUS::MENU_CHARACTER]->SetOptions(texts, options, positions, layouts, 1, (int)party.size());
-		menuList[(int)MENUS::MENU_CHARACTER]->SetRectangle(MyRectangle(Point<float>(activeMenu->GetRectangle()->Right(), activeMenu->GetRectangle()->Top()), 150, 150));
-
-		delete[] texts;
-		delete[] options;
-		delete[] positions;
-		delete[] layouts;
-		break;
+#pragma endregion
 	}
-	case MENUS::MENU_INVENTORY:
+	default:
 	{
 
-		break;
-	}
-	case MENUS::MENU_OPTIONS:
-	{
-		break;
-
 	}
 	}
 
-	menuList[(int)index]->Open(activeMenu);
-	activeMenu = menuList[(int)index];
+	menuList[index]->Open(activeMenu);
+	activeMenu = menuList[index];
 }
 
 void MenuManager::CloseMenu()
@@ -139,43 +207,65 @@ void MenuManager::CloseAllMenus()
 
 void MenuManager::Update(float delta_time)
 {
-	if (!activeMenu)
+	switch (Manager::GetGameState())
 	{
-		if (Manager::IsKeyPressed(KEYS::KEY_MENU))
-		{
-			Manager::FreezeScene();
-			OpenMenu(MENUS::MENU_BASE);
-		}
-	}
-	else
+	case GAME_STATE::STATE_TITLE:
 	{
-		if (Manager::IsKeyPressed(KEYS::KEY_MENU))
-		{
-			Manager::UnfreezeScene();
-			CloseAllMenus();
-		}
-		else if (Manager::IsKeyPressed(KEYS::KEY_INTERACT))
-		{
-			int option = activeMenu->ChooseOption();
-			if (option == (int)MENUS::MENU_PREVIOUS)
-				OpenMenu((MENUS)option);
 
-			if (activeMenu == menuList[(int)MENUS::MENU_BASE])
-			{
-				OpenMenu((MENUS)option);
-			}
-			else if (activeMenu == menuList[(int)MENUS::MENU_CHARACTER])
-			{
-
-			}
-			else if (activeMenu == menuList[(int)MENUS::MENU_INVENTORY])
-			{
-
-			}
-			else if (activeMenu == menuList[(int)MENUS::MENU_OPTIONS])
-			{
-
-			}
-		}
+		break;
 	}
+	case GAME_STATE::STATE_OVERWORLD:
+	{
+		if (!activeMenu)
+		{
+			if (Manager::IsKeyPressed(KEYS::KEY_MENU))
+			{
+				Manager::FreezeScene();
+				OpenMenu((int)OVERWORLD_MENUS::MENU_BASE);
+			}
+		}
+		else
+		{
+			if (Manager::IsKeyPressed(KEYS::KEY_MENU))
+			{
+				Manager::UnfreezeScene();
+				CloseAllMenus();
+			}
+			else if (Manager::IsKeyPressed(KEYS::KEY_INTERACT))
+			{
+				int option = activeMenu->ChooseOption();
+				if (option == (int)OVERWORLD_MENUS::MENU_PREVIOUS)
+					OpenMenu(option);
+
+				if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_BASE])
+				{
+					OpenMenu(option);
+				}
+				else if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER])
+				{
+
+				}
+				else if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_INVENTORY])
+				{
+
+				}
+				else if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_OPTIONS])
+				{
+
+				}
+			}
+		}
+		break;
+	}
+	default:
+	{
+		break;
+	}
+	}
+}
+
+
+void MenuManager::PlayHoverSound()
+{
+	Manager::PlayWAV(0);
 }

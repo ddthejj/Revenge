@@ -68,7 +68,6 @@ public:
 
 	// returns the return value of the selected option
 	int ChooseOption();
-	//int
 
 	// draw the menu box
 	virtual void Draw(SpriteBatch* spriteBatch);

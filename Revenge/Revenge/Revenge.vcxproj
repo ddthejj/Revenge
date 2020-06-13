@@ -156,6 +156,7 @@
   <ItemGroup>
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="direct2D.cpp" />
+    <ClCompile Include="directSound.cpp" />
     <ClCompile Include="FileReader.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Map.cpp" />
@@ -167,6 +168,7 @@
     <ClCompile Include="Manager.cpp" />
     <ClCompile Include="Rectangle.cpp" />
     <ClCompile Include="Room.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteBatch.cpp" />
     <ClCompile Include="Text.cpp" />
@@ -176,6 +178,7 @@
     <ClCompile Include="TitleManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AudioPlayer.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="defines.h" />
     <ClInclude Include="FileReader.h" />
@@ -189,6 +192,7 @@
     <ClInclude Include="OverworldManager.h" />
     <ClInclude Include="Rectangle.h" />
     <ClInclude Include="Room.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteBatch.h" />
     <ClInclude Include="Text.h" />

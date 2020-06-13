@@ -13,8 +13,9 @@
 #include "OverworldManager.h"
 #include "TitleManager.h"
 #include "TextureManager.h"
+#include "SoundManager.h"
 
-GAME_STATE Manager::gameState = GAME_STATE::STATE_OVERWORLD;
+GAME_STATE Manager::gameState = GAME_STATE::STATE_TITLE;
 SpriteBatch* Manager::spriteBatch = nullptr;
 std::vector<Object*> Manager::UpdateList;
 std::vector<Object*> Manager::DrawList;
@@ -148,9 +149,19 @@ int Manager::GetScreenHeight()
 }
 
 
+void Manager::PlayWAV(int index)
+{
+	SoundManager::Play(index);
+}
+
+
 void Manager::Init(HWND hwnd)
 {
+	// init managers that will be used no matter what
 	InputManager::Init();
+	SoundManager::Init(hwnd);
+	// temp test 
+	SoundManager::LoadSound("../Assets/Sounds/MenuHover.wav");
 	// spritebatch
 	spriteBatch = new SpriteBatch(hwnd);
 
@@ -167,6 +178,8 @@ void Manager::Init(HWND hwnd)
 
 	// create the rectangle used for fading the screen in and out
 	fadeRectangle = new Sprite(0, 0, WIDTH, HEIGHT, GetTexture("BLACK"), 1.f, 0.f);
+
+
 }
 
 void Manager::InitTitle()
@@ -174,9 +187,11 @@ void Manager::InitTitle()
 	// load title textures
 	TextureManager::LoadTextures(L"../Assets/TestTextures/TestTexture_Title_List.txt", spriteBatch);
 
+	// init managers for title
 	TitleManager::Init();
 	MenuManager::Init();
 
+	// ensure game state is correct
 	gameState = GAME_STATE::STATE_TITLE;
 }
 
@@ -184,6 +199,8 @@ void Manager::InitOverworld()
 {
 	// load overworld textures
 	TextureManager::LoadTextures(L"../Assets/TestTextures/TestTexture_List.txt", spriteBatch);
+	// load overworld menus
+	MenuManager::LoadOverworldMenus();
 	// load the overworld
 	OverworldManager::Init();
 	party.push_back(OverworldManager::GetCurrentPlayer());
@@ -213,6 +230,8 @@ void Manager::Clean()
 	TextureManager::Clean();
 	// input
 	InputManager::Clean();
+	// sound
+	SoundManager::Clean();
 	// fade rectangle
 	SafeDelete(fadeRectangle);
 	// spritebatch 

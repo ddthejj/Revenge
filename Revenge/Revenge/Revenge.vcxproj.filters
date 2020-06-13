@@ -20,6 +20,9 @@
     <Filter Include="Essentials">
       <UniqueIdentifier>{edc34036-fe98-41d8-8b5d-e1cf52b56d67}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sounds">
+      <UniqueIdentifier>{f09d1e29-1872-4622-a9e6-5b2a57b676bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SpriteBatch.cpp">
@@ -79,7 +82,15 @@
     <ClCompile Include="Text.cpp">
       <Filter>Basic Types</Filter>
     </ClCompile>
-    <ClCompile Include="FileReader.cpp" />
+    <ClCompile Include="SoundManager.cpp">
+      <Filter>Sounds</Filter>
+    </ClCompile>
+    <ClCompile Include="FileReader.cpp">
+      <Filter>Essentials</Filter>
+    </ClCompile>
+    <ClCompile Include="directSound.cpp">
+      <Filter>Sounds</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Texture.h">
@@ -139,6 +150,14 @@
     <ClInclude Include="Text.h">
       <Filter>Basic Types</Filter>
     </ClInclude>
-    <ClInclude Include="FileReader.h" />
+    <ClInclude Include="SoundManager.h">
+      <Filter>Sounds</Filter>
+    </ClInclude>
+    <ClInclude Include="FileReader.h">
+      <Filter>Essentials</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioPlayer.h">
+      <Filter>Sounds</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
