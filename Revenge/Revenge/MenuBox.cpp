@@ -4,8 +4,7 @@
 #include "Manager.h"
 #include "Texture.h"
 #include "MenuManager.h"
-#include <iostream>
-#include <fstream>
+#include "FileReader.h"
 
 MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _texture) : Sprite(_x, _y, _width, _height, _texture, 0.f)
 {
@@ -16,114 +15,37 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _text
 
 MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _texture, const char* filename) : MenuBox(_x, _y, _width, _height, _texture)
 {
-	std::ifstream menu(filename, std::ios::in);
+	// use the MenuReader class to read the menu data from a file
+	MenuReader reader;
+	reader.Open(filename);
 
-	if (menu.is_open())
+	Point<int> optionsDims = reader.GetDimensions();
+	optionsWidth = optionsDims.x;
+	optionsHeight = optionsDims.y;
+
+	options = new MenuOption * *[optionsDims.x];
+	for (int i = 0; i < optionsWidth; i++)
 	{
-		char word[255];
-		int whichChar = 0;
-
-		// read options width
-		whichChar = 0;
-		do
-		{
-			menu.get(word[whichChar]);
-		} while (word[whichChar] != ',' && word[whichChar++] != '\n' && !menu.eof());
-		word[whichChar] = '\0';
-
-		optionsWidth = atoi(word);
-
-		// read options height
-		whichChar = 0;
-		do
-		{
-			menu.get(word[whichChar]);
-		} while (word[whichChar] != ',' && word[whichChar++] != '\n' && !menu.eof());
-		word[whichChar] = '\0';
-
-		optionsHeight = atoi(word);
-
-		// create the array of options using the read dimensions 
-		options = new MenuOption * *[optionsWidth];
-		for (int i = 0; i < optionsWidth; i++)
-		{
-			options[i] = new MenuOption * [optionsHeight];
-			for (int j = 0; j < optionsHeight; j++)
-				options[i][j] = nullptr;
-		}
-
-		// for every row left, read all the options
-		while (!menu.eof())
-		{
-			MenuOption* option = new MenuOption();
-
-			// read the text of the option
-			whichChar = 0;
-			do
-			{
-				menu.get(word[whichChar]);
-			} while (word[whichChar] != ',' && word[whichChar++] != '\n' && !menu.eof());
-
-			word[whichChar] = '\0';
-			option->text = std::string(word);
-
-			// read the returned value of the option
-			whichChar = 0;
-			do
-			{
-				menu.get(word[whichChar]);
-			} while (word[whichChar] != ',' && word[whichChar++] != '\n' && !menu.eof());
-
-			word[whichChar] = '\0';
-			option->option = atoi(word);
-
-			// read the x position of the option
-			whichChar = 0;
-			do
-			{
-				menu.get(word[whichChar]);
-			} while (word[whichChar] != ',' && word[whichChar++] != '\n' && !menu.eof());
-
-			word[whichChar] = '\0';
-			option->x = (float)atof(word);
-
-			// read the y position of the option
-			whichChar = 0;
-			do
-			{
-				menu.get(word[whichChar]);
-			} while (word[whichChar] != ',' && word[whichChar++] != '\n' && !menu.eof());
-
-			word[whichChar] = '\0';
-			option->y = (float)atof(word);
-
-			// read the x location of the option within the 2d array of options
-			whichChar = 0;
-			do
-			{
-				menu.get(word[whichChar]);
-			} while (word[whichChar] != ',' && word[whichChar++] != '\n' && !menu.eof());
-
-			word[whichChar] = '\0';
-			int optionX = atoi(word);
-
-			// read the y location of the option within the 2d array of options
-			whichChar = 0;
-			do
-			{
-				menu.get(word[whichChar]);
-			} while (word[whichChar] != ',' && word[whichChar++] != '\n' && !menu.eof());
-
-			word[whichChar] = '\0';
-			int optionY = atoi(word);
-
-			options[optionX][optionY] = option;
-		}
+		options[i] = new MenuOption * [optionsDims.y];
+		for (int j = 0; j < optionsHeight; j++)
+			options[i][j] = nullptr;
 	}
-	else
+
+	MenuReader::OptionData* optionData = nullptr;
+	int optionCount = reader.GetOptions(&optionData);
+
+	for (int i = 0; i < optionCount; i++)
 	{
-		OutputDebugStringW(L"Failed to open menu file.");
+		MenuOption* option = new MenuOption;
+		option->text = optionData[i].text;
+		option->option = optionData[i].returnValue;
+		option->x = optionData[i].position.x;
+		option->y = optionData[i].position.y;
+
+		options[optionData[i].matrixLocation.x][optionData[i].matrixLocation.y] = option;
 	}
+
+	delete[] optionData;
 }
 
 MenuBox::~MenuBox()
