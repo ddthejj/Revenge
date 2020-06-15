@@ -40,7 +40,7 @@ public:
 	// set the source rectangle's position
 	void SetSourcePos(const Point<float>& location);
 	// set the sprite's opacity
-	void SetOpacity(float _opacity) { opacity = _opacity; }
+	virtual void SetOpacity(float _opacity) { opacity = _opacity; }
 	// decrease the sprite's opacity
 	void DecreaseOpacity(float amnt) { opacity -= amnt; if (opacity < 0) opacity = 0.f; }
 	// increase the sprite's opacity

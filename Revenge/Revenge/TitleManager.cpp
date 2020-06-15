@@ -36,6 +36,7 @@ void TitleManager::AnyKeyPressed(char key, void* this_ptr)
 	case TITLE_STATE::TITLE_PRESS_TO_CONTINUE:
 	{
 		// go to the next screen
+		FadeInMenu();
 		titleState = TITLE_STATE::TITLE_MENU_FADEIN;
 		break;
 	}
@@ -131,9 +132,17 @@ void TitleManager::FadeInMenu()
 	// erase "Press any key to continue" text
 	SafeDelete(textList[0]);
 	textList.clear();
+	timer = 0.f;
 	// create the title screen menu
 	CreateTitleMenu();
+	MenuManager::SetMenuOpacity(0.f);
 }
+
+void TitleManager::FinishMenuFade()
+{
+	MenuManager::SetMenuOpacity(1.f);
+}
+
 
 void TitleManager::CreateTitleMenu()
 {
@@ -240,8 +249,18 @@ void TitleManager::Update(float delta_time)
 	}
 	case TITLE_STATE::TITLE_MENU_FADEIN:
 	{
-
-		break;
+		if (timer < 1.f)
+		{
+			// fade in
+			MenuManager::SetMenuOpacity(timer);
+		}
+		else
+		{
+			// reset
+			titleState = TITLE_STATE::TITLE_DONE;
+			timer = 0.f;
+		}
+			break;
 	}
 	case TITLE_STATE::TITLE_DONE:
 	{

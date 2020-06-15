@@ -21,6 +21,9 @@ Text::Text(float x, float y, float width, float height, const char* _text, float
 
 Text::~Text()
 {
+	if (active)
+		Deactivate();
+
 	SafeDelete(rectangle);
 }
 

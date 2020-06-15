@@ -40,6 +40,8 @@ protected:
 	
 #pragma region Methods
 
+	// override the set opacity function so that we can set the opacity of the arrow as well
+	virtual void SetOpacity(float _opacity);
 	// update the location of the arrow to the currently selected option
 	void UpdateArrowLocation();
 	// reset the arrow position to the default location

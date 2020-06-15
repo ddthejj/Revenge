@@ -204,6 +204,14 @@ void MenuManager::CloseAllMenus()
 	Manager::UnfreezeScene();
 }
 
+void MenuManager::SetMenuOpacity(float _opacity)
+{
+	for (int i = 0; i < GetMenuCount(); i++)
+	{
+		menuList[i]->SetOpacity(_opacity);
+	}
+}
+
 
 void MenuManager::Update(float delta_time)
 {
@@ -268,4 +276,20 @@ void MenuManager::Update(float delta_time)
 void MenuManager::PlayHoverSound()
 {
 	Manager::PlayWAV(0);
+}
+
+
+int MenuManager::GetMenuCount()
+{
+	switch (Manager::GetGameState())
+	{
+	case GAME_STATE::STATE_TITLE:
+		return (int)TITLE_MENUS::MENU_MAX;
+		break;
+	case GAME_STATE::STATE_OVERWORLD:
+		return (int)OVERWORLD_MENUS::MENU_MAX;
+		break;
+	default:
+		return 0;
+	}
 }

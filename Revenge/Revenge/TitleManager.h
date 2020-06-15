@@ -39,6 +39,8 @@ public:
 	static void EndSplash();
 	static void GoToTitleMenu();
 	static void FadeInMenu();
+	static void FinishMenuFade();
+
 	static void CreateTitleMenu();
 
 	static void Update(float delta_time);

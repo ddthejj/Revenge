@@ -9,7 +9,7 @@
 MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _texture, float _layer, float _opacity, ANCHOR_POINT _anchor) : UISprite(_x, _y, _width, _height, _texture, _layer, _opacity, _anchor)
 {
 	optionAt = new Point<int>();
-	arrow = new UISprite(0, 0, 7, 7, 0, 0, 15, 15, Manager::GetTexture((int)TEXTURES::TEX_ARROW), _layer + .1, _opacity, _anchor);
+	arrow = new UISprite(0, 0, 7, 7, 0, 0, 15, 15, Manager::GetTexture((int)TEXTURES::TEX_ARROW), _layer + .1f, _opacity, _anchor);
 	// options need to be set later
 }
 
@@ -39,8 +39,8 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _text
 		MenuOption* option = new MenuOption;
 		option->text = optionData[i].text;
 		option->option = optionData[i].returnValue;
-		option->x = optionData[i].position.x;
-		option->y = optionData[i].position.y;
+		option->x = (float)optionData[i].position.x;
+		option->y = (float)optionData[i].position.y;
 
 		options[optionData[i].matrixLocation.x][optionData[i].matrixLocation.y] = option;
 	}
@@ -138,6 +138,13 @@ void MenuBox::Move(float x, float y)
 {
 	rectangle->SetX(x);
 	rectangle->SetY(y);
+}
+
+
+void MenuBox::SetOpacity(float _opacity)
+{
+	Sprite::SetOpacity(_opacity);
+	arrow->SetOpacity(_opacity);
 }
 
 void MenuBox::UpdateArrowLocation()
@@ -319,7 +326,7 @@ void MenuBox::Draw(SpriteBatch* spriteBatch)
 				char* text = new char[option->text.length() + 1];
 				strcpy_s(text, option->text.length() + 1, option->text.c_str());
 				MyRectangle* textRectangle = new MyRectangle(rectangle->X() + option->x, rectangle->Y() + option->y, Manager::MeasureString(text).x, 10);
-				spriteBatch->WriteText(text, textRectangle, layer + .1, opacity, anchor);
+				spriteBatch->WriteText(text, textRectangle, layer + .1f, opacity, anchor);
 				delete textRectangle;
 				delete[] text;
 			}
