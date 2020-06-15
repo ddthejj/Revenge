@@ -72,6 +72,8 @@ public:
 
 class UISprite : public Sprite
 {
+protected:
+
 	ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT;
 
 public: 

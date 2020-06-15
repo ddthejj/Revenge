@@ -105,7 +105,7 @@ void SpriteBatch::DrawUI(Texture* texture, MyRectangle* rectangle, MyRectangle* 
 
 	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::HCENTER)
 	{
-		drawLocation.x = ((float)windowWidth / 2.f) - (rectangle->Width() / 2.f) - drawLocation.x;
+		drawLocation.x = ((float)windowWidth / 2.f) - (rectangle->Width() / 2.f) + drawLocation.x;
 	}
 	else if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::RIGHT)
 	{
@@ -114,7 +114,7 @@ void SpriteBatch::DrawUI(Texture* texture, MyRectangle* rectangle, MyRectangle* 
 
 	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::VCENTER)
 	{
-		drawLocation.y = ((float)windowHeight / 2.f) - (rectangle->Height() / 2.f) - drawLocation.y;
+		drawLocation.y = ((float)windowHeight / 2.f) - (rectangle->Height() / 2.f) + drawLocation.y;
 	}
 	else if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::BOTTOM)
 	{
@@ -139,7 +139,7 @@ void SpriteBatch::WriteText(const char* text, MyRectangle* rectangle, float laye
 
 	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::HCENTER)
 	{
-		writeLocation.x = ((float)windowWidth / 2.f) - (rectangle->Width() / 2.f) - writeLocation.x;
+		writeLocation.x = ((float)windowWidth / 2.f) - (rectangle->Width() / 2.f) + writeLocation.x;
 	}
 	else if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::RIGHT)
 	{
@@ -148,7 +148,7 @@ void SpriteBatch::WriteText(const char* text, MyRectangle* rectangle, float laye
 
 	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::VCENTER)
 	{
-		writeLocation.y = ((float)windowHeight / 2.f) - (rectangle->Height() / 2.f) - writeLocation.y;
+		writeLocation.y = ((float)windowHeight / 2.f) - (rectangle->Height() / 2.f) + writeLocation.y;
 	}
 	else if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::BOTTOM)
 	{

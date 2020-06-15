@@ -117,7 +117,7 @@ void TitleManager::GoToTitleMenu()
 	titleBackground->SetOpacity(1.f);
 	title->SetOpacity(1.f);
 	// move the title to its final position
-	title->SetPos(Point<float>(0, (Manager::GetScreenHeight() / 2.f) - (title->GetRectangle()->Height() / 2.f) - (Manager::GetScreenHeight() * .05f)));
+	title->SetPos(Point<float>(0, -((Manager::GetScreenHeight() / 2.f) - (title->GetRectangle()->Height() / 2.f) - (Manager::GetScreenHeight() * .05f))));
 	// reset the timer
 	timer = 0.f;
 	// create the title screen menu
@@ -188,7 +188,7 @@ void TitleManager::Update(float delta_time)
 		else if (timer < SPLASH_TIME * 2.5f)
 		{
 			// move title sprite
-			float startpos = 0, endpos = (Manager::GetScreenHeight() / 2.f) - (title->GetRectangle()->Height() / 2.f) - (Manager::GetScreenHeight() * .05f);
+			float startpos = 0, endpos = -((Manager::GetScreenHeight() / 2.f) - (title->GetRectangle()->Height() / 2.f) - (Manager::GetScreenHeight() * .05f));
 			title->SetPos(Point<float>(title->GetPos().x, LerpToRangeClamped(SPLASH_TIME, SPLASH_TIME * 2.5f, startpos, endpos, timer)));
 			// fade in background sprite
 			if (titleBackground->Opacity() != 1.f)
