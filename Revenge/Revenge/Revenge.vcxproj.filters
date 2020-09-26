@@ -91,6 +91,9 @@
     <ClCompile Include="directSound.cpp">
       <Filter>Sounds</Filter>
     </ClCompile>
+    <ClCompile Include="Math.cpp">
+      <Filter>Essentials</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Texture.h">

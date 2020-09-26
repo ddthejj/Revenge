@@ -15,7 +15,7 @@ struct Impl_Elements
 	bool UnloadAllWAVs_Internal();
 	bool PlayWAV_Internal(IDirectSoundBuffer8** soundBuffer);
 	bool IsWAVLoaded(int index) { return index < m_secondaryBuffers.size() ? m_secondaryBuffers[index] : false; }
-	int WAVsLoaded() { return m_secondaryBuffers.size(); }
+	int WAVsLoaded() { return (int)m_secondaryBuffers.size(); }
 };
 
 struct WaveHeaderType

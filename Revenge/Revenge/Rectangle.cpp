@@ -3,13 +3,13 @@
 
 MyRectangle::MyRectangle()
 {
-	location = new Point<float>();
+	x = 0; y = 0;
 	height = 0; width = 0;
 }
 
 MyRectangle::MyRectangle(float _x, float _y, float _width, float _height)
 {
-	location = new Point<float>(_x, _y);
+	x = _x; y = _y;
 	height = _height;
 	width = _width;
 }
@@ -20,33 +20,34 @@ MyRectangle::MyRectangle(Point<float> location, float height, float width) : MyR
 
 MyRectangle::MyRectangle(const MyRectangle& that)
 {
-	location = new Point<float>(that.X(), that.Y());
+	x = that.X(); y = that.Y();
 	height = that.height;
 	width = that.width;
 }
 
 MyRectangle::~MyRectangle()
 {
-	delete location;
+	//delete location;
 }
 
 
-float MyRectangle::X() const { return location->x; }
-float MyRectangle::Y() const { return location->y; }
-float MyRectangle::Top() const { return location->y; }
-float MyRectangle::Bottom() const { return location->y + height; }
-float MyRectangle::Left() const { return location->x; }
-float MyRectangle::Right() const { return location->x + width; }
-float MyRectangle::CenterX() const { return location->x + (width / 2.f); }
-float MyRectangle::CenterY() const { return location->y + (height / 2.f); }
+float MyRectangle::X() const { return x; }
+float MyRectangle::Y() const { return y; }
+float MyRectangle::Top() const { return y; }
+float MyRectangle::Bottom() const { return y + height; }
+float MyRectangle::Left() const { return x; }
+float MyRectangle::Right() const { return x + width; }
+float MyRectangle::CenterX() const { return x + (width / 2.f); }
+float MyRectangle::CenterY() const { return y + (height / 2.f); }
+Point<float> MyRectangle::Location() const { return Point<float>(x, y); }
 
 
-void MyRectangle::SetX(float _x) { location->x = _x; }
-void MyRectangle::SetY(float _y) { location->y = _y; }
-void MyRectangle::SetLocation(Point<float> _location) { *location = _location; }
+void MyRectangle::SetX(float _x) { x = _x; }
+void MyRectangle::SetY(float _y) { y = _y; }
+void MyRectangle::SetLocation(Point<float> _location) { x = _location.x; y = _location.y; }
 
-void MyRectangle::MoveX(float offset) { location->x += offset; }
-void MyRectangle::MoveY(float offset) { location->y += offset; }
+void MyRectangle::MoveX(float offset) { x += offset; }
+void MyRectangle::MoveY(float offset) { y += offset; }
 
 
 bool MyRectangle::Intersects(const MyRectangle &that) const

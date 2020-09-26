@@ -35,6 +35,7 @@ protected:
 	UISprite* arrow = nullptr;						// the sprite for the arrow 
 	int arrowTimer = 0;								// the timer to blink the arrow
 	MenuBox* previousMenu = nullptr;				// pointer to the previous menu (if nullptr, no previous menu)
+	Point<float> textOffset;
 
 #pragma endregion
 	
@@ -54,7 +55,7 @@ public:
 #pragma region Methods
 
 	// load a menu without a file
-	MenuBox(float _x, float _y, float _width, float _height, Texture* _texture, float _layer = .8f, float _opacity = 1.f, ANCHOR_POINT _anchor = ANCHOR_POINT::ANCHOR_CENTER);
+	MenuBox(float _x, float _y, float _width, float _height, Texture* _texture, float _layer = .8f, float _opacity = 1.f, ANCHOR_POINT _anchor = ANCHOR_POINT::ANCHOR_CENTER_RIGHT);
 	// load a menu from a file
 	MenuBox(float _x, float _y, float _width, float _height, Texture* _texture, const char* filename);
 	~MenuBox();

@@ -4,7 +4,6 @@
 #include "Sprite.h"
 #include "Manager.h"
 #include "Texture.h"
-#include "Math.h"
 #include "InputManager.h"
 #include "Text.h"
 #include "SoundManager.h"

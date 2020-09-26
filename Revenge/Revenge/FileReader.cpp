@@ -317,7 +317,7 @@ Point<int> MenuReader::GetDimensions()
 int MenuReader::GetOptions(MenuReader::OptionData** optionsList)
 {
 	// number of options = number of lines - 1 for the dimensions line
-	int optionCount = lines.size() - 1;
+	int optionCount = (int)lines.size() - 1;
 	*optionsList = new OptionData[optionCount];
 
 	for (int i = 0; i < optionCount; i++)

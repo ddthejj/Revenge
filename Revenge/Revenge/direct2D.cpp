@@ -347,6 +347,7 @@ Point<float> Renderer::MeasureString(std::string text, float screenWidth, float 
 	delete[] wtext;
 	DWRITE_TEXT_METRICS metrics;
 	layout->GetMetrics(&metrics);
+	layout->Release();
 
 	return Point<float>(metrics.width, metrics.height);
 }

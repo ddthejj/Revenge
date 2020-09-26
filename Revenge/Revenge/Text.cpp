@@ -39,7 +39,7 @@ void Text::SetLocation(Point<float> location)
 
 Point<float> Text::Location()
 {
-	return *rectangle->Location();
+	return rectangle->Location();
 }
 
 void Text::SetX(float x)

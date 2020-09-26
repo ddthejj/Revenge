@@ -11,6 +11,23 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _text
 	optionAt = new Point<int>();
 	arrow = new UISprite(0, 0, 7, 7, 0, 0, 15, 15, Manager::GetTexture((int)TEXTURES::TEX_ARROW), _layer + .1f, _opacity, _anchor);
 	// options need to be set later
+	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::HCENTER)
+	{
+		textOffset.x = -rectangle->Width() / 2.f;
+	}
+	else if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::RIGHT)
+	{
+		//textOffset.x = rectangle->Width() / 2.f;
+	}
+
+	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::VCENTER)
+	{
+		textOffset.y = -rectangle->Height() / 2.f;
+	}
+	else if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::BOTTOM)
+	{
+		//textOffset.y = rectangle->Height() / 2.f;
+	}
 }
 
 MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _texture, const char* filename) : MenuBox(_x, _y, _width, _height, _texture)
@@ -289,33 +306,36 @@ void MenuBox::Update(float delta_time)
 
 void MenuBox::Draw(SpriteBatch* spriteBatch)
 {
-	MyRectangle cornerSource(0, 0, 10, 10);
-	MyRectangle borderSource(10, 0, 10, 10);
-	MyRectangle backgroundSource(20, 0, 10, 10);
-
 	if (texture)
 	{
+		// source rectangles for menu parts
+		MyRectangle cornerSource(0, 0, 10, 10);
+		MyRectangle borderSource(10, 0, 10, 10);
+		MyRectangle backgroundSource(20, 0, 10, 10);
+
+		MyRectangle screenspaceRec = GetScreenLocation(*rectangle, anchor);
+
 		// background
 		spriteBatch->DrawUI(texture, rectangle, &backgroundSource, opacity, layer, 0, anchor);
 		// edges
-		spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Y(), borderSource.Width(), rectangle->Height()), &borderSource, opacity, layer + .2f, 0, anchor); // left
+		spriteBatch->DrawUI(texture, &MyRectangle(screenspaceRec.X(), screenspaceRec.Y(), borderSource.Width(), rectangle->Height()), &borderSource, opacity, layer + .2f, 0); // left
 		borderSource.SetY(10);
-		spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Y(), rectangle->Width(), borderSource.Height()), &borderSource, opacity, layer + .2f, (int)ROTATIONS::ROT_90, anchor); // top
+		spriteBatch->DrawUI(texture, &MyRectangle(screenspaceRec.X(), screenspaceRec.Y(), rectangle->Width(), borderSource.Height()), &borderSource, opacity, layer + .2f, (int)ROTATIONS::ROT_90); // top
 		borderSource.SetY(20);
-		spriteBatch->DrawUI(texture, &MyRectangle(rectangle->Right() - borderSource.Width(), rectangle->Y(), borderSource.Width(), rectangle->Height()), &borderSource, opacity, layer + .2f, (int)ROTATIONS::HORIZONTAL, anchor); // right
+		spriteBatch->DrawUI(texture, &MyRectangle(screenspaceRec.Right() - borderSource.Width(), screenspaceRec.Y(), borderSource.Width(), rectangle->Height()), &borderSource, opacity, layer + .2f, (int)ROTATIONS::HORIZONTAL); // right
 		borderSource.SetY(30);
-		spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Bottom() - borderSource.Height(), rectangle->Width(), borderSource.Height()), &borderSource, opacity, layer + .2f, (int)ROTATIONS::ROT_270, anchor); // bottom
+		spriteBatch->DrawUI(texture, &MyRectangle(screenspaceRec.X(), screenspaceRec.Bottom() - borderSource.Height(), rectangle->Width(), borderSource.Height()), &borderSource, opacity, layer + .2f, (int)ROTATIONS::ROT_270); // bottom
 		// corners
-		spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Y(), cornerSource.Width(), cornerSource.Height()), &cornerSource, opacity, layer + .3f, 0, anchor); // top left
+		spriteBatch->DrawUI(texture, &MyRectangle(screenspaceRec.X(), screenspaceRec.Y(), cornerSource.Width(), cornerSource.Height()), &cornerSource, opacity, layer + .3f, 0); // top left
 		cornerSource.SetY(10);
-		spriteBatch->DrawUI(texture, &MyRectangle(rectangle->Right() - cornerSource.Width(), rectangle->Y(), cornerSource.Width(), cornerSource.Height()), &cornerSource, opacity, layer + .3f, (int)ROTATIONS::ROT_90, anchor); // top right
+		spriteBatch->DrawUI(texture, &MyRectangle(screenspaceRec.Right() - cornerSource.Width(), screenspaceRec.Y(), cornerSource.Width(), cornerSource.Height()), &cornerSource, opacity, layer + .3f, (int)ROTATIONS::ROT_90); // top right
 		cornerSource.SetY(20);
-		spriteBatch->DrawUI(texture, &MyRectangle(rectangle->Right() - cornerSource.Width(), rectangle->Bottom() - cornerSource.Height(), cornerSource.Width(), cornerSource.Height()), &cornerSource, opacity, layer + .3f, (int)ROTATIONS::ROT_180, anchor); // bottom right
+		spriteBatch->DrawUI(texture, &MyRectangle(screenspaceRec.Right() - cornerSource.Width(), screenspaceRec.Bottom() - cornerSource.Height(), cornerSource.Width(), cornerSource.Height()), &cornerSource, opacity, layer + .3f, (int)ROTATIONS::ROT_180); // bottom right
 		cornerSource.SetY(30);
-		spriteBatch->DrawUI(texture, &MyRectangle(rectangle->X(), rectangle->Bottom() - cornerSource.Height(), cornerSource.Width(), cornerSource.Height()), &cornerSource, opacity, layer + .3f, (int)ROTATIONS::ROT_270, anchor); // bottom left
+		spriteBatch->DrawUI(texture, &MyRectangle(screenspaceRec.X(), screenspaceRec.Bottom() - cornerSource.Height(), cornerSource.Width(), cornerSource.Height()), &cornerSource, opacity, layer + .3f, (int)ROTATIONS::ROT_270); // bottom left
 	}
-	// text
-	//spriteBatch->WriteText(L"Menu", &MyRectangle(rectangle->X() + 20, rectangle->Y() + 20, 30, 10), .81f);
+
+	// write text
 	for (int i = 0; i < optionsWidth; i++)
 	{
 		for (int j = 0; j < optionsHeight; j++)
@@ -325,9 +345,8 @@ void MenuBox::Draw(SpriteBatch* spriteBatch)
 			{
 				char* text = new char[option->text.length() + 1];
 				strcpy_s(text, option->text.length() + 1, option->text.c_str());
-				MyRectangle* textRectangle = new MyRectangle(rectangle->X() + option->x, rectangle->Y() + option->y, Manager::MeasureString(text).x, 10);
-				spriteBatch->WriteText(text, textRectangle, layer + .1f, opacity, anchor);
-				delete textRectangle;
+				MyRectangle textRectangle = MyRectangle(rectangle->X() + option->x + textOffset.x, rectangle->Y() + option->y + textOffset.y, Manager::MeasureString(text).x, 10);
+				spriteBatch->WriteText(text, &textRectangle, layer + .1f, opacity, anchor);
 				delete[] text;
 			}
 		}
