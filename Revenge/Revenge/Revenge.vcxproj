@@ -157,6 +157,7 @@
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="direct2D.cpp" />
     <ClCompile Include="directSound.cpp" />
+    <ClCompile Include="EnumParser.cpp" />
     <ClCompile Include="FileReader.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Map.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="AudioPlayer.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="defines.h" />
+    <ClInclude Include="EnumParser.h" />
     <ClInclude Include="FileReader.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Manager.h" />
