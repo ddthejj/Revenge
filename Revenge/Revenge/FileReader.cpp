@@ -29,36 +29,42 @@ void FileReader::Close()
 	lines.clear();
 }
 
+std::vector<std::string> FileReader::ParseLine(std::string line, char delim)
+{
+	std::vector<std::string> lineList;
+
+	int charAt = 0;
+	while (charAt < line.size())
+	{
+		char buffer[2048];
+		int bufferAt = 0;
+
+		while (charAt < line.size() && line[charAt] != delim)
+		{
+			buffer[bufferAt] = line[charAt];
+			charAt++;
+			bufferAt++;
+		}
+
+		buffer[bufferAt] = '\0';
+		lineList.push_back(std::string(buffer));
+		charAt++;
+	}
+
+
+	return lineList;
+}
+
+
 Point<int> RoomReader::GetDimensions()
 {
 	// the file either didn't correctly open or contained nothing
 	if (lines.size() == 0)
 		return Point<int>(0, 0);
 
-	Point<int> dimensions;
+	std::vector<std::string> dims = ParseLine(lines[0], ',');
 
-	// read the x dimension
-	char xBuffer[8];
-	int charAt = 0;
-	for (; lines[0][charAt] != ','; charAt++)
-	{
-		xBuffer[charAt] = lines[0][charAt];
-	}
-	xBuffer[charAt] = '\0';
-	dimensions.x = atoi(xBuffer);
-
-	// read the y dimension
-	char yBuffer[8];
-	charAt++;
-	for (int i = 0; charAt < lines[0].size(); charAt++)
-	{
-		yBuffer[i] = lines[0][charAt];
-		i++;
-	}
-	yBuffer[charAt] = '\0';
-	dimensions.y = atoi(yBuffer);
-
-	return dimensions;
+	return Point<int>(atoi(dims[0].c_str()), atoi(dims[1].c_str()));
 }
 
 Point<int> RoomReader::GetLayers(int**** layers)
@@ -94,29 +100,12 @@ Point<int> RoomReader::GetLayers(int**** layers)
 		// read down the file
 		for (unsigned int y = 0; y < (unsigned int)dims.y; y++)
 		{
-			// set reading variables
-			int whichchar = 0;
-			int bufferchar = 0;
-			char buffer[16];
+			std::vector<std::string> line = ParseLine(lines[roomline], ',');
 			// read across the file
 			for (int x = 0; x < dims.x; x++)
 			{
-				// read until you hit the end of the line or the delimiter
-				while (whichchar < lines[roomline].size() && lines[roomline][whichchar] != ',')
-				{
-					buffer[bufferchar] = lines[roomline][whichchar];
-					bufferchar++;
-					whichchar++;
-				}
-				// indicate the end of the string
-				buffer[bufferchar] = '\0';
 				// convert the string to an integer
-				(*layers)[l][x][y] = atoi(buffer);
-
-				// reset reading variables
-				bufferchar = 0;
-				buffer[0] = '\0';
-				whichchar++;
+				(*layers)[l][x][y] = atoi(line[x].c_str());
 			}
 			// increment room line after hitting the end of the line
 			roomline++;
@@ -161,29 +150,11 @@ int RoomReader::GetDoorData(int*** doorData)
 	{
 		// initialize list (all doors will have 3 variables: room number, and then x and y position in that room
 		(*doorData)[i] = new int[3];
-		// set reading variables 
-		int whichchar = 0;
-		int bufferchar = 0;
-		char buffer[16];
+		std::vector<std::string> line = ParseLine(lines[doorCountLine + i + 1], ',');
 		// for the 3 variables in each door
 		for (int j = 0; j < 3; j++)
 		{
-			// read until you hit the end of the line or the delimeter
-			while (whichchar < lines[doorCountLine + i + 1].size() && lines[doorCountLine + i + 1][whichchar] != ',')
-			{
-				buffer[bufferchar] = lines[doorCountLine + i + 1][whichchar];
-				bufferchar++;
-				whichchar++;
-			}
-			// end the string
-			buffer[bufferchar] = '\0';
-			// put the read data in to the return variable
-			(*doorData)[i][j] = atoi(buffer);
-
-			// clear reading variables
-			bufferchar = 0;
-			buffer[0] = '\0';
-			whichchar++;
+			(*doorData)[i][j] = atoi(line[j].c_str());
 		}
 	}
 
@@ -229,53 +200,18 @@ int RoomReader::GetTextList(std::vector<std::string>** textList)
 	// for each interactable object in the room
 	for (int i = 0; i < TextCount; i++)
 	{
-		// repeat this until we're told to manually end the lines for this tile
-		// this can't be "until end of line" because sometimes they span multiple lines, with the end signaled by a \" character
-		while (true)
+		int tileLines = atoi(lines[lineAt].c_str());
+		std::string tileString;
+		for (int j = 0; j < tileLines; j++)
 		{
-			// set reading variables
-			bool tileDone = false;
-			int whichchar = 0;
-			int bufferchar = 0;
-			char buffer[2048];
-
-			// read until end of line
-			while (whichchar < lines[lineAt].size())
-			{
-				// if this is the delimeter but it's the first character in the tile
-				if (whichchar == 0 && lines[lineAt][whichchar] == '\"')
-				{
-					// just skip this char
-					whichchar++;
-					continue;
-				}
-				// if we've hit the delimeter
-				else if (lines[lineAt][whichchar] == '\"')
-				{
-					// we've read all that we want to put in this tile
-					tileDone = true;
-					break;
-				}
-				// add the letter to the buffer
-				buffer[bufferchar] = lines[lineAt][whichchar];
-				bufferchar++;
-				whichchar++;
-			}
-			// end the string
-			buffer[bufferchar] = '\0';
-			// add it to this tile's list of text
-			(*textList)[i].push_back(std::string(buffer));
-
-			// reset reading variables
-			bufferchar = 0;
-			buffer[0] = '\0';
-			whichchar++;
+			tileString.append(lines[lineAt]);
+			if (j < tileLines - 1)
+				tileString.append("\n");
 			lineAt++;
-
-			// if we're done reading the tile, break out of the while loop
-			if (tileDone)
-				break;
 		}
+
+		(*textList)[i].push_back(std::string());
+		lineAt++;
 	}
 
 	return TextCount;
@@ -288,105 +224,35 @@ Point<int> MenuReader::GetDimensions()
 	if (lines.size() == 0)
 		return Point<int>(0, 0);
 
-	Point<int> dimensions;
-
-	// read the x dimension
-	char xBuffer[8];
-	int charAt = 0;
-	for (; lines[0][charAt] != ','; charAt++)
-	{
-		xBuffer[charAt] = lines[0][charAt];
-	}
-	xBuffer[charAt] = '\0';
-	dimensions.x = atoi(xBuffer);
-
-	// read the y dimension
-	char yBuffer[8];
-	charAt++;
-	for (int i = 0; charAt < lines[0].size(); charAt++)
-	{
-		yBuffer[i] = lines[0][charAt];
-		i++;
-	}
-	yBuffer[charAt] = '\0';
-	dimensions.y = atoi(yBuffer);
-
-	return dimensions;
+	std::vector<std::string> dims = ParseLine(lines[0], ',');
+	return Point<int>(atoi(dims[0].c_str()), atoi(dims[1].c_str()));
 }
 
 int MenuReader::GetOptions(MenuReader::OptionData** optionsList)
 {
-	// number of options = number of lines - 1 for the dimensions line
-	int optionCount = (int)lines.size() - 1;
+	// get the number of options
+	int optionCount = atoi(lines[2].c_str());
 	*optionsList = new OptionData[optionCount];
 
 	for (int i = 0; i < optionCount; i++)
 	{
-		int lineAt = i + 1;
+		int lineAt = i + 3;
 
-		char buffer[256];
-		int charAt = 0;
+		std::vector<std::string> optionData = ParseLine(lines[lineAt], ',');
 
-		// read the text of the option
-		for (int j = 0; lines[lineAt][charAt] != ','; charAt++, j++)
-		{
-			buffer[j] = lines[lineAt][charAt];
-		}
-		buffer[charAt] = '\0';
-		(*optionsList)[i].text = std::string(buffer);
-
-		ZeroMemory(buffer, sizeof(buffer));
-		charAt++;
-		// read the return value of the option
-		for (int j = 0; lines[lineAt][charAt] != ','; charAt++, j++)
-		{
-			buffer[j] = lines[lineAt][charAt];
-		}
-		buffer[charAt] = '\0';
-		(*optionsList)[i].returnValue = atoi(buffer);
-
-		ZeroMemory(buffer, sizeof(buffer));
-		charAt++;
-		// read the location of the option relative to the location of the menu
-		// x
-		for (int j = 0; lines[lineAt][charAt] != ','; charAt++, j++)
-		{
-			buffer[j] = lines[lineAt][charAt];
-		}
-		buffer[charAt] = '\0';
-		(*optionsList)[i].position.x = atoi(buffer);
-
-		ZeroMemory(buffer, sizeof(buffer));
-		charAt++;
-		// y
-		for (int j = 0; lines[lineAt][charAt] != ','; charAt++, j++)
-		{
-			buffer[j] = lines[lineAt][charAt];
-		}
-		buffer[charAt] = '\0';
-		(*optionsList)[i].position.y = atoi(buffer);
-
-		ZeroMemory(buffer, sizeof(buffer));
-		charAt++;
-		// read the location of the option within the menu's selection matrix
-		// x
-		for (int j = 0; lines[lineAt][charAt] != ','; charAt++, j++)
-		{
-			buffer[j] = lines[lineAt][charAt];
-		}
-		buffer[charAt] = '\0';
-		(*optionsList)[i].matrixLocation.x = atoi(buffer);
-
-		ZeroMemory(buffer, sizeof(buffer));
-		charAt++;
-		// y
-		for (int j = 0; charAt < lines[lineAt].size() && lines[lineAt][charAt] != ','; charAt++, j++)
-		{
-			buffer[j] = lines[lineAt][charAt];
-		}
-		buffer[charAt] = '\0';
-		(*optionsList)[i].matrixLocation.y = atoi(buffer);
+		(*optionsList)[i].text = optionData[0];
+		(*optionsList)[i].returnValue = atoi(optionData[1].c_str());
+		(*optionsList)[i].position.x = atoi(optionData[2].c_str());
+		(*optionsList)[i].position.y = atoi(optionData[3].c_str());
+		(*optionsList)[i].matrixLocation.x = atoi(optionData[4].c_str());
+		(*optionsList)[i].matrixLocation.y = atoi(optionData[5].c_str());
 	}
 
- 	return optionCount;
+	return optionCount;
+}
+
+ANCHOR_POINT MenuReader::GetAnchor()
+{
+	EnumParser<ANCHOR_POINT> enumParser;
+	return enumParser.Parse(lines[1]);
 }

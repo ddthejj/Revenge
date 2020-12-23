@@ -55,9 +55,9 @@ public:
 #pragma region Methods
 
 	// load a menu without a file
-	MenuBox(float _x, float _y, float _width, float _height, Texture* _texture, float _layer = .8f, float _opacity = 1.f, ANCHOR_POINT _anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
+	MenuBox(float _x, float _y, float _width, float _height, Texture* _texture, Texture* _arrowTexture, float _layer = .8f, float _opacity = 1.f, ANCHOR_POINT _anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
 	// load a menu from a file
-	MenuBox(float _x, float _y, float _width, float _height, Texture* _texture, const char* filename);
+	MenuBox(float _x, float _y, float _width, float _height, Texture* _texture, Texture* _arrowTexture, const char* filename);
 	~MenuBox();
 
 	// create a menu with _previousMenu as its previousMenu
@@ -79,6 +79,9 @@ public:
 
 	// freeze the menu box
 	virtual void Freeze();
+
+
+private:
 
 #pragma endregion
 

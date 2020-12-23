@@ -1,6 +1,7 @@
-5
+6
 BLACK,../Assets/TestTextures/Black.png,32,32
 LOGO,../Assets/TestTextures/Test_Logo.png,574,132
 TITLE,../Assets/TestTextures/Test_Title.png,1638,411
 TITLE_BACKGROUND,../Assets/TestTextures/Test_Background.png,1080,720
 MENU,../Assets/TestTextures/TestBox.png,30,40
+ARROW,../Assets/TestTextures/Arrow.png,30,15

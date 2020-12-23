@@ -1,3 +1,6 @@
+1,4
+4
+ANCHOR_TOP_LEFT
 Character,1,30,30
 Inventory,2,30,60
 Magic,3,30,90

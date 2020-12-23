@@ -56,9 +56,12 @@
 1,240,33
 
 3
-"Hello!"
-"Que es esta? Donde esta el queso de mi padre? Quien sus pantalones? This is a violation of basic human decency. That's super weird, so I wasn't thinking that much about it. Ooh look, a robin! That's really interesting. Robins that fly into windows are less interesting. Hmmmmmmmm?"
-"What?
+1
+Hello!
+1
+Que es esta? Donde esta el queso de mi padre? Quien sus pantalones? This is a violation of basic human decency. That's super weird, so I wasn't thinking that much about it. Ooh look, a robin! That's really interesting. Robins that fly into windows are less interesting. Hmmmmmmmm?
+4
+What?
 Who?
 When?
-Why?"
+Why?

@@ -2,6 +2,8 @@
 #include <vector>
 #include <string>
 
+enum class ANCHOR_POINT : unsigned char;
+
 class FileReader
 {
 public: 
@@ -10,6 +12,8 @@ public:
 
 	virtual bool Open(const char* filepath);
 	virtual void Close();
+
+	std::vector<std::string> ParseLine(std::string line, char delim);
 };
 
 class RoomReader : public FileReader
@@ -36,13 +40,15 @@ public:
 
 	struct OptionData
 	{
-		std::string text;
-		int returnValue;
-		Point<int> position, matrixLocation;
+		std::string text = "";
+		int returnValue = -1;
+		Point<int> position = Point<int>(0,0), matrixLocation = Point<int>(0, 0);
 	};
 
 	// return the dimensions of the options within the menu
 	Point<int> GetDimensions();
 	// returns the options within the menu
-	int GetOptions(OptionData** optionsList);
+	int GetOptions(MenuReader::OptionData** optionsList);
+	// returns the anchor point of the menu
+	ANCHOR_POINT GetAnchor();
 };

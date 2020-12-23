@@ -95,7 +95,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <DisableSpecificWarnings>26451</DisableSpecificWarnings>
+      <DisableSpecificWarnings>26451;C26451</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -157,7 +157,6 @@
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="direct2D.cpp" />
     <ClCompile Include="directSound.cpp" />
-    <ClCompile Include="EnumParser.cpp" />
     <ClCompile Include="FileReader.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Map.cpp" />

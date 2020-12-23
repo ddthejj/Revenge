@@ -194,4 +194,3 @@ Point<float> SpriteBatch::MeasureString(std::string text)
 {
 	return renderer->MeasureString(text, (float)windowWidth, (float)windowHeight);
 }
-

@@ -6,10 +6,10 @@
 #include "MenuManager.h"
 #include "FileReader.h"
 
-MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _texture, float _layer, float _opacity, ANCHOR_POINT _anchor) : UISprite(_x, _y, _width, _height, _texture, _layer, _opacity, _anchor)
+MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _texture, Texture* _arrowTexture, float _layer, float _opacity, ANCHOR_POINT _anchor) : UISprite(_x, _y, _width, _height, _texture, _layer, _opacity, _anchor)
 {
 	optionAt = new Point<int>();
-	arrow = new UISprite(0, 0, 7, 7, 0, 0, 15, 15, Manager::GetTexture((int)TEXTURES::TEX_ARROW), _layer + .1f, _opacity, _anchor);
+	arrow = new UISprite(0, 0, 7, 7, 0, 0, 15, 15, _arrowTexture, _layer + .1f, _opacity, _anchor);
 	// options need to be set later
 	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::HCENTER)
 	{
@@ -30,7 +30,7 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _text
 	}
 }
 
-MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _texture, const char* filename) : MenuBox(_x, _y, _width, _height, _texture)
+MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _texture, Texture* _arrowTexture, const char* filename) : UISprite(_x, _y, _width, _height, _texture, .8f, 1.f, ANCHOR_POINT::ANCHOR_TOP_LEFT)
 {
 	// use the MenuReader class to read the menu data from a file
 	MenuReader reader;
@@ -61,8 +61,33 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _text
 
 		options[optionData[i].matrixLocation.x][optionData[i].matrixLocation.y] = option;
 	}
+	
+	anchor = reader.GetAnchor();
+
+	reader.Close();
 
 	delete[] optionData;
+
+	optionAt = new Point<int>();\
+	arrow = new UISprite(0, 0, 7, 7, 0, 0, 15, 15, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), layer + .1f, opacity, anchor);
+	// options need to be set later
+	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::HCENTER)
+	{
+		//textOffset.x = -rectangle->Width() / 2.f;
+	}
+	else if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::RIGHT)
+	{
+		//textOffset.x = rectangle->Width() / 2.f;
+	}
+
+	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::VCENTER)
+	{
+		//textOffset.y = -rectangle->Height() / 2.f;
+	}
+	else if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::BOTTOM)
+	{
+		//textOffset.y = rectangle->Height() / 2.f;
+	}
 }
 
 MenuBox::~MenuBox()
@@ -351,6 +376,8 @@ void MenuBox::Draw(SpriteBatch* spriteBatch)
 			}
 		}
 	}
+
+	// draw the arrow
 	arrow->Draw(spriteBatch);
 }
 

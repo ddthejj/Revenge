@@ -50,7 +50,7 @@ void MenuManager::LoadTitleMenus()
 	for (int i = 0; i < (int)TITLE_MENUS::MENU_MAX; i++)
 		menuList[i] = nullptr;
 
-  	menuList[(int)TITLE_MENUS::MENU_TITLE] = new MenuBox(0, 0, 300, 300, nullptr, "../Assets/Menus/Menu_Title_Base.txt");
+   	menuList[(int)TITLE_MENUS::MENU_TITLE] = new MenuBox(0, 0, 300, 300, nullptr, Manager::GetTexture((int)TEXTURES_TITLE::TEX_TITLE_ARROW), "../Assets/Menus/Menu_Title_Base.txt");
 }
 
 void MenuManager::LoadOverworldMenus()
@@ -58,13 +58,13 @@ void MenuManager::LoadOverworldMenus()
 	UnloadMenus();
 
 	menuList = new MenuBox * [(int)OVERWORLD_MENUS::MENU_MAX];
-	menuTex = Manager::GetTexture((int)TEXTURES::TEX_MENU);
+	menuTex = Manager::GetTexture((int)TEXTURES_TEST::TEX_T_MENU);
 
 	for (int i = 0; i < (int)OVERWORLD_MENUS::MENU_MAX; i++)
 		menuList[i] = nullptr;
 
-	menuList[(int)OVERWORLD_MENUS::MENU_BASE] = new MenuBox(50, 50, 150, 200, menuTex, "../Assets/Menus/Menu_Base.txt");
-	menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER] = new MenuBox(50, 50, 10, 10, menuTex);
+	menuList[(int)OVERWORLD_MENUS::MENU_BASE] = new MenuBox(50, 50, 150, 200, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), "../Assets/Menus/Menu_Base.txt");
+	menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER] = new MenuBox(50, 50, 10, 10, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW));
 	//menuList[MENU_INVENTORY] = new MenuBox(250, 50, 100, 100, menuTex, "../Assets/Menus/Menu_Inventory.txt");
 	//menuList[MENU_OPTIONS] = new MenuBox(250, 50, 100, 100, menuTex, "../Assets/Menus/Menu_Options.txt");
 }

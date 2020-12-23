@@ -2,19 +2,31 @@
 
 #include <map>
 #include <string>
+#include <stdexcept>
+
 
 template <typename T>
 class EnumParser
 {
-	EnumParser() {}
 	std::map<std::string, T> map;
 
 public:
 
-	T Parse(const std::string &name);
+	EnumParser() {}
+	T Parse(const std::string& name)
+	{
+		auto it = map.find(name);
+		if (it == map.end())
+		{
+			throw std::runtime_error("Parsing Enum Failed");
+		}
+		return (*it).second;
+	}
 };
 
 #pragma region Enums
+
+#pragma region Tiles
 
 enum class TILES : int	// Tiles
 {
@@ -34,33 +46,71 @@ EnumParser<TILES>::EnumParser()
 	map["TILE_MAX"] = TILES::TILE_MAX;
 }
 
-enum class TEXTURES		// Textures
+#pragma endregion
+
+#pragma region Textures
+
+#pragma region Test
+
+enum class TEXTURES_TEST		// Textures for test map
 {
-	TEX_BLACK,			// 1 black pixel
-	TEX_MENU,			// Menus borders, corners, and backgrounds
-	TEX_ARROW,			// Menu arrow
-	TEX_TESTROOM,		// Test room spritesheet
-	TEX_BROWNFLOOR,		// Test floor 
-	TEX_REDWALL,		// Test wall
-	TEX_GREENDOOR,		// Test door
-	TEX_BLUETEXT,		// Test interaction tile
-	TEX_PLAYER,			// Test Player spritesheet
-	TEX_MAX
+	TEX_T_BLACK,				// 1 black pixel
+	TEX_T_MENU,					// Menus borders, corners, and backgrounds
+	TEX_T_ARROW,				// Menu arrow
+	TEX_T_TESTROOM,				// Test room spritesheet
+	TEX_T_BROWNFLOOR,			// Test floor 
+	TEX_T_REDWALL,				// Test wall
+	TEX_T_GREENDOOR,			// Test door
+	TEX_T_BLUETEXT,				// Test interaction tile
+	TEX_T_PLAYER,				// Test Player spritesheet
+	TEX_T_MAX
 };
 
-EnumParser<TEXTURES>::EnumParser()
+
+EnumParser<TEXTURES_TEST>::EnumParser()
 {
-	map["TEX_BLACK"] = TEXTURES::TEX_BLACK;
-	map["TEX_MENU"] = TEXTURES::TEX_MENU;
-	map["TEX_ARROW"] = TEXTURES::TEX_ARROW;
-	map["TEX_TESTROOM"] = TEXTURES::TEX_TESTROOM;
-	map["TEX_BROWNFLOOR"] = TEXTURES::TEX_BROWNFLOOR;
-	map["TEX_REDWALL"] = TEXTURES::TEX_REDWALL;
-	map["TEX_GREENDOOR"] = TEXTURES::TEX_GREENDOOR;
-	map["TEX_BLUETEXT"] = TEXTURES::TEX_BLUETEXT;
-	map["TEX_PLAYER"] = TEXTURES::TEX_PLAYER;
-	map["TEX_MAX"] = TEXTURES::TEX_MAX;
+	map["TEX_T_BLACK"] =		TEXTURES_TEST::TEX_T_BLACK;
+	map["TEX_T_MENU"] =			TEXTURES_TEST::TEX_T_MENU;
+	map["TEX_T_ARROW"] =		TEXTURES_TEST::TEX_T_ARROW;
+	map["TEX_T_TESTROOM"] =		TEXTURES_TEST::TEX_T_TESTROOM;
+	map["TEX_T_BROWNFLOOR"] =	TEXTURES_TEST::TEX_T_BROWNFLOOR;
+	map["TEX_T_REDWALL"] =		TEXTURES_TEST::TEX_T_REDWALL;
+	map["TEX_T_GREENDOOR"] =	TEXTURES_TEST::TEX_T_GREENDOOR;
+	map["TEX_T_BLUETEXT"] =		TEXTURES_TEST::TEX_T_BLUETEXT;
+	map["TEX_T_PLAYER"] =		TEXTURES_TEST::TEX_T_PLAYER;
+	map["TEX_T_MAX"] =			TEXTURES_TEST::TEX_T_MAX;
 }
+
+#pragma endregion
+
+#pragma region Title
+
+enum class TEXTURES_TITLE		// Textures for title screen
+{
+	TEX_TITLE_BLACK,			// 1 black pixel
+	TEX_TITLE_LOGO,				// Studio logo
+	TEX_TITLE_TITLE,			// Game Title / Game Logo
+	TEX_TITLE_BACKGROUND,		// Background for title menu
+	TEX_TITLE_MENU,				// Menu texture
+	TEX_TITLE_ARROW,			// Menu arrow texture
+	TEX_TITLE_MAX
+};
+
+EnumParser<TEXTURES_TITLE>::EnumParser()
+{
+	map["TEX_TITLE_BLACK"] =		TEXTURES_TITLE::TEX_TITLE_BLACK;
+	map["TEX_TITLE_LOGO"] =			TEXTURES_TITLE::TEX_TITLE_LOGO;
+	map["TEX_TITLE_TITLE"] =		TEXTURES_TITLE::TEX_TITLE_TITLE;
+	map["TEX_TITLE_BACKGROUND"] =	TEXTURES_TITLE::TEX_TITLE_BACKGROUND;
+	map["TEX_TITLE_MENU"] =			TEXTURES_TITLE::TEX_TITLE_MENU;
+	map["TEX_TITLE_ARROW"] =		TEXTURES_TITLE::TEX_TITLE_ARROW;
+}
+
+#pragma endregion
+
+#pragma endregion
+
+#pragma region Keys
 
 enum class KEYS			// Keybinds
 {
@@ -84,6 +134,10 @@ EnumParser<KEYS>::EnumParser()
 	map["KEY_MAX"] = KEYS::KEY_MAX;
 };
 
+#pragma endregion
+
+#pragma region Mouse Keys
+
 enum class MOUSE_KEYS	// Mouse buttons
 {
 	MOUSE_KEY_LEFT,		// Left mouse button
@@ -92,6 +146,8 @@ enum class MOUSE_KEYS	// Mouse buttons
 	MOUSE_KEY_MAX
 };
 
+
+
 EnumParser<MOUSE_KEYS>::EnumParser()
 {
 	map["MOUSE_KEY_LEFT"] = MOUSE_KEYS::MOUSE_KEY_LEFT;
@@ -99,6 +155,10 @@ EnumParser<MOUSE_KEYS>::EnumParser()
 	map["MOUSE_KEY_MIDDLE"] = MOUSE_KEYS::MOUSE_KEY_MIDDLE;
 	map["MOUSE_KEY_MAX"] = MOUSE_KEYS::MOUSE_KEY_MAX;
 }
+
+#pragma endregion
+
+#pragma region Fade Status
 
 enum class FADE_STATUS	// Fade in and out status
 {
@@ -119,6 +179,10 @@ EnumParser<FADE_STATUS>::EnumParser()
 	map["FADE_DONE"] = FADE_STATUS::FADE_DONE;
 	map["FADE_MAX"] = FADE_STATUS::FADE_MAX;
 }
+
+#pragma endregion
+
+#pragma region Game State
 
 enum class GAME_STATE	// game state
 {
@@ -141,6 +205,10 @@ EnumParser<GAME_STATE>::EnumParser()
 	map["STATE_DIALOGUE"] = GAME_STATE::STATE_DIALOGUE;
 	map["STATE_MAX"] = GAME_STATE::STATE_MAX;
 }
+
+#pragma endregion
+
+#pragma region Anchor Point
 
 enum class ANCHOR_POINT : unsigned char
 {
@@ -175,6 +243,10 @@ EnumParser<ANCHOR_POINT>::EnumParser()
 	map["ANCHOR_BOTTOM_RIGHT"] = ANCHOR_POINT::ANCHOR_BOTTOM_RIGHT;
 }
 
+#pragma endregion
+
+#pragma region Sound Channel
+
 enum class SOUND_CHANNEL
 {
 	MASTER,
@@ -183,6 +255,7 @@ enum class SOUND_CHANNEL
 	SOUND_CHANNEL_MAX
 };
 
+
 EnumParser<SOUND_CHANNEL>::EnumParser()
 {
 	map["MASTER"] = SOUND_CHANNEL::MASTER;
@@ -190,5 +263,7 @@ EnumParser<SOUND_CHANNEL>::EnumParser()
 	map["SFX"] = SOUND_CHANNEL::SFX;
 	map["SOUND_CHANNEL_MAX"] = SOUND_CHANNEL::SOUND_CHANNEL_MAX;
 }
+
+#pragma endregion
 
 #pragma endregion
