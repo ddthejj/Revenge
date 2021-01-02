@@ -24,11 +24,14 @@ public:
 	bool Init(HWND hWnd);
 	void Clean();
 
-	int LoadWAV(const char* filepath);
-	bool UnloadWAV(int index);
+	bool LoadWAVs(const char* filepath);
+	bool UnloadWAVs();
 	bool PlayWAV(int index);
 
 private:
+
+	int LoadWAV(const char* filepath);
+	bool UnloadWAV(int index);
 
 	Impl_Elements* elements;
 

@@ -16,14 +16,9 @@ void SoundManager::Clean()
 	delete audioPlayer;
 }
 
-int SoundManager::LoadSounds(const wchar_t* filepath)
+bool SoundManager::LoadSounds(const char* filepath)
 {
-	return 0;
-}
-
-int SoundManager::LoadSound(const char* filepath)
-{
-	return audioPlayer->LoadWAV(filepath);
+	return audioPlayer->LoadWAVs(filepath);
 }
 
 void SoundManager::Play(int index)

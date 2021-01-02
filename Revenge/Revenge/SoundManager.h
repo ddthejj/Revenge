@@ -15,9 +15,7 @@ public:
 	static void Clean();
 
 	// returns number of successfully loaded sounds
-	static int LoadSounds(const wchar_t* filepath);
-	// returns index of loaded sound (-1 if failed)
-	static int LoadSound(const char* filepath);
+	static bool LoadSounds(const char* filepath);
 	// plays a sound
 	static void Play(int index);
 };

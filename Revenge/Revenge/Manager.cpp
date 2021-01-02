@@ -161,7 +161,8 @@ void Manager::Init(HWND hwnd)
 	InputManager::Init();
 	SoundManager::Init(hwnd);
 	// temp test 
-	SoundManager::LoadSound("../Assets/Sounds/MenuHover.wav");
+	//SoundManager::LoadSound("../Assets/Sounds/MenuHover.wav");
+	SoundManager::LoadSounds("../Assets/Sounds/MenuSounds.txt");
 	// spritebatch
 	spriteBatch = new SpriteBatch(hwnd);
 

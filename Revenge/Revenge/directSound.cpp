@@ -1,5 +1,6 @@
 #include "AudioPlayer.h"
 #include "defines.h"
+#include "FileReader.h"
 #include <vector>
 
 
@@ -43,6 +44,7 @@ AudioPlayer::AudioPlayer()
 
 AudioPlayer::~AudioPlayer()
 {
+	UnloadWAVs();
 	delete elements;
 }
 
@@ -128,12 +130,45 @@ void AudioPlayer::Clean()
 	return;
 }
 
+bool AudioPlayer::LoadWAVs(const char* filepath)
+{
+	SoundReader sr;
+	sr.Open(filepath);
+
+	for (int i = 0; i < sr.lines.size(); i++)
+	{
+		if (LoadWAV(sr.lines[i].c_str()) == -1)
+		{
+			UnloadWAVs();
+			return false;
+		}
+	}
+
+	sr.Close();
+	return true;
+}
+
+bool AudioPlayer::UnloadWAVs()
+{
+	if (elements)
+		return elements->UnloadAllWAVs_Internal();
+	else
+		return false;
+}
+
 
 int AudioPlayer::LoadWAV(const char* filepath)
 {
-	elements->m_secondaryBuffers.push_back(nullptr);
-	elements->LoadWAV_Internal(filepath, &elements->m_secondaryBuffers[elements->m_secondaryBuffers.size() - 1]);
-	return elements->WAVsLoaded() - 1;
+	IDirectSoundBuffer8* newWAV;
+
+	if (elements->LoadWAV_Internal(filepath, &newWAV))
+	{
+		elements->m_secondaryBuffers.push_back(newWAV);
+
+		return elements->WAVsLoaded() - 1;
+	}
+	else
+		return -1;
 }
 
 bool AudioPlayer::UnloadWAV(int index)
@@ -351,7 +386,8 @@ bool Impl_Elements::UnloadAllWAVs_Internal()
 	// Release all secondary buffers
 	for (int i = 0; i < m_secondaryBuffers.size(); i++)
 	{
-		UnloadWAV_Internal(&m_secondaryBuffers[i]);
+		if (!UnloadWAV_Internal(&m_secondaryBuffers[i]))
+			return false;
 	}
 	m_secondaryBuffers.clear();
 	return true;

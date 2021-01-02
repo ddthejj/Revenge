@@ -52,3 +52,8 @@ public:
 	// returns the anchor point of the menu
 	ANCHOR_POINT GetAnchor();
 };
+
+class SoundReader : public FileReader
+{
+
+};
