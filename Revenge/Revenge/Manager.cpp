@@ -15,7 +15,7 @@
 #include "TextureManager.h"
 #include "SoundManager.h"
 
-GAME_STATE Manager::gameState = GAME_STATE::STATE_TITLE;
+GAME_STATE Manager::gameState = GAME_STATE::STATE_GAMEPLAY;
 SpriteBatch* Manager::spriteBatch = nullptr;
 std::vector<Object*> Manager::UpdateList;
 std::vector<Object*> Manager::DrawList;

@@ -85,4 +85,18 @@ private:
 
 #pragma endregion
 
+#pragma region Key Pressed Callbacks
+
+	void BindCallbacks();
+	void UnbindCallbacks();
+
+	void UpPressed();
+	void DownPressed();
+	void LeftPressed();
+	void RightPressed();
+
+	void SelectPressed();
+
+#pragma endregion
+
 };

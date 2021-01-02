@@ -18,7 +18,7 @@ float TitleManager::timer = 0.0f;
 
 std::vector<Text*> TitleManager::textList = std::vector<Text*>();
 
-void TitleManager::AnyKeyPressed(char key, void* this_ptr)
+void TitleManager::AnyKeyPressed(char key)
 {
 	switch (titleState)
 	{
@@ -54,7 +54,7 @@ void TitleManager::AnyKeyPressed(char key, void* this_ptr)
 
 void TitleManager::Init()
 {
-	InputManager::AnyKeyPressedCallback_Attatch(&TitleManager::AnyKeyPressed, nullptr);
+	InputManager::AnyKeyPressedCallback_Attatch(std::bind(&TitleManager::AnyKeyPressed, std::placeholders::_1));
 
 	Texture* logoTexture = Manager::GetTexture("LOGO");
 	float desiredheight = logoTexture->Height() * ((float)(Manager::GetScreenWidth() * .75f) / (float)logoTexture->Width());
@@ -65,6 +65,8 @@ void TitleManager::Init()
 
 void TitleManager::Clean()
 {
+	InputManager::AnyKeyPressedCallback_Remove(std::bind(&TitleManager::AnyKeyPressed, std::placeholders::_1));
+
 	SafeDelete(logo);
 	SafeDelete(title);
 	SafeDelete(titleBackground);

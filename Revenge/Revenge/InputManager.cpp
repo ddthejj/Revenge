@@ -11,12 +11,25 @@ bool InputManager::previousMouseKeys[(int)MOUSE_KEYS::MOUSE_KEY_MAX];
 float InputManager::mouseX = 0.f, InputManager::mouseY = 0.f;
 char InputManager::charPressed = '\0', InputManager::previousCharPressed = '\0';
 
-std::vector<InputManager::Callback<void (*)(char, void*)>> InputManager::anyKeyPressedCallback = std::vector<InputManager::Callback<void (*)(char, void*)>>();
-std::vector<InputManager::Callback<void (*)(char, void*)>> InputManager::anyKeyReleasedCallback = std::vector<InputManager::Callback<void (*)(char, void*)>>();
-std::vector<InputManager::Callback<void (*)(void*)>> InputManager::keyPressedCallbacks[(int)KEYS::KEY_MAX];
-std::vector<InputManager::Callback<void (*)(void*)>> InputManager::keyReleasedCallbacks[(int)KEYS::KEY_MAX];
-std::vector<InputManager::Callback<void (*)(void*)>> InputManager::mouseKeyPressedCallbacks[(int)MOUSE_KEYS::MOUSE_KEY_MAX];
-std::vector<InputManager::Callback<void (*)(void*)>> InputManager::mouseKeyReleasedCallbacks[(int)MOUSE_KEYS::MOUSE_KEY_MAX];
+std::vector<std::function<void(char)>> InputManager::anyKeyPressedCallback  = std::vector<std::function<void(char)>>();
+std::vector<std::function<void(char)>> InputManager::anyKeyReleasedCallback = std::vector<std::function<void(char)>>();
+std::vector<std::function<void()>> InputManager::keyPressedCallbacks[(int)KEYS::KEY_MAX];
+std::vector<std::function<void()>> InputManager::keyReleasedCallbacks[(int)KEYS::KEY_MAX];
+std::vector<std::function<void()>> InputManager::mouseKeyPressedCallbacks[(int)MOUSE_KEYS::MOUSE_KEY_MAX];
+std::vector<std::function<void()>> InputManager::mouseKeyReleasedCallbacks[(int)MOUSE_KEYS::MOUSE_KEY_MAX];
+
+
+
+template<typename T, typename... U>
+size_t getAddress(std::function<T(U...)> f) {
+	typedef T(fnType)(U...);
+	fnType** fnPointer = f.template target<fnType*>();
+	if (!fnPointer) return 0;
+	return (size_t)*fnPointer;
+}
+
+
+
 
 bool InputManager::IsKeyPressed(KEYS index)
 {
@@ -25,7 +38,7 @@ bool InputManager::IsKeyPressed(KEYS index)
 
 bool InputManager::IsMouseKeyPressed(MOUSE_KEYS index)
 {
-	return mouseKeys[(int)index]== true && previousMouseKeys[(int)index] == false;
+	return mouseKeys[(int)index] == true && previousMouseKeys[(int)index] == false;
 }
 
 
@@ -36,9 +49,9 @@ void InputManager::PressKey(WPARAM wParam)
 		if (wParam == keyOptions[key])
 		{
 			keys[key] = true;
-			for(int j = 0; j < keyPressedCallbacks[key].size(); j++)
+			for (int j = 0; j < keyPressedCallbacks[key].size(); j++)
 			{
-				keyPressedCallbacks[key][j].func(keyPressedCallbacks[key][j].object);
+				keyPressedCallbacks[key][j]();
 			}
 			break;
 		}
@@ -53,7 +66,7 @@ void InputManager::ReleaseKey(WPARAM wParam)
 		{
 			for (int j = 0; j < keyReleasedCallbacks[key].size(); j++)
 			{
-				keyReleasedCallbacks[key][j].func(keyReleasedCallbacks[key][j].object);
+				keyReleasedCallbacks[key][j]();
 			}
 			keys[key] = false;
 			break;
@@ -73,7 +86,7 @@ void InputManager::PressMouseKey(MOUSE_KEYS key)
 
 	for (int j = 0; j < mouseKeyPressedCallbacks[(int)key].size(); j++)
 	{
-		mouseKeyPressedCallbacks[(int)key][j].func(mouseKeyPressedCallbacks[(int)key][j].object);
+		mouseKeyPressedCallbacks[(int)key][j]();
 	}
 }
 
@@ -83,80 +96,81 @@ void InputManager::ReleaseMouseKey(MOUSE_KEYS key)
 
 	for (int j = 0; j < mouseKeyReleasedCallbacks[(int)key].size(); j++)
 	{
-		mouseKeyReleasedCallbacks[(int)key][j].func(mouseKeyReleasedCallbacks[(int)key][j].object);
+		mouseKeyReleasedCallbacks[(int)key][j]();
 	}
 }
 
 void InputManager::PressChar(WPARAM wParam)
 {
-	charPressed = (char)wParam; 
+	charPressed = (char)wParam;
 
 	for (int j = 0; j < anyKeyPressedCallback.size(); j++)
 	{
-		anyKeyPressedCallback[j].func((char)wParam, anyKeyPressedCallback[j].object);
+		//anyKeyPressedCallback[j].func((char)wParam, anyKeyPressedCallback[j].object);
+		anyKeyPressedCallback[j](charPressed);
 	}
 
 }
 
 
-bool InputManager::AnyKeyPressedCallback_Attatch(void(*func)(char, void*), void* this_ptr)
+bool InputManager::AnyKeyPressedCallback_Attatch(std::function<void(char)> func)
 {
-	return AddFunctionToCallbackList(&anyKeyPressedCallback, func, this_ptr);
+	return AddFunctionToCallbackList(&anyKeyPressedCallback, func);
 }
 
-bool InputManager::AnyKeyPressedCallback_Remove(void(*func)(char, void*), void* this_ptr)
+bool InputManager::AnyKeyPressedCallback_Remove(std::function<void(char)> func)
 {
-	return RemoveFunctionFromCallbackList(&anyKeyPressedCallback, func, this_ptr);
+	return RemoveFunctionFromCallbackList(&anyKeyPressedCallback, func);
 }
 
-bool InputManager::KeyPressedCallbacks_Attatch(KEYS whichKey, void(*func)(void*), void* this_ptr)
+bool InputManager::KeyPressedCallbacks_Attatch(KEYS whichKey, std::function<void()> func)
 {
-	return AddFunctionToCallbackList(&keyPressedCallbacks[(int)whichKey], func, this_ptr);
+	return AddFunctionToCallbackList(&keyPressedCallbacks[(int)whichKey], func);
 }
 
-bool InputManager::KeyPressedCallbacks_Remove(KEYS whichKey, void(*func)(void*), void* this_ptr)
+bool InputManager::KeyPressedCallbacks_Remove(KEYS whichKey, std::function<void()> func)
 {
-	return RemoveFunctionFromCallbackList(&keyPressedCallbacks[(int)whichKey], func, this_ptr);
+	return RemoveFunctionFromCallbackList(&keyPressedCallbacks[(int)whichKey], func);
 }
 
-bool InputManager::MouseKeyPressedCallbacks_Attatch(MOUSE_KEYS whichKey, void(*func)(void*), void* this_ptr)
+bool InputManager::MouseKeyPressedCallbacks_Attatch(MOUSE_KEYS whichKey, std::function<void()> func)
 {
-	return AddFunctionToCallbackList(&mouseKeyPressedCallbacks[(int)whichKey], func, this_ptr);
+	return AddFunctionToCallbackList(&mouseKeyPressedCallbacks[(int)whichKey], func);
 }
 
-bool InputManager::MouseKeyPressedCallbacks_Remove(MOUSE_KEYS whichKey, void(*func)(void*), void* this_ptr)
+bool InputManager::MouseKeyPressedCallbacks_Remove(MOUSE_KEYS whichKey, std::function<void()> func)
 {
-	return RemoveFunctionFromCallbackList(&mouseKeyPressedCallbacks[(int)whichKey], func, this_ptr);
+	return RemoveFunctionFromCallbackList(&mouseKeyPressedCallbacks[(int)whichKey], func);
 }
 
-bool InputManager::AnyKeyReleasedCallback_Attatch(void(*func)(char, void*), void* this_ptr)
+bool InputManager::AnyKeyReleasedCallback_Attatch(std::function<void(char)> func)
 {
-	return AddFunctionToCallbackList(&anyKeyReleasedCallback, func, this_ptr);
+	return AddFunctionToCallbackList(&anyKeyReleasedCallback, func);
 }
 
-bool InputManager::AnyKeyReleasedCallback_Remove(void(*func)(char, void*), void* this_ptr)
+bool InputManager::AnyKeyReleasedCallback_Remove(std::function<void(char)> func)
 {
-	return RemoveFunctionFromCallbackList(&anyKeyReleasedCallback, func, this_ptr);
+	return RemoveFunctionFromCallbackList(&anyKeyReleasedCallback, func);
 }
 
-bool InputManager::KeyReleasedCallbacks_Attatch(KEYS whichKey, void(*func)(void*), void* this_ptr)
+bool InputManager::KeyReleasedCallbacks_Attatch(KEYS whichKey, std::function<void()> func)
 {
-	return AddFunctionToCallbackList(&keyReleasedCallbacks[(int)whichKey], func, this_ptr);
+	return AddFunctionToCallbackList(&keyReleasedCallbacks[(int)whichKey], func);
 }
 
-bool InputManager::KeyReleasedCallbacks_Remove(KEYS whichKey, void(*func)(void*), void* this_ptr)
+bool InputManager::KeyReleasedCallbacks_Remove(KEYS whichKey, std::function<void()> func)
 {
-	return RemoveFunctionFromCallbackList(&keyReleasedCallbacks[(int)whichKey], func, this_ptr);
+	return RemoveFunctionFromCallbackList(&keyReleasedCallbacks[(int)whichKey], func);
 }
 
-bool InputManager::MouseKeyReleasedCallbacks_Attatch(MOUSE_KEYS whichKey, void(*func)(void*), void* this_ptr)
+bool InputManager::MouseKeyReleasedCallbacks_Attatch(MOUSE_KEYS whichKey, std::function<void()> func)
 {
-	return AddFunctionToCallbackList(&mouseKeyReleasedCallbacks[(int)whichKey], func, this_ptr);
+	return AddFunctionToCallbackList(&mouseKeyReleasedCallbacks[(int)whichKey], func);
 }
 
-bool InputManager::MouseKeyReleasedCallbacks_Remove(MOUSE_KEYS whichKey, void(*func)(void*), void* this_ptr)
+bool InputManager::MouseKeyReleasedCallbacks_Remove(MOUSE_KEYS whichKey, std::function<void()> func)
 {
-	return RemoveFunctionFromCallbackList(&mouseKeyReleasedCallbacks[(int)whichKey], func, this_ptr);
+	return RemoveFunctionFromCallbackList(&mouseKeyReleasedCallbacks[(int)whichKey], func);
 }
 
 
@@ -174,13 +188,13 @@ void InputManager::Init()
 	// initialize callback arrays
 	for (int i = 0; i < (int)KEYS::KEY_MAX; i++)
 	{
-		keyPressedCallbacks[i] = std::vector<Callback<void (*)(void*)>>();
-		keyReleasedCallbacks[i] = std::vector<Callback<void (*)(void*)>>();
+		keyPressedCallbacks[i] = std::vector<std::function<void()>>();
+		keyReleasedCallbacks[i] = std::vector<std::function<void()>>();
 	}
 	for (int i = 0; i < (int)MOUSE_KEYS::MOUSE_KEY_MAX; i++)
 	{
-		mouseKeyPressedCallbacks[i] = std::vector<Callback<void (*)(void*)>>();
-		mouseKeyReleasedCallbacks[i] = std::vector<Callback<void (*)(void*)>>();
+		mouseKeyPressedCallbacks[i] = std::vector<std::function<void()>>();
+		mouseKeyReleasedCallbacks[i] = std::vector<std::function<void()>>();
 	}
 }
 
@@ -212,13 +226,13 @@ void InputManager::Update(float delta_time)
 
 
 template <class T>
-bool InputManager::AddFunctionToCallbackList(std::vector<Callback<T>>* callbackList, T func, void* this_ptr)
+bool InputManager::AddFunctionToCallbackList(std::vector<T>* callbackList, T func)
 {
 
 	// check if we already contain the function
 	for (auto it = callbackList->begin(); it != callbackList->end(); it++)
 	{
-		if ((*it).func == func && (*it).object == this_ptr)
+		if (getAddress(*it) == getAddress(func))
 		{
 			// this list already contains the callback
 			return false;
@@ -226,22 +240,18 @@ bool InputManager::AddFunctionToCallbackList(std::vector<Callback<T>>* callbackL
 	}
 	// match wasn't found
 
-	// create the callback struct
-	Callback<T> newCallback;
-	newCallback.func = func;
-	newCallback.object = this_ptr;
 	// add the new callback to the list
-	callbackList->push_back(newCallback);
+	callbackList->push_back(func);
 	return true;
 }
 
 template<class T>
-bool InputManager::RemoveFunctionFromCallbackList(std::vector<Callback<T>>* callbackList, T func, void* this_ptr)
+bool InputManager::RemoveFunctionFromCallbackList(std::vector<T>* callbackList, T func)
 {
 	// make sure we already contain the function
 	for (auto it = callbackList->begin(); it != callbackList->end(); it++)
 	{
-		if ((*it).func == func && (*it).object == this_ptr)
+		if (getAddress(*it) == getAddress(func))
 		{
 			callbackList->erase(it);
 			return true;

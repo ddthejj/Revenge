@@ -1,21 +1,11 @@
 #pragma once 
 #include "Manager.h"
+#include <functional>
 #include <vector>
 
 // handles all input for the game
 class InputManager
 {
-	
-#pragma region Structs
-
-	template <class T>
-	struct Callback
-	{
-		void* object;
-		T func;
-	};
-
-#pragma endregion
 
 #pragma region Properties
 
@@ -30,12 +20,12 @@ class InputManager
 	static char previousCharPressed;								// which character was pressed last frame
 
 	// Callback functions that will trigger once a key is pressed or released
-	static std::vector<Callback<void (*)(char, void*)>> anyKeyPressedCallback;									// standard callback for any key being pressed
-	static std::vector<Callback<void (*)(char, void*)>> anyKeyReleasedCallback;									// standard callback for any key being released
-	static std::vector<Callback<void (*)(void*)>> keyPressedCallbacks[(int)KEYS::KEY_MAX];						// keyboard key pressed callbacks
-	static std::vector<Callback<void (*)(void*)>> keyReleasedCallbacks[(int)KEYS::KEY_MAX];						// keyboard key released callbacks
-	static std::vector<Callback<void (*)(void*)>> mouseKeyPressedCallbacks[(int)MOUSE_KEYS::MOUSE_KEY_MAX];		// mouse button pressed callbacks
-	static std::vector<Callback<void (*)(void*)>> mouseKeyReleasedCallbacks[(int)MOUSE_KEYS::MOUSE_KEY_MAX];	// mouse button released callbacks
+	static std::vector<std::function<void (char)>> anyKeyPressedCallback;									// standard callback for any key being pressed
+	static std::vector<std::function<void (char)>> anyKeyReleasedCallback;									// standard callback for any key being released
+	static std::vector<std::function<void()>> keyPressedCallbacks[(int)KEYS::KEY_MAX];						// keyboard key pressed callbacks
+	static std::vector<std::function<void()>> keyReleasedCallbacks[(int)KEYS::KEY_MAX];						// keyboard key released callbacks
+	static std::vector<std::function<void()>> mouseKeyPressedCallbacks[(int)MOUSE_KEYS::MOUSE_KEY_MAX];		// mouse button pressed callbacks
+	static std::vector<std::function<void()>> mouseKeyReleasedCallbacks[(int)MOUSE_KEYS::MOUSE_KEY_MAX];	// mouse button released callbacks
 
 #pragma endregion
 
@@ -118,29 +108,29 @@ public:
 #pragma region Access Callbacks
 
 	// Attatch to the "any key pressed" callback
-	static bool AnyKeyPressedCallback_Attatch(void(*func)(char, void*), void* this_ptr);
+	static bool AnyKeyPressedCallback_Attatch(std::function<void(char)> func);
 	// Removed from the "any key pressed" callback
-	static bool AnyKeyPressedCallback_Remove(void(*func)(char, void*), void* this_ptr);
+	static bool AnyKeyPressedCallback_Remove(std::function<void(char)> func);
 	// Attatch to the "key pressed" callback
-	static bool KeyPressedCallbacks_Attatch(KEYS whichKey, void(*func)(void*), void* this_ptr);
+	static bool KeyPressedCallbacks_Attatch(KEYS whichKey, std::function<void()> func);
 	// Remove from the "key pressed" callback
-	static bool KeyPressedCallbacks_Remove(KEYS whichKey, void(*func)(void*), void* this_ptr);
+	static bool KeyPressedCallbacks_Remove(KEYS whichKey, std::function<void()> func);
 	// Attatch to the "mouse key pressed" callback
-	static bool MouseKeyPressedCallbacks_Attatch(MOUSE_KEYS whichKey, void(*func)(void*), void* this_ptr);
+	static bool MouseKeyPressedCallbacks_Attatch(MOUSE_KEYS whichKey, std::function<void()> func);
 	// Remove from the "mouse key pressed" callback
-	static bool MouseKeyPressedCallbacks_Remove(MOUSE_KEYS whichKey, void(*func)(void*), void* this_ptr);
+	static bool MouseKeyPressedCallbacks_Remove(MOUSE_KEYS whichKey, std::function<void()> func);
 	// Attatch to the "any key released" callback
-	static bool AnyKeyReleasedCallback_Attatch(void(*func)(char, void*), void* this_ptr);
+	static bool AnyKeyReleasedCallback_Attatch(std::function<void(char)> func);
 	// Removed from the "any key released" callback
-	static bool AnyKeyReleasedCallback_Remove(void(*func)(char, void*), void* this_ptr);
+	static bool AnyKeyReleasedCallback_Remove(std::function<void(char)> func);
 	// Attatch to the "key released" callback
-	static bool KeyReleasedCallbacks_Attatch(KEYS whichKey, void(*func)(void*), void* this_ptr);
+	static bool KeyReleasedCallbacks_Attatch(KEYS whichKey, std::function<void()> func);
 	// Remove from the "key released" callback
-	static bool KeyReleasedCallbacks_Remove(KEYS whichKey, void(*func)(void*), void* this_ptr);
+	static bool KeyReleasedCallbacks_Remove(KEYS whichKey, std::function<void()> func);
 	// Attatch to the "mouse key released" callback
-	static bool MouseKeyReleasedCallbacks_Attatch(MOUSE_KEYS whichKey, void(*func)(void*), void* this_ptr);
+	static bool MouseKeyReleasedCallbacks_Attatch(MOUSE_KEYS whichKey, std::function<void()> func);
 	// Remove from the "mouse key released" callback
-	static bool MouseKeyReleasedCallbacks_Remove(MOUSE_KEYS whichKey, void(*func)(void*), void* this_ptr);
+	static bool MouseKeyReleasedCallbacks_Remove(MOUSE_KEYS whichKey, std::function<void()> func);
 
 #pragma endregion
 
@@ -158,8 +148,8 @@ public:
 protected:
 
 	template <class T>
-	static bool AddFunctionToCallbackList(std::vector<Callback<T>>* callbackList, T func, void* this_ptr);
+	static bool AddFunctionToCallbackList(std::vector<T>* callbackList, T func);
 
 	template <class T>
-	static bool RemoveFunctionFromCallbackList(std::vector<Callback<T>>* callbackList, T func, void* this_ptr);
+	static bool RemoveFunctionFromCallbackList(std::vector<T>* callbackList, T func);
 };

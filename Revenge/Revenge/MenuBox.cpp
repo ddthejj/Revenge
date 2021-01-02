@@ -5,6 +5,7 @@
 #include "Texture.h"
 #include "MenuManager.h"
 #include "FileReader.h"
+#include "InputManager.h"
 
 MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _texture, Texture* _arrowTexture, float _layer, float _opacity, ANCHOR_POINT _anchor) : UISprite(_x, _y, _width, _height, _texture, _layer, _opacity, _anchor)
 {
@@ -381,9 +382,40 @@ void MenuBox::Draw(SpriteBatch* spriteBatch)
 	arrow->Draw(spriteBatch);
 }
 
-
 void MenuBox::Freeze()
 {
 	Sprite::Freeze();
 	ResetArrow();
+}
+
+
+void MenuBox::BindCallbacks()
+{
+	InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_UP, std::bind(&MenuBox::UpPressed, this));
+}
+void MenuBox::UnbindCallbacks()
+{
+
+}
+
+void MenuBox::UpPressed()
+{
+
+}
+void MenuBox::DownPressed()
+{
+
+}
+void MenuBox::LeftPressed()
+{
+
+}
+void MenuBox::RightPressed()
+{
+
+}
+
+void MenuBox::SelectPressed()
+{
+
 }

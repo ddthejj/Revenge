@@ -31,7 +31,7 @@ class TitleManager
 
 public:
 
-	static void AnyKeyPressed(char key, void* this_ptr);
+	static void AnyKeyPressed(char key);
 
 	static void Init();
 	static void Clean();

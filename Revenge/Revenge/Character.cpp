@@ -33,30 +33,30 @@ void Character::Draw(SpriteBatch* spriteBatch)
 
 Player::Player(float x, float y, float height, float width, Texture* _texture, float _layer) : Character(x, y, height, width, _texture, _layer)
 {
-	InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_UP, &Player::UpPressedCallbackStatic, this);
-	InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_DOWN, &Player::DownPressedCallbackStatic, this);
-	InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_LEFT, &Player::LeftPressedCallbackStatic, this);
-	InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_RIGHT, &Player::RightPressedCallbackStatic, this);
+	InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_UP, std::bind(&Player::UpPressedCallback, this));
+	InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_DOWN, std::bind(&Player::DownPressedCallback, this));
+	InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_LEFT, std::bind(&Player::LeftPressedCallback, this));
+	InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_RIGHT, std::bind(&Player::RightPressedCallback, this));
 
-	InputManager::KeyReleasedCallbacks_Attatch(KEYS::KEY_UP, &Player::UpReleasedCallbackStatic, this);
-	InputManager::KeyReleasedCallbacks_Attatch(KEYS::KEY_DOWN, &Player::DownReleasedCallbackStatic, this);
-	InputManager::KeyReleasedCallbacks_Attatch(KEYS::KEY_LEFT, &Player::LeftReleasedCallbackStatic, this);
-	InputManager::KeyReleasedCallbacks_Attatch(KEYS::KEY_RIGHT, &Player::RightReleasedCallbackStatic, this);
+	InputManager::KeyReleasedCallbacks_Attatch(KEYS::KEY_UP, std::bind(&Player::UpReleasedCallback, this));
+	InputManager::KeyReleasedCallbacks_Attatch(KEYS::KEY_DOWN, std::bind(&Player::DownReleasedCallback, this));
+	InputManager::KeyReleasedCallbacks_Attatch(KEYS::KEY_LEFT, std::bind(&Player::LeftReleasedCallback, this));
+	InputManager::KeyReleasedCallbacks_Attatch(KEYS::KEY_RIGHT, std::bind(&Player::RightReleasedCallback, this));
 }
 
 Player::~Player()
 {
 	if (active) Deactivate();
 
-	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_UP, &Player::UpPressedCallbackStatic, this);
-	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_DOWN, &Player::DownPressedCallbackStatic, this);
-	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_LEFT, &Player::LeftPressedCallbackStatic, this);
-	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_RIGHT, &Player::RightPressedCallbackStatic, this);
+	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_UP, std::bind(&Player::UpPressedCallback, this));
+	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_DOWN, std::bind(&Player::DownPressedCallback, this));
+	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_LEFT, std::bind(&Player::LeftPressedCallback, this));
+	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_RIGHT, std::bind(&Player::RightPressedCallback, this));
 
-	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_UP, &Player::UpPressedCallbackStatic, this);
-	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_DOWN, &Player::DownPressedCallbackStatic, this);
-	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_LEFT, &Player::LeftPressedCallbackStatic, this);
-	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_RIGHT, &Player::RightPressedCallbackStatic, this);
+	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_UP, std::bind(&Player::UpPressedCallback, this));
+	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_DOWN, std::bind(&Player::DownPressedCallback, this));
+	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_LEFT, std::bind(&Player::LeftPressedCallback, this));
+	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_RIGHT, std::bind(&Player::RightPressedCallback, this));
 }
 
 void Player::Update(float delta_time)
