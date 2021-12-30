@@ -423,6 +423,11 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, Room* 
 #pragma endregion
 }
 
+Point<float> Player::GetInteractPoint()
+{
+	return Point<float>();
+}
+
 #pragma endregion
 
 #pragma region NonPlayer Character

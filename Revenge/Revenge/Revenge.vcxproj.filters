@@ -94,6 +94,9 @@
     <ClCompile Include="SoundManager.cpp">
       <Filter>Managers</Filter>
     </ClCompile>
+    <ClCompile Include="EnumParser.cpp">
+      <Filter>Essentials</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Texture.h">

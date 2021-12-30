@@ -253,6 +253,6 @@ int MenuReader::GetOptions(MenuReader::OptionData** optionsList)
 
 ANCHOR_POINT MenuReader::GetAnchor()
 {
-	EnumParser<ANCHOR_POINT> enumParser;
-	return enumParser.Parse(lines[1]);
+	
+	return EnumParser::ParseAnchorPoint(lines[1]);
 }

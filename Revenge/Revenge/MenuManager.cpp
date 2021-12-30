@@ -59,6 +59,7 @@ void MenuManager::LoadOverworldMenus()
 	UnloadMenus();
 
 	DelegateHandle* menuPressedHandle = InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_MENU, std::bind(&MenuManager::MenuPressed), nullptr);
+	delete menuPressedHandle;
 	//InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_INTERACT, std::bind(&MenuManager::InteractPressed));
 
 	menuList = new MenuBox * [(int)OVERWORLD_MENUS::MENU_MAX];
@@ -110,7 +111,7 @@ void MenuManager::OpenMenu(int index)
 		{
 		case OVERWORLD_MENUS::MENU_BASE:
 		{
-			InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_INTERACT, std::bind(&MenuManager::InteractPressed));
+			InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_INTERACT, std::bind(&MenuManager::InteractPressed), menuList[(int)OVERWORLD_MENUS::MENU_BASE]);
 			break;
 		}
 		case OVERWORLD_MENUS::MENU_CHARACTER:
@@ -194,7 +195,7 @@ void MenuManager::CloseMenu()
 	else
 	{
 		Manager::UnfreezeScene();
-		InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_INTERACT, std::bind(&MenuManager::InteractPressed));
+		InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_INTERACT, std::bind(&MenuManager::InteractPressed), menuList[(int)OVERWORLD_MENUS::MENU_BASE]);
 	}
 }
 
@@ -206,7 +207,7 @@ void MenuManager::CloseAllMenus()
 		activeMenu = activeMenu->previousMenu;
 	}
 
-	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_INTERACT, std::bind(&MenuManager::InteractPressed));
+	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_INTERACT, std::bind(&MenuManager::InteractPressed), menuList[(int)OVERWORLD_MENUS::MENU_BASE]);
 
 	Manager::UnfreezeScene();
 }

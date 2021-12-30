@@ -4,26 +4,6 @@
 #include <string>
 #include <stdexcept>
 
-
-template <typename T>
-class EnumParser
-{
-	std::map<std::string, T> map;
-
-public:
-
-	EnumParser() {}
-	T Parse(const std::string& name)
-	{
-		auto it = map.find(name);
-		if (it == map.end())
-		{
-			throw std::runtime_error("Parsing Enum Failed");
-		}
-		return (*it).second;
-	}
-};
-
 #pragma region Enums
 
 #pragma region Tiles
@@ -36,16 +16,6 @@ enum class TILES : int	// Tiles
 	TILE_BLUETEXT,		// Test interaction tile
 	TILE_MAX
 };
-
-EnumParser<TILES>::EnumParser()
-{
-	map["TILE_BROWNFLOOR"] = TILES::TILE_BROWNFLOOR;
-	map["TILE_REDWALL"] = TILES::TILE_REDWALL;
-	map["TILE_GREENDOOR"] = TILES::TILE_GREENDOOR;
-	map["TILE_BLUETEXT"] = TILES::TILE_BLUETEXT;
-	map["TILE_MAX"] = TILES::TILE_MAX;
-}
-
 #pragma endregion
 
 #pragma region Textures
@@ -66,21 +36,6 @@ enum class TEXTURES_TEST		// Textures for test map
 	TEX_T_MAX
 };
 
-
-EnumParser<TEXTURES_TEST>::EnumParser()
-{
-	map["TEX_T_BLACK"] =		TEXTURES_TEST::TEX_T_BLACK;
-	map["TEX_T_MENU"] =			TEXTURES_TEST::TEX_T_MENU;
-	map["TEX_T_ARROW"] =		TEXTURES_TEST::TEX_T_ARROW;
-	map["TEX_T_TESTROOM"] =		TEXTURES_TEST::TEX_T_TESTROOM;
-	map["TEX_T_BROWNFLOOR"] =	TEXTURES_TEST::TEX_T_BROWNFLOOR;
-	map["TEX_T_REDWALL"] =		TEXTURES_TEST::TEX_T_REDWALL;
-	map["TEX_T_GREENDOOR"] =	TEXTURES_TEST::TEX_T_GREENDOOR;
-	map["TEX_T_BLUETEXT"] =		TEXTURES_TEST::TEX_T_BLUETEXT;
-	map["TEX_T_PLAYER"] =		TEXTURES_TEST::TEX_T_PLAYER;
-	map["TEX_T_MAX"] =			TEXTURES_TEST::TEX_T_MAX;
-}
-
 #pragma endregion
 
 #pragma region Title
@@ -95,16 +50,6 @@ enum class TEXTURES_TITLE		// Textures for title screen
 	TEX_TITLE_ARROW,			// Menu arrow texture
 	TEX_TITLE_MAX
 };
-
-EnumParser<TEXTURES_TITLE>::EnumParser()
-{
-	map["TEX_TITLE_BLACK"] =		TEXTURES_TITLE::TEX_TITLE_BLACK;
-	map["TEX_TITLE_LOGO"] =			TEXTURES_TITLE::TEX_TITLE_LOGO;
-	map["TEX_TITLE_TITLE"] =		TEXTURES_TITLE::TEX_TITLE_TITLE;
-	map["TEX_TITLE_BACKGROUND"] =	TEXTURES_TITLE::TEX_TITLE_BACKGROUND;
-	map["TEX_TITLE_MENU"] =			TEXTURES_TITLE::TEX_TITLE_MENU;
-	map["TEX_TITLE_ARROW"] =		TEXTURES_TITLE::TEX_TITLE_ARROW;
-}
 
 #pragma endregion
 
@@ -122,18 +67,6 @@ enum class KEYS			// Keybinds
 	KEY_INTERACT,		// Select / interact with tiles
 	KEY_MAX
 };
-
-EnumParser<KEYS>::EnumParser()
-{
-	map["KEY_UP"] = KEYS::KEY_UP;
-	map["KEY_DOWN"] = KEYS::KEY_DOWN;
-	map["KEY_LEFT"] = KEYS::KEY_LEFT;
-	map["KEY_RIGHT"] = KEYS::KEY_RIGHT;
-	map["KEY_MENU"] = KEYS::KEY_MENU;
-	map["KEY_INTERACT"] = KEYS::KEY_INTERACT;
-	map["KEY_MAX"] = KEYS::KEY_MAX;
-};
-
 #pragma endregion
 
 #pragma region Mouse Keys
@@ -145,16 +78,6 @@ enum class MOUSE_KEYS	// Mouse buttons
 	MOUSE_KEY_MIDDLE,	// Middle mouse button
 	MOUSE_KEY_MAX
 };
-
-
-
-EnumParser<MOUSE_KEYS>::EnumParser()
-{
-	map["MOUSE_KEY_LEFT"] = MOUSE_KEYS::MOUSE_KEY_LEFT;
-	map["MOUSE_KEY_RIGHT"] = MOUSE_KEYS::MOUSE_KEY_RIGHT;
-	map["MOUSE_KEY_MIDDLE"] = MOUSE_KEYS::MOUSE_KEY_MIDDLE;
-	map["MOUSE_KEY_MAX"] = MOUSE_KEYS::MOUSE_KEY_MAX;
-}
 
 #pragma endregion
 
@@ -170,16 +93,6 @@ enum class FADE_STATUS	// Fade in and out status
 	FADE_MAX
 };
 
-EnumParser<FADE_STATUS>::EnumParser()
-{
-	map["FADE_START"] = FADE_STATUS::FADE_START;
-	map["FADE_OUT"] = FADE_STATUS::FADE_OUT;
-	map["FADE_SWITCH"] = FADE_STATUS::FADE_SWITCH;
-	map["FADE_IN"] = FADE_STATUS::FADE_IN;
-	map["FADE_DONE"] = FADE_STATUS::FADE_DONE;
-	map["FADE_MAX"] = FADE_STATUS::FADE_MAX;
-}
-
 #pragma endregion
 
 #pragma region Game State
@@ -194,17 +107,6 @@ enum class GAME_STATE	// game state
 	STATE_DIALOGUE,		// talking 
 	STATE_MAX
 };
-
-EnumParser<GAME_STATE>::EnumParser()
-{
-	map["STATE_TITLE"] = GAME_STATE::STATE_TITLE;
-	map["STATE_LOADING"] = GAME_STATE::STATE_LOADING;
-	map["STATE_OVERWORLD"] = GAME_STATE::STATE_OVERWORLD;
-	map["STATE_BATTLE"] = GAME_STATE::STATE_BATTLE;
-	map["STATE_CUTSCENE"] = GAME_STATE::STATE_CUTSCENE;
-	map["STATE_DIALOGUE"] = GAME_STATE::STATE_DIALOGUE;
-	map["STATE_MAX"] = GAME_STATE::STATE_MAX;
-}
 
 #pragma endregion
 
@@ -230,19 +132,6 @@ enum class ANCHOR_POINT : unsigned char
 	ANCHOR_BOTTOM_RIGHT = BOTTOM | RIGHT
 };
 
-EnumParser<ANCHOR_POINT>::EnumParser()
-{
-	map["ANCHOR_TOP_LEFT"] = ANCHOR_POINT::ANCHOR_TOP_LEFT;
-	map["ANCHOR_TOP_CENTER"] = ANCHOR_POINT::ANCHOR_TOP_CENTER;
-	map["ANCHOR_TOP_RIGHT"] = ANCHOR_POINT::ANCHOR_TOP_RIGHT;
-	map["ANCHOR_CENTER_LEFT"] = ANCHOR_POINT::ANCHOR_CENTER_LEFT;
-	map["ANCHOR_CENTER"] = ANCHOR_POINT::ANCHOR_CENTER;
-	map["ANCHOR_CENTER_RIGHT"] = ANCHOR_POINT::ANCHOR_CENTER_RIGHT;
-	map["ANCHOR_BOTTOM_LEFT"] = ANCHOR_POINT::ANCHOR_BOTTOM_LEFT;
-	map["ANCHOR_BOTTOM_CENTER"] = ANCHOR_POINT::ANCHOR_BOTTOM_CENTER;
-	map["ANCHOR_BOTTOM_RIGHT"] = ANCHOR_POINT::ANCHOR_BOTTOM_RIGHT;
-}
-
 #pragma endregion
 
 #pragma region Sound Channel
@@ -255,15 +144,32 @@ enum class SOUND_CHANNEL
 	SOUND_CHANNEL_MAX
 };
 
+#pragma endregion
 
-EnumParser<SOUND_CHANNEL>::EnumParser()
+#pragma endregion
+
+
+class EnumParser
 {
-	map["MASTER"] = SOUND_CHANNEL::MASTER;
-	map["MUSIC"] = SOUND_CHANNEL::MUSIC;
-	map["SFX"] = SOUND_CHANNEL::SFX;
-	map["SOUND_CHANNEL_MAX"] = SOUND_CHANNEL::SOUND_CHANNEL_MAX;
-}
+	static std::map<std::string, TILES>				tilesMap;
+	static std::map<std::string, TEXTURES_TEST>		testTexturesMap;
+	static std::map<std::string, TEXTURES_TITLE>	titleTexturesMap;
+	static std::map<std::string, KEYS>				keysMap;
+	static std::map<std::string, MOUSE_KEYS>		mouseKeysMap;
+	static std::map<std::string, FADE_STATUS>		fadeStatusMap;
+	static std::map<std::string, GAME_STATE>		gameStateMap;
+	static std::map<std::string, ANCHOR_POINT>		anchorPointMap;
+	static std::map<std::string, SOUND_CHANNEL>		soundChannelMap;
 
-#pragma endregion
+public:
 
-#pragma endregion
+	static TILES ParseTiles(const std::string& name);
+	static TEXTURES_TEST ParseTestTexture(const std::string& name);
+	static TEXTURES_TITLE ParseTitleTexture(const std::string& name);
+	static KEYS ParseKeys(const std::string& name);
+	static MOUSE_KEYS ParseMouseKeys(const std::string& name);
+	static FADE_STATUS ParseFadeStatus(const std::string& name);
+	static GAME_STATE ParseGameState(const std::string& name);
+	static ANCHOR_POINT ParseAnchorPoint(const std::string& name);
+	static SOUND_CHANNEL ParseSoundChannel(const std::string& name);
+};

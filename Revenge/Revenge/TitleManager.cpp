@@ -54,18 +54,19 @@ void TitleManager::AnyKeyPressed(char key)
 
 void TitleManager::Init()
 {
-	InputManager::AnyKeyPressedCallback_Attatch(std::bind(&TitleManager::AnyKeyPressed, std::placeholders::_1));
-
 	Texture* logoTexture = Manager::GetTexture("LOGO");
 	float desiredheight = logoTexture->Height() * ((float)(Manager::GetScreenWidth() * .75f) / (float)logoTexture->Width());
 
 	logo = new UISprite(0, 0, Manager::GetScreenWidth() * .75f, desiredheight, logoTexture, 1.f, 0.f, ANCHOR_POINT::ANCHOR_CENTER);
 	logo->Activate();
+
+	auto delHandle = InputManager::AnyKeyPressedCallback_Attatch(std::bind(&TitleManager::AnyKeyPressed, std::placeholders::_1), nullptr);
+	delete delHandle;
 }
 
 void TitleManager::Clean()
 {
-	InputManager::AnyKeyPressedCallback_Remove(std::bind(&TitleManager::AnyKeyPressed, std::placeholders::_1));
+	InputManager::AnyKeyPressedCallback_Remove(std::bind(&TitleManager::AnyKeyPressed, std::placeholders::_1), nullptr);
 
 	SafeDelete(logo);
 	SafeDelete(title);
