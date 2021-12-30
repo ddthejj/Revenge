@@ -77,8 +77,14 @@ public:
 	// update the menu box
 	virtual void Update(float delta_time);
 
+	// activate the menu box
+	virtual void Activate();
+	// deactivate the menu box
+	virtual void Deactivate();
 	// freeze the menu box
 	virtual void Freeze();
+	// unfreeze the menu box
+	virtual void Unfreeze();
 
 
 private:
@@ -87,8 +93,8 @@ private:
 
 #pragma region Key Pressed Callbacks
 
-	void BindCallbacks();
-	void UnbindCallbacks();
+	virtual void BindCallbacks();
+	virtual void UnbindCallbacks();
 
 	void UpPressed();
 	void DownPressed();

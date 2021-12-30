@@ -15,7 +15,7 @@
 #include "TextureManager.h"
 #include "SoundManager.h"
 
-GAME_STATE Manager::gameState = GAME_STATE::STATE_GAMEPLAY;
+GAME_STATE Manager::gameState = GAME_STATE::STATE_OVERWORLD;
 SpriteBatch* Manager::spriteBatch = nullptr;
 std::vector<Object*> Manager::UpdateList;
 std::vector<Object*> Manager::DrawList;
@@ -160,9 +160,6 @@ void Manager::Init(HWND hwnd)
 	// init managers that will be used no matter what
 	InputManager::Init();
 	SoundManager::Init(hwnd);
-	// temp test 
-	//SoundManager::LoadSound("../Assets/Sounds/MenuHover.wav");
-	SoundManager::LoadSounds("../Assets/Sounds/MenuSounds.txt");
 	// spritebatch
 	spriteBatch = new SpriteBatch(hwnd);
 
@@ -187,6 +184,9 @@ void Manager::InitTitle()
 {
 	// load title textures
 	TextureManager::LoadTextures(L"../Assets/TestTextures/TestTexture_Title_List.txt", spriteBatch);
+
+	// load title sounds
+	SoundManager::LoadSounds("../Assets/Sounds/MenuSounds.txt");
 
 	// init managers for title
 	TitleManager::Init();

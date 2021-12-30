@@ -34,6 +34,7 @@ public:
 	float Bottom() const;									// returns the bottom x of the rectangle
 	float Left() const;										// returns the left y of the rectangle
 	float Right() const;									// returns the right y of the rectangle
+	Point<float> Center() const;							// returns the center of the rectangle
 	float CenterX() const;									// returns the center x of the rectangle
 	float CenterY() const;									// returns the center y of the rectangle
 	Point<float> Location() const;							// returns the location of the rectangle
@@ -48,6 +49,7 @@ public:
 	void MoveY(float offset);// { y += offset; }
 
 	bool Intersects(const MyRectangle &that) const;
+	bool Contains(const Point<float>& that) const;
 
 #pragma endregion
 

@@ -22,7 +22,8 @@ Room::Room(const char* filepath)
 	std::vector<std::string>* textList; 
 	dimensions = roomReader.GetLayers(&layers);
 	int doorCount = roomReader.GetDoorData(&doorData);
-	int textCount =  roomReader.GetTextList(&textList);
+	interactableCount = roomReader.GetTextList(&textList);
+	interactableTiles = new Interactable*[interactableCount];
 
 #pragma endregion
 
@@ -58,9 +59,11 @@ Room::Room(const char* filepath)
 					}
 					else if (prototype->interactable)
 					{
-						if (interactableAt < textCount)
+						if (interactableAt < interactableCount)
 						{
-							tiles[l][i][j] = new Interactable(prototype, (float)x, (float)y, .25f * (float)l, textList[interactableAt]);
+							Interactable* interactable = new Interactable(prototype, (float)x, (float)y, .25f * (float)l, textList[interactableAt]);
+							interactableTiles[interactableAt] = interactable;
+							tiles[l][i][j] = interactable;
 							interactableAt++;
 						}
 						else
@@ -126,6 +129,8 @@ Room::~Room()
 		if (tiles[l])
 			delete tiles[l];
 	}
+
+	delete[] interactableTiles;
 }
 
 void Room::Activate()
@@ -198,4 +203,19 @@ Tile* Room::GetTile(int layer, int x, int y)
 	if (x >= dimensions.x || x < 0 || y >= dimensions.y || y < 0)
 		return nullptr;
 	return tiles[layer][x][y];
+}
+
+Point<int> Room::GetDimensions()
+{
+	return dimensions;	
+}
+
+Interactable** Room::GetInteractables()
+{
+	return interactableTiles;
+}
+
+int Room::GetInteractableCount()
+{
+	return interactableCount;
 }

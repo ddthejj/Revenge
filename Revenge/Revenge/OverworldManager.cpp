@@ -4,6 +4,8 @@
 #include "Map.h"
 #include "Character.h"
 #include "Manager.h"
+#include "InputManager.h"
+#include "Room.h"
 
 ProtoTile* OverworldManager::protoTiles[(int)TILES::TILE_MAX];
 std::vector<Map*> OverworldManager::maps;
@@ -149,4 +151,21 @@ void OverworldManager::Update(float delta_time)
 		TransitionRoom();
 
 	Manager::CenterCamera(currentPlayer->GetRectangle()->CenterX(), currentPlayer->GetRectangle()->CenterY());
+}
+
+
+void OverworldManager::OnInteract(Point<float> interactPoint)
+{
+	Interactable** tiles = currentMap->CurrentRoom()->GetInteractables();
+	
+	for (int i = 0; i < currentMap->CurrentRoom()->GetInteractableCount(); i++)
+	{
+		Interactable* tile = tiles[i];
+
+		if (tile->GetRectangle()->Contains(interactPoint))
+		{
+			tile->Interact();
+			return;
+		}
+	}
 }

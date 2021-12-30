@@ -36,11 +36,12 @@ float MyRectangle::Y() const { return y; }
 float MyRectangle::Top() const { return y; }
 float MyRectangle::Bottom() const { return y + height; }
 float MyRectangle::Left() const { return x; }
-float MyRectangle::Right() const { return x + width; }
+float MyRectangle::Right() const { return x + width; } 
+Point<float> MyRectangle::Center() const { return Point<float>(x + (width/2.f), y + (height/2.f)); }
 float MyRectangle::CenterX() const { return x + (width / 2.f); }
 float MyRectangle::CenterY() const { return y + (height / 2.f); }
 Point<float> MyRectangle::Location() const { return Point<float>(x, y); }
-
+ 
 
 void MyRectangle::SetX(float _x) { x = _x; }
 void MyRectangle::SetY(float _y) { y = _y; }
@@ -73,6 +74,16 @@ bool MyRectangle::Intersects(const MyRectangle &that) const
 		{
 			return true;
 		}
+	}
+	return false;
+}
+
+bool MyRectangle::Contains(const Point<float>& that) const
+{
+	if (that.x >= Left() && that.x <= Right())
+	{
+		if (that.y >= Top() && that.y <= Bottom())
+			return true;
 	}
 	return false;
 }

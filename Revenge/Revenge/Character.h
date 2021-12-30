@@ -77,6 +77,12 @@ protected:
 	void LeftReleasedCallback();
 	void RightPressedCallback();
 	void RightReleasedCallback();
+	void OnInteractCallback();
+
+	virtual void BindCallbacks();
+	virtual void UnbindCallbacks();
+
+	void ResetInputs();
 
 #pragma endregion
 
@@ -86,6 +92,8 @@ protected:
 	void Move();
 	// check if you're going to collide into walls
 	void TestCollision(bool* up, bool* down, bool* left, bool* right, Room* currentRoom);
+	// returns the interact point of the player 
+	Point<float> GetInteractPoint();
 
 #pragma endregion
 };

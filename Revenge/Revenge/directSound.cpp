@@ -178,6 +178,9 @@ bool AudioPlayer::UnloadWAV(int index)
 
 bool AudioPlayer::PlayWAV(int index)
 {
+	if (elements->m_secondaryBuffers.size() <= index)
+		return false;
+
 	return elements->PlayWAV_Internal(&elements->m_secondaryBuffers[index]);
 }
 

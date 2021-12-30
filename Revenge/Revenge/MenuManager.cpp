@@ -6,6 +6,7 @@
 #include "Texture.h"
 #include "Sprite.h"
 #include "Character.h"
+#include "InputManager.h"
 
 MenuBox** MenuManager::menuList = nullptr;
 MenuBox* MenuManager::activeMenu = nullptr;
@@ -18,7 +19,7 @@ void MenuManager::Init()
 
 void MenuManager::Clean()
 {
-	int menuCount = 0; 
+	int menuCount = 0;
 	switch (Manager::GetGameState())
 	{
 	case GAME_STATE::STATE_TITLE:
@@ -50,12 +51,15 @@ void MenuManager::LoadTitleMenus()
 	for (int i = 0; i < (int)TITLE_MENUS::MENU_MAX; i++)
 		menuList[i] = nullptr;
 
-   	menuList[(int)TITLE_MENUS::MENU_TITLE] = new MenuBox(0, 0, 300, 300, nullptr, Manager::GetTexture((int)TEXTURES_TITLE::TEX_TITLE_ARROW), "../Assets/Menus/Menu_Title_Base.txt");
+	menuList[(int)TITLE_MENUS::MENU_TITLE] = new MenuBox(0, 0, 300, 300, nullptr, Manager::GetTexture((int)TEXTURES_TITLE::TEX_TITLE_ARROW), "../Assets/Menus/Menu_Title_Base.txt");
 }
 
 void MenuManager::LoadOverworldMenus()
 {
 	UnloadMenus();
+
+	DelegateHandle* menuPressedHandle = InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_MENU, std::bind(&MenuManager::MenuPressed), nullptr);
+	//InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_INTERACT, std::bind(&MenuManager::InteractPressed));
 
 	menuList = new MenuBox * [(int)OVERWORLD_MENUS::MENU_MAX];
 	menuTex = Manager::GetTexture((int)TEXTURES_TEST::TEX_T_MENU);
@@ -65,8 +69,8 @@ void MenuManager::LoadOverworldMenus()
 
 	menuList[(int)OVERWORLD_MENUS::MENU_BASE] = new MenuBox(50, 50, 150, 200, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), "../Assets/Menus/Menu_Base.txt");
 	menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER] = new MenuBox(50, 50, 10, 10, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW));
-	//menuList[MENU_INVENTORY] = new MenuBox(250, 50, 100, 100, menuTex, "../Assets/Menus/Menu_Inventory.txt");
-	//menuList[MENU_OPTIONS] = new MenuBox(250, 50, 100, 100, menuTex, "../Assets/Menus/Menu_Options.txt");
+
+
 }
 
 void MenuManager::UnloadMenus()
@@ -106,7 +110,7 @@ void MenuManager::OpenMenu(int index)
 		{
 		case OVERWORLD_MENUS::MENU_BASE:
 		{
-
+			InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_INTERACT, std::bind(&MenuManager::InteractPressed));
 			break;
 		}
 		case OVERWORLD_MENUS::MENU_CHARACTER:
@@ -163,7 +167,7 @@ void MenuManager::OpenMenu(int index)
 		{
 		case TITLE_MENUS::MENU_TITLE:
 		{
-			
+
 			break;
 		}
 		}
@@ -190,6 +194,7 @@ void MenuManager::CloseMenu()
 	else
 	{
 		Manager::UnfreezeScene();
+		InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_INTERACT, std::bind(&MenuManager::InteractPressed));
 	}
 }
 
@@ -200,6 +205,8 @@ void MenuManager::CloseAllMenus()
 		activeMenu->Deactivate();
 		activeMenu = activeMenu->previousMenu;
 	}
+
+	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_INTERACT, std::bind(&MenuManager::InteractPressed));
 
 	Manager::UnfreezeScene();
 }
@@ -224,45 +231,7 @@ void MenuManager::Update(float delta_time)
 	}
 	case GAME_STATE::STATE_OVERWORLD:
 	{
-		if (!activeMenu)
-		{
-			if (Manager::IsKeyPressed(KEYS::KEY_MENU))
-			{
-				Manager::FreezeScene();
-				OpenMenu((int)OVERWORLD_MENUS::MENU_BASE);
-			}
-		}
-		else
-		{
-			if (Manager::IsKeyPressed(KEYS::KEY_MENU))
-			{
-				Manager::UnfreezeScene();
-				CloseAllMenus();
-			}
-			else if (Manager::IsKeyPressed(KEYS::KEY_INTERACT))
-			{
-				int option = activeMenu->ChooseOption();
-				if (option == (int)OVERWORLD_MENUS::MENU_PREVIOUS)
-					OpenMenu(option);
 
-				if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_BASE])
-				{
-					OpenMenu(option);
-				}
-				else if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER])
-				{
-
-				}
-				else if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_INVENTORY])
-				{
-
-				}
-				else if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_OPTIONS])
-				{
-
-				}
-			}
-		}
 		break;
 	}
 	default:
@@ -276,6 +245,48 @@ void MenuManager::Update(float delta_time)
 void MenuManager::PlayHoverSound()
 {
 	Manager::PlayWAV(0);
+}
+
+
+void MenuManager::MenuPressed()
+{
+	if (!activeMenu)
+	{
+		Manager::FreezeScene();
+		OpenMenu((int)OVERWORLD_MENUS::MENU_BASE);
+	}
+	else
+	{
+		Manager::UnfreezeScene();
+		CloseAllMenus();
+	}
+}
+
+void MenuManager::InteractPressed()
+{
+	if (!activeMenu)
+		return;
+
+	int option = activeMenu->ChooseOption();
+	if (option == (int)OVERWORLD_MENUS::MENU_PREVIOUS)
+		OpenMenu(option);
+
+	if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_BASE])
+	{
+		OpenMenu(option);
+	}
+	else if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER])
+	{
+
+	}
+	else if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_INVENTORY])
+	{
+
+	}
+	else if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_OPTIONS])
+	{
+
+	}
 }
 
 
@@ -293,3 +304,5 @@ int MenuManager::GetMenuCount()
 		return 0;
 	}
 }
+
+

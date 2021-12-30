@@ -114,7 +114,8 @@ MenuBox::~MenuBox()
 void MenuBox::Open(MenuBox* _previousMenu)
 {
 	previousMenu = _previousMenu;
-	Sprite::Activate();
+
+	Activate();
 
 	optionAt->x = 0; optionAt->y = 0;
 	if (options[optionAt->x][optionAt->y])
@@ -231,6 +232,8 @@ void MenuBox::Update(float delta_time)
 
 #pragma region Arrow key movement
 
+	/*
+	
 	if (Manager::IsKeyPressed(KEYS::KEY_UP))
 	{
 		MenuOption* whichOption = options[optionAt->x][optionAt->y];
@@ -299,6 +302,7 @@ void MenuBox::Update(float delta_time)
 		ResetArrow();
 		MenuManager::PlayHoverSound();
 	}
+	*/
 
 #pragma endregion
 
@@ -382,37 +386,115 @@ void MenuBox::Draw(SpriteBatch* spriteBatch)
 	arrow->Draw(spriteBatch);
 }
 
+
+void MenuBox::Activate()
+{
+	Sprite::Activate();
+	//BindCallbacks();
+}
+
+void MenuBox::Deactivate()
+{
+	Sprite::Deactivate();
+	//UnbindCallbacks();
+}
+
 void MenuBox::Freeze()
 {
 	Sprite::Freeze();
+	//UnbindCallbacks();
 	ResetArrow();
+}
+
+void MenuBox::Unfreeze()
+{
+	Sprite::Unfreeze();
+	//BindCallbacks();
 }
 
 
 void MenuBox::BindCallbacks()
 {
-	InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_UP, std::bind(&MenuBox::UpPressed, this));
+	InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_UP, std::bind(&MenuBox::UpPressed, this), this);
+	InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_DOWN, std::bind(&MenuBox::DownPressed, this), this);
+	InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_LEFT, std::bind(&MenuBox::LeftPressed, this), this);
+	InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_RIGHT, std::bind(&MenuBox::RightPressed, this), this);
 }
 void MenuBox::UnbindCallbacks()
 {
-
+	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_UP, std::bind(&MenuBox::UpPressed, this), this);
+	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_DOWN, std::bind(&MenuBox::DownPressed, this), this);
+	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_LEFT, std::bind(&MenuBox::LeftPressed, this), this);
+	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_RIGHT, std::bind(&MenuBox::RightPressed, this), this);
 }
 
 void MenuBox::UpPressed()
 {
+	MenuOption* whichOption = options[optionAt->x][optionAt->y];
 
+	do
+	{
+		optionAt->y--;
+		if (optionAt->y < 0)
+			optionAt->y = optionsHeight - 1;
+
+		whichOption = options[optionAt->x][optionAt->y];
+	} while (whichOption == nullptr);
+
+	UpdateArrowLocation();
+	ResetArrow();
+	MenuManager::PlayHoverSound();
 }
 void MenuBox::DownPressed()
 {
+	MenuOption* whichOption = options[optionAt->x][optionAt->y];
 
+	do
+	{
+		optionAt->y++;
+		if (optionAt->y >= optionsHeight)
+			optionAt->y = 0;
+
+		whichOption = options[optionAt->x][optionAt->y];
+	} while (whichOption == nullptr);
+
+	UpdateArrowLocation();
+	ResetArrow();
+	MenuManager::PlayHoverSound();
 }
 void MenuBox::LeftPressed()
 {
+	MenuOption* whichOption = options[optionAt->x][optionAt->y];
 
+	do
+	{
+		optionAt->x--;
+		if (optionAt->x < 0)
+			optionAt->x = optionsWidth - 1;
+
+		whichOption = options[optionAt->x][optionAt->y];
+	} while (whichOption == nullptr);
+
+	UpdateArrowLocation();
+	ResetArrow();
+	MenuManager::PlayHoverSound();
 }
 void MenuBox::RightPressed()
 {
+	MenuOption* whichOption = options[optionAt->x][optionAt->y];
 
+	do
+	{
+		optionAt->x++;
+		if (optionAt->x >= optionsWidth)
+			optionAt->x = 0;
+
+		whichOption = options[optionAt->x][optionAt->y];
+	} while (whichOption == nullptr);
+
+	UpdateArrowLocation();
+	ResetArrow();
+	MenuManager::PlayHoverSound();
 }
 
 void MenuBox::SelectPressed()

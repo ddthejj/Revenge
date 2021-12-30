@@ -49,6 +49,9 @@ public:
 
 	static void PlayHoverSound();								// play the menu hover sound
 
+	static void MenuPressed();
+	static void InteractPressed();
+
 private:
 	
 	static int GetMenuCount();
