@@ -420,7 +420,7 @@ Renderer::Impl_Elements::Impl_Elements(HWND hwnd)
 		&textFormat
 	);
 
-	textFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_JUSTIFIED);
+	textFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
 	textFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 
 	renderTarget->CreateSolidColorBrush(

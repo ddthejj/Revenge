@@ -61,15 +61,27 @@ void DialogueBox::Draw(SpriteBatch* spriteBatch)
 		spriteBatch->DrawUI(texture, &cornerRectangle, &cornerSource, opacity, layer + .3f, (int)ROTATIONS::ROT_270); // bottom left
 	}
 
-	MyRectangle textRectangle = MyRectangle(25, 25, Manager::MeasureString(text[0]).x, 10);
-	spriteBatch->WriteTextInSprite(text[0].c_str(), &textRectangle, this, layer + .01f, opacity, ANCHOR_POINT::ANCHOR_TOP_LEFT);
+	MyRectangle textRectangle = MyRectangle(25, 25, rectangle->Width() - 50, 10);
+	spriteBatch->WriteTextInSprite(currentText.c_str(), &textRectangle, this, layer + .01f, opacity, ANCHOR_POINT::ANCHOR_TOP_LEFT);
 
 	// draw the arrow
 	arrow->Draw(spriteBatch);
 }
 
-void DialogueBox::Update()
+void DialogueBox::Update(float delta_time)
 {
+	if (charAt < text[textAt].length())
+	{
+		// scroll text
+		currentText.push_back(text[textAt][charAt]);
+
+		charAt++;
+	}
+	else
+	{
+		// blink arrow
+
+	}
 }
 
 void DialogueBox::SetText(Character* _speaker, std::vector<std::string> _text)
@@ -90,5 +102,24 @@ void DialogueBox::UnbindCallbacks()
 
 void DialogueBox::InteractPressed()
 {
-	MenuManager::EndDialogue();
+	if (charAt >= text[textAt].length())
+	{
+		// go to the next string, if there is one - else close the dialogue box
+		if (textAt < text.size() - 1)
+		{
+			charAt = 0;
+			textAt++;
+			currentText = "";
+		}
+		else
+		{
+			MenuManager::EndDialogue();
+		}
+	}
+	else
+	{
+		// skip the text scrolling
+		currentText = text[textAt];
+		charAt = text[textAt].length();
+	}
 }

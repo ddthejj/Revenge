@@ -16,9 +16,12 @@ private:
 
     Character* speaker = nullptr;
     std::vector<std::string> text;
+    std::string currentText;
+    int charAt = 0, textAt = 0;
     
     UISprite* arrow = nullptr;
     int arrowTimer = 0;
+ 
 
 #pragma endregion
 
@@ -35,7 +38,7 @@ public:
     // draw the dialogue box
     virtual void Draw(SpriteBatch* spriteBatch);
     // update the dialogue box
-    virtual void Update();
+    virtual void Update(float delta_time);
 
     void SetText(Character* _speaker, std::vector<std::string> _text);
 
