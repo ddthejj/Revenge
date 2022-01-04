@@ -176,7 +176,7 @@ int RoomReader::GetTextCount()
 	return atoi(lines[(GetDimensions().y * 3) + 5 + GetDoorCount() + 2].c_str());
 }
 
-int RoomReader::GetTextList(std::vector<std::string>** textList)
+int RoomReader::GetTextList(std::vector<std::vector<std::string>>& textList)
 {
 	// the file either didn't correctly open or contained nothing
 	if (lines.size() == 0)
@@ -193,25 +193,20 @@ int RoomReader::GetTextList(std::vector<std::string>** textList)
 	int TextCount = atoi(lines[TextCountLine].c_str());
 
 	// initialize passed in variable
-	(*textList) = new std::vector<std::string>[TextCount];
+	//(*textList) = new std::vector<std::string>[TextCount];
 	// which line we are currently reading
 	int lineAt = TextCountLine + 1;
 
 	// for each interactable object in the room
 	for (int i = 0; i < TextCount; i++)
 	{
-		int tileLines = atoi(lines[lineAt].c_str());
-		std::string tileString;
+		int tileLines = atoi(lines[lineAt++].c_str());
+		textList.push_back(std::vector<std::string>());
 		for (int j = 0; j < tileLines; j++)
 		{
-			tileString.append(lines[lineAt]);
-			if (j < tileLines - 1)
-				tileString.append("\n");
+			textList[i].push_back(lines[lineAt]);
 			lineAt++;
 		}
-
-		(*textList)[i].push_back(std::string());
-		lineAt++;
 	}
 
 	return TextCount;

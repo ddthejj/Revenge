@@ -14,7 +14,7 @@ MyRectangle::MyRectangle(float _x, float _y, float _width, float _height)
 	width = _width;
 }
 
-MyRectangle::MyRectangle(Point<float> location, float height, float width) : MyRectangle(location.x, location.y, height, width)
+MyRectangle::MyRectangle(Point<float> location, float _width, float _height) : MyRectangle(location.x, location.y, _width, _height)
 {
 }
 

@@ -5,6 +5,7 @@
 #include "OverworldManager.h"
 #include "Character.h"
 #include "Texture.h"
+#include "MenuManager.h"
 
 
 #pragma region ProtoTile
@@ -76,7 +77,7 @@ Interactable::~Interactable()
 
 void Interactable::Interact()
 {
-
+	MenuManager::StartDialogue(nullptr, lines);
 }
 
 void Interactable::Update(float delta_time)

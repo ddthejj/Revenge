@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <string>
 
 class MenuBox;
 class SpriteBatch;
@@ -7,6 +8,8 @@ class Texture;
 class Sprite;
 template <typename T>
 struct Point;
+class DialogueBox;
+class Character;
 
 enum class OVERWORLD_MENUS			// the list of menus
 {
@@ -31,6 +34,7 @@ class MenuManager
 	static MenuBox** menuList;									// the list of loaded menus
 	static MenuBox* activeMenu;									// the currently active menu
 	static Texture* menuTex;									// the texture of all menus
+	static DialogueBox* activeDialogueBox;							// the dialogue box to use during dialogue
 public:
 	static void Init();											// initialize the menu manager and load all menus
 	static void Clean();										// clean all menus
@@ -50,7 +54,10 @@ public:
 	static void PlayHoverSound();								// play the menu hover sound
 
 	static void MenuPressed();
-	static void InteractPressed();
+	static void OptionSelected(int option);
+
+	static void StartDialogue(Character* speaker, std::vector<std::string> text);
+	static void EndDialogue();
 
 private:
 	

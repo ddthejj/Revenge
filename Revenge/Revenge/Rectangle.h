@@ -22,7 +22,7 @@ public:
 
 	MyRectangle();
 	MyRectangle(float _x, float _y, float _width, float _height);
-	MyRectangle(Point<float> _location, float height, float width);
+	MyRectangle(Point<float> _location, float _width, float _height);
 	MyRectangle(const MyRectangle& that);
 	~MyRectangle();
 

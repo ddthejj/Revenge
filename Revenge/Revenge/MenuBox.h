@@ -101,7 +101,7 @@ private:
 	void LeftPressed();
 	void RightPressed();
 
-	void SelectPressed();
+	void InteractPressed();
 
 #pragma endregion
 

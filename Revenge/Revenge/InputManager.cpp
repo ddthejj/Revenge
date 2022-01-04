@@ -114,7 +114,7 @@ void InputManager::PressChar(WPARAM wParam)
 }
 
 
-DelegateHandle* InputManager::AnyKeyPressedCallback_Attatch(std::function<void(char)> func, void* userObj)
+DelegateHandle* InputManager::AnyKeyPressedCallback_Attach(std::function<void(char)> func, void* userObj)
 {
 	return AddFunctionToCallbackList(&anyKeyPressedCallback, func, userObj);
 }
@@ -124,7 +124,7 @@ bool InputManager::AnyKeyPressedCallback_Remove(std::function<void(char)> func, 
 	return RemoveFunctionFromCallbackList(&anyKeyPressedCallback, func, userObj);
 }
 
-DelegateHandle* InputManager::KeyPressedCallbacks_Attatch(KEYS whichKey, std::function<void()> func, void* userObj)
+DelegateHandle* InputManager::KeyPressedCallbacks_Attach(KEYS whichKey, std::function<void()> func, void* userObj)
 {
 	return AddFunctionToCallbackList(&keyPressedCallbacks[(int)whichKey], func, userObj);
 }
@@ -134,7 +134,7 @@ bool InputManager::KeyPressedCallbacks_Remove(KEYS whichKey, std::function<void(
 	return RemoveFunctionFromCallbackList(&keyPressedCallbacks[(int)whichKey], func, userObj);
 }
 
-DelegateHandle* InputManager::MouseKeyPressedCallbacks_Attatch(MOUSE_KEYS whichKey, std::function<void()> func, void* userObj)
+DelegateHandle* InputManager::MouseKeyPressedCallbacks_Attach(MOUSE_KEYS whichKey, std::function<void()> func, void* userObj)
 {
 	return AddFunctionToCallbackList(&mouseKeyPressedCallbacks[(int)whichKey], func, userObj);
 }
@@ -144,7 +144,7 @@ bool InputManager::MouseKeyPressedCallbacks_Remove(MOUSE_KEYS whichKey, std::fun
 	return RemoveFunctionFromCallbackList(&mouseKeyPressedCallbacks[(int)whichKey], func, userObj);
 }
 
-DelegateHandle* InputManager::AnyKeyReleasedCallback_Attatch(std::function<void(char)> func, void* userObj)
+DelegateHandle* InputManager::AnyKeyReleasedCallback_Attach(std::function<void(char)> func, void* userObj)
 {
 	return AddFunctionToCallbackList(&anyKeyReleasedCallback, func, userObj);
 }
@@ -154,7 +154,7 @@ bool InputManager::AnyKeyReleasedCallback_Remove(std::function<void(char)> func,
 	return RemoveFunctionFromCallbackList(&anyKeyReleasedCallback, func, userObj);
 }
 
-DelegateHandle* InputManager::KeyReleasedCallbacks_Attatch(KEYS whichKey, std::function<void()> func, void* userObj)
+DelegateHandle* InputManager::KeyReleasedCallbacks_Attach(KEYS whichKey, std::function<void()> func, void* userObj)
 {
 	return AddFunctionToCallbackList(&keyReleasedCallbacks[(int)whichKey], func, userObj);
 }
@@ -164,7 +164,7 @@ bool InputManager::KeyReleasedCallbacks_Remove(KEYS whichKey, std::function<void
 	return RemoveFunctionFromCallbackList(&keyReleasedCallbacks[(int)whichKey], func, userObj);
 }
 
-DelegateHandle* InputManager::MouseKeyReleasedCallbacks_Attatch(MOUSE_KEYS whichKey, std::function<void()> func, void* userObj)
+DelegateHandle* InputManager::MouseKeyReleasedCallbacks_Attach(MOUSE_KEYS whichKey, std::function<void()> func, void* userObj)
 {
 	return AddFunctionToCallbackList(&mouseKeyReleasedCallbacks[(int)whichKey], func, userObj);
 }

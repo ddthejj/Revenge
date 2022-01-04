@@ -5,13 +5,14 @@
 #include "Rectangle.h"
 #include "Renderer.h"
 #include "Text.h"
+#include "Sprite.h"
 
+int SpriteBatch::windowWidth = (int)WIDTH;
+int SpriteBatch::windowHeight = (int)HEIGHT;
 
 SpriteBatch::SpriteBatch(native_handle hwnd)
 {
 	renderer = new Renderer((HWND)hwnd);
-	//camera[0] = WIDTH / 2.0f;
-	//camera[1] = HEIGHT / 2.0f;
 
 	RECT rc;
 	GetClientRect((HWND)hwnd, &rc);
@@ -100,26 +101,8 @@ void SpriteBatch::Draw(Texture* texture, MyRectangle* rectangle, MyRectangle* so
 
 void SpriteBatch::DrawUI(Texture* texture, MyRectangle* rectangle, MyRectangle* source, float opacity, float layer, int rot, ANCHOR_POINT anchor)
 {
-	Point<float> drawLocation = Point<float>(rectangle->X(), rectangle->Y());
-
-
-	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::HCENTER)
-	{
-		drawLocation.x = ((float)windowWidth / 2.f) - (rectangle->Width() / 2.f) + drawLocation.x;
-	}
-	else if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::RIGHT)
-	{
-		drawLocation.x = windowWidth - rectangle->Width() - drawLocation.x;
-	}
-
-	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::VCENTER)
-	{
-		drawLocation.y = ((float)windowHeight / 2.f) - (rectangle->Height() / 2.f) + drawLocation.y;
-	}
-	else if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::BOTTOM)
-	{
-		drawLocation.y = windowHeight - drawLocation.y - rectangle->Height();
-	}
+	MyRectangle screnRec = MyRectangle(0, 0, (float)windowWidth, (float)windowHeight);
+	Point<float> drawLocation = GetAbsolutePos(rectangle, &screnRec, anchor);
 
 	if (!source)
 		renderer->Draw(texture->ID(),
@@ -163,6 +146,15 @@ void SpriteBatch::WriteText(Text* text)
 	WriteText(text->GetText().c_str(), text->Rectangle(), text->Layer(), text->Opacity(), text->Anchor());
 }
 
+void SpriteBatch::WriteTextInSprite(const char* text, MyRectangle* textRectangle, UISprite* sourceSprite, float layer, float opacity, ANCHOR_POINT anchor)
+{
+	MyRectangle screnRec = MyRectangle(0, 0, (float)windowWidth, (float)windowHeight);
+	MyRectangle sourceRectangle = MyRectangle(GetAbsolutePos(sourceSprite->GetRectangle(), &screnRec, sourceSprite->GetAnchorPoint()), sourceSprite->GetRectangle()->Width(), sourceSprite->GetRectangle()->Height());
+	Point<float> sourceLocation = GetAbsolutePos(textRectangle, &sourceRectangle, anchor);
+	MyRectangle absoluteRectangle = MyRectangle(sourceLocation, textRectangle->Width(), textRectangle->Height());
+	WriteText(text, &absoluteRectangle, layer, opacity, ANCHOR_POINT::ANCHOR_TOP_LEFT);
+}
+
 void SpriteBatch::End()
 {
 	renderer->End();
@@ -193,4 +185,31 @@ void SpriteBatch::Resize(native_handle hWnd)
 Point<float> SpriteBatch::MeasureString(std::string text)
 {
 	return renderer->MeasureString(text, (float)windowWidth, (float)windowHeight);
+}
+
+Point<float> SpriteBatch::GetAbsolutePos(const MyRectangle* rectangle, const MyRectangle* sourceRectangle, ANCHOR_POINT anchor)
+{
+	Point<float> drawLocation = Point<float>(rectangle->X(), rectangle->Y());
+
+	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::HCENTER)
+	{
+		drawLocation.x = ((float)sourceRectangle->Width() / 2.f) - (rectangle->Width() / 2.f) + drawLocation.x;
+	}
+	else if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::RIGHT)
+	{
+		drawLocation.x = sourceRectangle->Width() - rectangle->Width() - drawLocation.x;
+	}
+	drawLocation.x += sourceRectangle->X();
+
+	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::VCENTER)
+	{
+		drawLocation.y = ((float)sourceRectangle->Height() / 2.f) - (rectangle->Height() / 2.f) + drawLocation.y;
+	}
+	else if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::BOTTOM)
+	{
+		drawLocation.y = sourceRectangle->Height() - drawLocation.y - rectangle->Height();
+	}
+	drawLocation.y += sourceRectangle->Y();
+
+	return drawLocation;
 }

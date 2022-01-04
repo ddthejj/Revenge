@@ -329,6 +329,11 @@ bool Renderer::Resize(HWND hWnd)
 
 Point<float> Renderer::MeasureString(std::string text, float screenWidth, float screenHeight)
 {
+	if (text.length() == 0)
+	{
+		return Point<float>(0.f, 0.f);
+	}
+
 	IDWriteTextLayout* layout;
 
 	size_t ret, size = strlen(text.c_str() + 1);

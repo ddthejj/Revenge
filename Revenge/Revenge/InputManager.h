@@ -113,28 +113,28 @@ public:
 
 #pragma region Access Callbacks
 
-	// Attatch to the "any key pressed" callback
-	static DelegateHandle* AnyKeyPressedCallback_Attatch(std::function<void(char)> func, void* userObj);
+	// Attach to the "any key pressed" callback
+	static DelegateHandle* AnyKeyPressedCallback_Attach(std::function<void(char)> func, void* userObj);
 	// Removed from the "any key pressed" callback
 	static bool AnyKeyPressedCallback_Remove(std::function<void(char)> func, void* userObj);
-	// Attatch to the "key pressed" callback
-	static DelegateHandle* KeyPressedCallbacks_Attatch(KEYS whichKey, std::function<void()> func, void* userObj);
+	// Attach to the "key pressed" callback
+	static DelegateHandle* KeyPressedCallbacks_Attach(KEYS whichKey, std::function<void()> func, void* userObj);
 	// Remove from the "key pressed" callback
 	static bool KeyPressedCallbacks_Remove(KEYS whichKey, std::function<void()> func, void* userObj);
-	// Attatch to the "mouse key pressed" callback
-	static DelegateHandle* MouseKeyPressedCallbacks_Attatch(MOUSE_KEYS whichKey, std::function<void()> func, void* userObj);
+	// Attach to the "mouse key pressed" callback
+	static DelegateHandle* MouseKeyPressedCallbacks_Attach(MOUSE_KEYS whichKey, std::function<void()> func, void* userObj);
 	// Remove from the "mouse key pressed" callback
 	static bool MouseKeyPressedCallbacks_Remove(MOUSE_KEYS whichKey, std::function<void()> func, void* userObj);
-	// Attatch to the "any key released" callback
-	static DelegateHandle* AnyKeyReleasedCallback_Attatch(std::function<void(char)> func, void* userObj);
+	// Attach to the "any key released" callback
+	static DelegateHandle* AnyKeyReleasedCallback_Attach(std::function<void(char)> func, void* userObj);
 	// Removed from the "any key released" callback
 	static bool AnyKeyReleasedCallback_Remove(std::function<void(char)> func, void* userObj);
-	// Attatch to the "key released" callback
-	static DelegateHandle* KeyReleasedCallbacks_Attatch(KEYS whichKey, std::function<void()> func, void* userObj);
+	// Attach to the "key released" callback
+	static DelegateHandle* KeyReleasedCallbacks_Attach(KEYS whichKey, std::function<void()> func, void* userObj);
 	// Remove from the "key released" callback
 	static bool KeyReleasedCallbacks_Remove(KEYS whichKey, std::function<void()> func, void* userObj);
-	// Attatch to the "mouse key released" callback
-	static DelegateHandle* MouseKeyReleasedCallbacks_Attatch(MOUSE_KEYS whichKey, std::function<void()> func, void* userObj);
+	// Attach to the "mouse key released" callback
+	static DelegateHandle* MouseKeyReleasedCallbacks_Attach(MOUSE_KEYS whichKey, std::function<void()> func, void* userObj);
 	// Remove from the "mouse key released" callback
 	static bool MouseKeyReleasedCallbacks_Remove(MOUSE_KEYS whichKey, std::function<void()> func, void* userObj);
 

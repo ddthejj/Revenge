@@ -148,17 +148,17 @@ void Player::OnInteractCallback()
 
 void Player::BindCallbacks()
 {
-	InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_UP, std::bind(&Player::UpPressedCallback, this), this);
-	InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_DOWN, std::bind(&Player::DownPressedCallback, this), this);
-	InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_LEFT, std::bind(&Player::LeftPressedCallback, this), this);
-	InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_RIGHT, std::bind(&Player::RightPressedCallback, this), this);
+	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_UP, std::bind(&Player::UpPressedCallback, this), this);
+	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_DOWN, std::bind(&Player::DownPressedCallback, this), this);
+	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_LEFT, std::bind(&Player::LeftPressedCallback, this), this);
+	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_RIGHT, std::bind(&Player::RightPressedCallback, this), this);
 
-	InputManager::KeyReleasedCallbacks_Attatch(KEYS::KEY_UP, std::bind(&Player::UpReleasedCallback, this), this);
-	InputManager::KeyReleasedCallbacks_Attatch(KEYS::KEY_DOWN, std::bind(&Player::DownReleasedCallback, this), this);
-	InputManager::KeyReleasedCallbacks_Attatch(KEYS::KEY_LEFT, std::bind(&Player::LeftReleasedCallback, this), this);
-	InputManager::KeyReleasedCallbacks_Attatch(KEYS::KEY_RIGHT, std::bind(&Player::RightReleasedCallback, this), this);
+	InputManager::KeyReleasedCallbacks_Attach(KEYS::KEY_UP, std::bind(&Player::UpReleasedCallback, this), this);
+	InputManager::KeyReleasedCallbacks_Attach(KEYS::KEY_DOWN, std::bind(&Player::DownReleasedCallback, this), this);
+	InputManager::KeyReleasedCallbacks_Attach(KEYS::KEY_LEFT, std::bind(&Player::LeftReleasedCallback, this), this);
+	InputManager::KeyReleasedCallbacks_Attach(KEYS::KEY_RIGHT, std::bind(&Player::RightReleasedCallback, this), this);
 
-	InputManager::KeyPressedCallbacks_Attatch(KEYS::KEY_INTERACT, std::bind(&Player::OnInteractCallback, this), this);
+	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_INTERACT, std::bind(&Player::OnInteractCallback, this), this);
 	ResetInputs();
 }
 

@@ -1,23 +1,28 @@
 #include "defines.h"
-#include "DialogBox.h"
+#include "DialogueBox.h"
 #include "Texture.h"
 #include "SpriteBatch.h"
+#include "InputManager.h"
+#include "MenuManager.h"
 
-DialogBox::DialogBox(float _x, float _y, float _width, float _height, Texture* _texture, Texture* _arrowTexture, float _layer, float _opacity, ANCHOR_POINT _anchor) : UISprite(_x, _y, _width, _height, _texture, _layer, _opacity, _anchor)
+DialogueBox::DialogueBox(float _x, float _y, float _width, float _height, Texture* _texture, Texture* _arrowTexture, float _layer, float _opacity, ANCHOR_POINT _anchor) : UISprite(_x, _y, _width, _height, _texture, _layer, _opacity, _anchor)
 {
 	arrow = new UISprite(0, 0, 7, 7, 0, 0, 15, 15, _arrowTexture, _layer + .01f, _opacity, _anchor);
 }
 
-DialogBox::~DialogBox()
+DialogueBox::~DialogueBox()
 {
 	if (active) Deactivate();
+	
+	SafeDelete(arrow);
 }
 
-void DialogBox::Open()
+void DialogueBox::Open()
 {
+	Activate();
 }
 
-void DialogBox::Draw(SpriteBatch* spriteBatch)
+void DialogueBox::Draw(SpriteBatch* spriteBatch)
 {
 	if (texture)
 	{
@@ -56,22 +61,34 @@ void DialogBox::Draw(SpriteBatch* spriteBatch)
 		spriteBatch->DrawUI(texture, &cornerRectangle, &cornerSource, opacity, layer + .3f, (int)ROTATIONS::ROT_270); // bottom left
 	}
 
-	// write text
+	MyRectangle textRectangle = MyRectangle(25, 25, Manager::MeasureString(text[0]).x, 10);
+	spriteBatch->WriteTextInSprite(text[0].c_str(), &textRectangle, this, layer + .01f, opacity, ANCHOR_POINT::ANCHOR_TOP_LEFT);
 
 	// draw the arrow
 	arrow->Draw(spriteBatch);
 }
 
-void DialogBox::Update()
+void DialogueBox::Update()
 {
 }
 
-void DialogBox::SetText(Character* _speaker, std::vector<std::vector<std::string>> _text)
+void DialogueBox::SetText(Character* _speaker, std::vector<std::string> _text)
 {
 	speaker = _speaker;
 	text = _text;
 }
 
-void DialogBox::SelectPressed()
+void DialogueBox::BindCallbacks()
 {
+	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_INTERACT, std::bind(&DialogueBox::InteractPressed, this), this);
+}
+
+void DialogueBox::UnbindCallbacks()
+{
+	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_INTERACT, std::bind(&DialogueBox::InteractPressed, this), this);
+}
+
+void DialogueBox::InteractPressed()
+{
+	MenuManager::EndDialogue();
 }

@@ -31,7 +31,7 @@ public:
 	// return the number of interactable tiles in the room
 	int GetTextCount();
 	// return 
-	int GetTextList(std::vector<std::string>** textList);
+	int GetTextList(std::vector<std::vector<std::string>>& textList);
 };
 
 class MenuReader : public FileReader

@@ -19,10 +19,10 @@ Room::Room(const char* filepath)
 
 	int*** layers; 
 	int** doorData; 
-	std::vector<std::string>* textList; 
+	std::vector<std::vector<std::string>> textList; 
 	dimensions = roomReader.GetLayers(&layers);
 	int doorCount = roomReader.GetDoorData(&doorData);
-	interactableCount = roomReader.GetTextList(&textList);
+	interactableCount = roomReader.GetTextList(textList);
 	interactableTiles = new Interactable*[interactableCount];
 
 #pragma endregion
@@ -104,7 +104,7 @@ Room::Room(const char* filepath)
 	}
 	delete[] doorData;
 
-	delete[] textList;
+	//delete[] textList;
 
 #pragma endregion
 

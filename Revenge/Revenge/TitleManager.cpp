@@ -60,7 +60,7 @@ void TitleManager::Init()
 	logo = new UISprite(0, 0, Manager::GetScreenWidth() * .75f, desiredheight, logoTexture, 1.f, 0.f, ANCHOR_POINT::ANCHOR_CENTER);
 	logo->Activate();
 
-	auto delHandle = InputManager::AnyKeyPressedCallback_Attatch(std::bind(&TitleManager::AnyKeyPressed, std::placeholders::_1), nullptr);
+	auto delHandle = InputManager::AnyKeyPressedCallback_Attach(std::bind(&TitleManager::AnyKeyPressed, std::placeholders::_1), nullptr);
 	delete delHandle;
 }
 

@@ -8,6 +8,7 @@ class Texture;
 class MyRectangle;
 class Renderer;
 class Text;
+class UISprite;
 
 // the access for the renderer
 class SpriteBatch
@@ -16,7 +17,7 @@ class SpriteBatch
 
 	Renderer* renderer;	// the real renderer for the game
 	float camera[2];	// the position of the camera
-	int windowWidth = (int)WIDTH, windowHeight = (int)HEIGHT;	// the window dimensions
+	static int windowWidth, windowHeight;	// the window dimensions
 
 #pragma endregion
 
@@ -45,6 +46,8 @@ public:
 	void WriteText(const char* text, MyRectangle* rectangle, float layer, float opacity = 1.f, ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
 	// write text with a text object
 	void WriteText(Text* text);
+	// write text within a bounding box
+	void WriteTextInSprite(const char* text, MyRectangle* textRectangle, UISprite* sourceSprite, float layer, float opacity = 1.f, ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
 	// end drawing
 	void End();
 	// move the camera
@@ -66,6 +69,8 @@ public:
 	int ScreenWidth() { return windowWidth; }
 	// Return the width of the window
 	int ScreenHeight() { return windowHeight; }
+
+	static Point<float> GetAbsolutePos(const MyRectangle* rectangle, const MyRectangle* sourceRectangle, ANCHOR_POINT anchor);
 
 #pragma endregion
 

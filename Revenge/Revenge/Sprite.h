@@ -86,4 +86,6 @@ public:
 	virtual void Deactivate();
 	// draw the sprite as UI
 	virtual void Draw(SpriteBatch* spriteBatch);
+
+	ANCHOR_POINT GetAnchorPoint() { return anchor; }
 };
