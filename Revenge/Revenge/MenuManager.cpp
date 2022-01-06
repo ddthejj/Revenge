@@ -62,9 +62,6 @@ void MenuManager::LoadOverworldMenus()
 {
 	UnloadMenus();
 
-	DelegateHandle* menuPressedHandle = InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_MENU, std::bind(&MenuManager::MenuPressed), nullptr);
-	delete menuPressedHandle;
-
 	menuList = new MenuBox * [(int)OVERWORLD_MENUS::MENU_MAX];
 	menuTex = Manager::GetTexture((int)TEXTURES_TEST::TEX_T_MENU);
 
@@ -247,21 +244,6 @@ void MenuManager::Update(float delta_time)
 void MenuManager::PlayHoverSound()
 {
 	Manager::PlayWAV(0);
-}
-
-
-void MenuManager::MenuPressed()
-{
-	if (!activeMenu)
-	{
-		Manager::FreezeScene();
-		OpenMenu((int)OVERWORLD_MENUS::MENU_BASE);
-	}
-	else
-	{
-		Manager::UnfreezeScene();
-		CloseAllMenus();
-	}
 }
 
 void MenuManager::OptionSelected(int option)

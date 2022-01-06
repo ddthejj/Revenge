@@ -102,6 +102,7 @@ private:
 	void RightPressed();
 
 	void InteractPressed();
+	void MenuPressed();
 
 #pragma endregion
 

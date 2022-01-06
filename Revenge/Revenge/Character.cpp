@@ -8,6 +8,7 @@
 #include "Tile.h"
 #include "SpriteBatch.h"
 #include "InputManager.h"
+#include "MenuManager.h"
 
 #pragma region Character
 Character::Character(float x, float y, float height, float width, Texture* _texture, float _layer) : Sprite(x, y, height, width, 0, 0, 32, 32, _texture, _layer)
@@ -38,16 +39,6 @@ Player::Player(float x, float y, float height, float width, Texture* _texture, f
 Player::~Player()
 {
 	if (active) Deactivate();
-
-	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_UP, std::bind(&Player::UpPressedCallback, this), this);
-	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_DOWN, std::bind(&Player::DownPressedCallback, this), this);
-	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_LEFT, std::bind(&Player::LeftPressedCallback, this), this);
-	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_RIGHT, std::bind(&Player::RightPressedCallback, this), this);
-
-	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_UP, std::bind(&Player::UpPressedCallback, this), this);
-	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_DOWN, std::bind(&Player::DownPressedCallback, this), this);
-	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_LEFT, std::bind(&Player::LeftPressedCallback, this), this);
-	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_RIGHT, std::bind(&Player::RightPressedCallback, this), this);
 }
 
 void Player::Update(float delta_time)
@@ -146,6 +137,12 @@ void Player::OnInteractCallback()
 	OverworldManager::OnInteract(interactPoint);
 }
 
+void Player::OnMenuCallback()
+{
+	MenuManager::OpenMenu((int)OVERWORLD_MENUS::MENU_BASE);
+	Manager::FreezeScene();
+}
+
 void Player::BindCallbacks()
 {
 	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_UP, std::bind(&Player::UpPressedCallback, this), this);
@@ -159,6 +156,7 @@ void Player::BindCallbacks()
 	InputManager::KeyReleasedCallbacks_Attach(KEYS::KEY_RIGHT, std::bind(&Player::RightReleasedCallback, this), this);
 
 	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_INTERACT, std::bind(&Player::OnInteractCallback, this), this);
+	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_MENU, std::bind(&Player::OnMenuCallback, this), this);
 	ResetInputs();
 }
 
@@ -175,6 +173,7 @@ void Player::UnbindCallbacks()
 	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_RIGHT, std::bind(&Player::RightReleasedCallback, this), this);
 
 	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_INTERACT, std::bind(&Player::OnInteractCallback, this), this);
+	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_MENU, std::bind(&Player::OnMenuCallback, this), this);
 
 	ResetInputs();
 }

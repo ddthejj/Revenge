@@ -53,7 +53,6 @@ public:
 
 	static void PlayHoverSound();								// play the menu hover sound
 
-	static void MenuPressed();
 	static void OptionSelected(int option);
 
 	static void StartDialogue(Character* speaker, std::vector<std::string> text);

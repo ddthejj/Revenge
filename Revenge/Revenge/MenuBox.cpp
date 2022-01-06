@@ -345,7 +345,9 @@ void MenuBox::BindCallbacks()
 	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_DOWN, std::bind(&MenuBox::DownPressed, this), this);
 	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_LEFT, std::bind(&MenuBox::LeftPressed, this), this);
 	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_RIGHT, std::bind(&MenuBox::RightPressed, this), this);
+
 	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_INTERACT, std::bind(&MenuBox::InteractPressed, this), this);
+	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_MENU, std::bind(&MenuBox::MenuPressed, this), this);
 }
 void MenuBox::UnbindCallbacks()
 {
@@ -353,7 +355,9 @@ void MenuBox::UnbindCallbacks()
 	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_DOWN, std::bind(&MenuBox::DownPressed, this), this);
 	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_LEFT, std::bind(&MenuBox::LeftPressed, this), this);
 	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_RIGHT, std::bind(&MenuBox::RightPressed, this), this);
+
 	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_INTERACT, std::bind(&MenuBox::InteractPressed, this), this);
+	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_MENU, std::bind(&MenuBox::MenuPressed, this), this);
 }
 
 void MenuBox::UpPressed()
@@ -428,4 +432,10 @@ void MenuBox::RightPressed()
 void MenuBox::InteractPressed()
 {
 	MenuManager::OptionSelected(ChooseOption());
+}
+
+void MenuBox::MenuPressed()
+{
+	MenuManager::CloseAllMenus();
+	Manager::UnfreezeScene();
 }

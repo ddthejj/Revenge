@@ -78,6 +78,7 @@ protected:
 	void RightPressedCallback();
 	void RightReleasedCallback();
 	void OnInteractCallback();
+	void OnMenuCallback();
 
 	virtual void BindCallbacks();
 	virtual void UnbindCallbacks();
