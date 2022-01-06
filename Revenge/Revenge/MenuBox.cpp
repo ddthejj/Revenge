@@ -229,9 +229,6 @@ int MenuBox::ChooseOption()
 
 void MenuBox::Update(float delta_time)
 {
-
-#pragma endregion
-
 #pragma region Mouse Key Selection
 
 	for (int i = 0; i < optionsWidth; i++)
@@ -243,7 +240,6 @@ void MenuBox::Update(float delta_time)
 				//options[i][j]->text;
 			}
 		}
-
 	}
 
 
@@ -307,17 +303,15 @@ void MenuBox::Draw(SpriteBatch* spriteBatch)
 			MenuOption* option = options[i][j];
 			if (option)
 			{
-				char* text = new char[option->text.length() + 1];
-				strcpy_s(text, option->text.length() + 1, option->text.c_str());
-				MyRectangle textRectangle = MyRectangle(rectangle->X() + option->x + textOffset.x, rectangle->Y() + option->y + textOffset.y, Manager::MeasureString(text).x, 10);
-				spriteBatch->WriteText(text, &textRectangle, layer + .1f, opacity, anchor);
-				delete[] text;
+				MyRectangle textRectangle = MyRectangle(rectangle->X() + option->x + textOffset.x, rectangle->Y() + option->y + textOffset.y, 100, 10);//Manager::MeasureString(option->text).x, 10);
+				spriteBatch->WriteText(option->text.c_str(), &textRectangle, layer + .1f, opacity, anchor);
 			}
 		}
 	}
 
 	// draw the arrow
 	arrow->Draw(spriteBatch);
+	return;
 }
 
 

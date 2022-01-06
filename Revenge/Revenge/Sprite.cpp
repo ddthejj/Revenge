@@ -140,3 +140,11 @@ void UISprite::Draw(SpriteBatch* spriteBatch)
 	else
 		spriteBatch->DrawUI(texture, rectangle, sourceRectangle, opacity, layer, 0, anchor);
 }
+
+void UISprite::DrawInSprite(SpriteBatch* spriteBatch, UISprite* parent)
+{
+	if (!sourceRectangle)
+		spriteBatch->DrawUIInSprite(texture, rectangle, parent, opacity, layer, 0, anchor);
+	else
+		spriteBatch->DrawUIInSprite(texture, rectangle, sourceRectangle, parent, opacity, layer, 0, anchor);
+}

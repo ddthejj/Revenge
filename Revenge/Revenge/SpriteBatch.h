@@ -42,11 +42,15 @@ public:
 	void DrawUI(Texture* texture, MyRectangle* rectangle, MyRectangle* source, float opacity, float layer, int rot = 0, ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
 	// draw a ui object without a source rectangle
 	void DrawUI(Texture* texture, MyRectangle* rectangle, float opacity, float layer, int rot = 0, ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT) { DrawUI(texture, rectangle, nullptr, opacity, layer, rot, anchor); }
+	// draw a ui object with a source rectangle within a bounding sprite
+	void DrawUIInSprite(Texture* texture, MyRectangle* rectangle, MyRectangle* source, UISprite* sourceSprite, float opacity, float layer, int rot = 0, ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
+	// draw a ui object without a source rectangle within a bounding sprite
+	void DrawUIInSprite(Texture* texture, MyRectangle* rectangle, UISprite* sourceSprite, float opacity, float layer, int rot = 0, ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT) { DrawUIInSprite(texture, rectangle, nullptr, sourceSprite, opacity, layer, rot, anchor); }
 	// write text
 	void WriteText(const char* text, MyRectangle* rectangle, float layer, float opacity = 1.f, ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
 	// write text with a text object
 	void WriteText(Text* text);
-	// write text within a bounding box
+	// write text within a bounding sprite
 	void WriteTextInSprite(const char* text, MyRectangle* textRectangle, UISprite* sourceSprite, float layer, float opacity = 1.f, ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
 	// end drawing
 	void End();

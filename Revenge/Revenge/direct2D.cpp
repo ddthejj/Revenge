@@ -386,6 +386,7 @@ Renderer::Impl_Elements::Impl_Elements(HWND hwnd)
 		&renderTarget
 	);
 
+	// direct write
 	res = DWriteCreateFactory(
 		DWRITE_FACTORY_TYPE_SHARED,
 		__uuidof(IDWriteFactory5),
@@ -710,7 +711,6 @@ void Renderer::Impl_Elements::Draw(const TextDraw* text)
 	);
 
 	delete[] wtext;
-
 }
 
 Renderer::TextDraw::~TextDraw()

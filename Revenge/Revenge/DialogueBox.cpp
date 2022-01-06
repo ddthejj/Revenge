@@ -7,7 +7,8 @@
 
 DialogueBox::DialogueBox(float _x, float _y, float _width, float _height, Texture* _texture, Texture* _arrowTexture, float _layer, float _opacity, ANCHOR_POINT _anchor) : UISprite(_x, _y, _width, _height, _texture, _layer, _opacity, _anchor)
 {
-	arrow = new UISprite(0, 0, 7, 7, 0, 0, 15, 15, _arrowTexture, _layer + .01f, _opacity, _anchor);
+	arrow = new UISprite(15, 15, 7, 7, 0, 0, 15, 15, _arrowTexture, _layer + .01f, _opacity, ANCHOR_POINT::ANCHOR_BOTTOM_RIGHT);
+	arrow->SetOpacity(0.f);
 }
 
 DialogueBox::~DialogueBox()
@@ -65,7 +66,7 @@ void DialogueBox::Draw(SpriteBatch* spriteBatch)
 	spriteBatch->WriteTextInSprite(currentText.c_str(), &textRectangle, this, layer + .01f, opacity, ANCHOR_POINT::ANCHOR_TOP_LEFT);
 
 	// draw the arrow
-	arrow->Draw(spriteBatch);
+	arrow->DrawInSprite(spriteBatch, this);
 }
 
 void DialogueBox::Update(float delta_time)
@@ -76,11 +77,23 @@ void DialogueBox::Update(float delta_time)
 		currentText.push_back(text[textAt][charAt]);
 
 		charAt++;
+
+		if (charAt >= text[textAt].length())
+			arrow->SetOpacity(opacity);
 	}
 	else
 	{
 		// blink arrow
-
+		arrowTimer++;
+		if (arrowTimer == 40)
+		{
+			arrow->SetSourcePos(Point<float>(15, 0));
+		}
+		else if (arrowTimer == 80)
+		{
+			arrow->SetSourcePos(Point<float>(0, 0));
+			arrowTimer = 0;
+		}
 	}
 }
 
@@ -102,6 +115,11 @@ void DialogueBox::UnbindCallbacks()
 
 void DialogueBox::InteractPressed()
 {
+	// reset arrow blinking
+	arrow->SetSourcePos(Point<float>(0, 0));
+	arrowTimer = 0;
+	arrow->SetOpacity(0.f);
+
 	if (charAt >= text[textAt].length())
 	{
 		// go to the next string, if there is one - else close the dialogue box
@@ -120,6 +138,6 @@ void DialogueBox::InteractPressed()
 	{
 		// skip the text scrolling
 		currentText = text[textAt];
-		charAt = text[textAt].length();
+		charAt = (int)text[textAt].length();
 	}
 }

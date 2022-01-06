@@ -5,9 +5,9 @@
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
+#endif
 #include "Math.h"
 #include "EnumParser.h"
-#endif
 
 #if defined(_DEBUG) || defined(DEBUG)
 #define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)

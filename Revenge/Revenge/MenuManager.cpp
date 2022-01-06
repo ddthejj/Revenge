@@ -64,7 +64,6 @@ void MenuManager::LoadOverworldMenus()
 
 	DelegateHandle* menuPressedHandle = InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_MENU, std::bind(&MenuManager::MenuPressed), nullptr);
 	delete menuPressedHandle;
-	//InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_INTERACT, std::bind(&MenuManager::InteractPressed));
 
 	menuList = new MenuBox * [(int)OVERWORLD_MENUS::MENU_MAX];
 	menuTex = Manager::GetTexture((int)TEXTURES_TEST::TEX_T_MENU);
@@ -198,7 +197,6 @@ void MenuManager::CloseMenu()
 	else
 	{
 		Manager::UnfreezeScene();
-		//InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_INTERACT, std::bind(&MenuManager::InteractPressed), menuList[(int)OVERWORLD_MENUS::MENU_BASE]);
 	}
 }
 
@@ -299,7 +297,7 @@ void MenuManager::StartDialogue(Character* speaker, std::vector<std::string> tex
 
 	Manager::FreezeScene();
 
-	activeDialogueBox = new DialogueBox(0, 50, WIDTH - 100, (HEIGHT / 8.f) + 25, menuTex, Manager::GetTexture((int)TEXTURES_TITLE::TEX_TITLE_ARROW));
+	activeDialogueBox = new DialogueBox(0, 50, WIDTH - 100, (HEIGHT / 8.f) + 25, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW));
 	activeDialogueBox->SetText(speaker, text);
 	activeDialogueBox->Open();
 }

@@ -87,5 +87,7 @@ public:
 	// draw the sprite as UI
 	virtual void Draw(SpriteBatch* spriteBatch);
 
+	virtual void DrawInSprite(SpriteBatch* spriteBatch, UISprite* parent);
+
 	ANCHOR_POINT GetAnchorPoint() { return anchor; }
 };

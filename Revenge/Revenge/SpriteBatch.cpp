@@ -141,6 +141,15 @@ void SpriteBatch::WriteText(const char* text, MyRectangle* rectangle, float laye
 	renderer->Write(text, writeLocation.x, writeLocation.y, rectangle->Width(), rectangle->Height(), layer, opacity);
 }
 
+void SpriteBatch::DrawUIInSprite(Texture* texture, MyRectangle* rectangle, MyRectangle* source, UISprite* sourceSprite, float opacity, float layer, int rot, ANCHOR_POINT anchor)
+{
+	MyRectangle screenRec = MyRectangle(0, 0, (float)windowWidth, (float)windowHeight);	
+	MyRectangle boundsRectangle = MyRectangle(GetAbsolutePos(sourceSprite->GetRectangle(), &screenRec, sourceSprite->GetAnchorPoint()), sourceSprite->GetRectangle()->Width(), sourceSprite->GetRectangle()->Height());
+	Point<float> absoluteLocation = GetAbsolutePos(rectangle, &boundsRectangle, anchor);
+	MyRectangle absoluteRectangle = MyRectangle(absoluteLocation, rectangle->Width(), rectangle->Height());
+	DrawUI(texture, &absoluteRectangle, source, opacity, layer, rot, ANCHOR_POINT::ANCHOR_TOP_LEFT);
+}
+
 void SpriteBatch::WriteText(Text* text)
 {
 	WriteText(text->GetText().c_str(), text->Rectangle(), text->Layer(), text->Opacity(), text->Anchor());
@@ -148,8 +157,8 @@ void SpriteBatch::WriteText(Text* text)
 
 void SpriteBatch::WriteTextInSprite(const char* text, MyRectangle* textRectangle, UISprite* sourceSprite, float layer, float opacity, ANCHOR_POINT anchor)
 {
-	MyRectangle screnRec = MyRectangle(0, 0, (float)windowWidth, (float)windowHeight);
-	MyRectangle sourceRectangle = MyRectangle(GetAbsolutePos(sourceSprite->GetRectangle(), &screnRec, sourceSprite->GetAnchorPoint()), sourceSprite->GetRectangle()->Width(), sourceSprite->GetRectangle()->Height());
+	MyRectangle screenRec = MyRectangle(0, 0, (float)windowWidth, (float)windowHeight);
+	MyRectangle sourceRectangle = MyRectangle(GetAbsolutePos(sourceSprite->GetRectangle(), &screenRec, sourceSprite->GetAnchorPoint()), sourceSprite->GetRectangle()->Width(), sourceSprite->GetRectangle()->Height());
 	Point<float> sourceLocation = GetAbsolutePos(textRectangle, &sourceRectangle, anchor);
 	MyRectangle absoluteRectangle = MyRectangle(sourceLocation, textRectangle->Width(), textRectangle->Height());
 	WriteText(text, &absoluteRectangle, layer, opacity, ANCHOR_POINT::ANCHOR_TOP_LEFT);
