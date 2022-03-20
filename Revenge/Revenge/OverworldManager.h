@@ -8,6 +8,7 @@ class Sprite;
 class Room;
 class Door;
 class Player;
+class Character;
 
 class OverworldManager
 {
@@ -20,6 +21,7 @@ class OverworldManager
 	static Map* currentMap;						// Currently loaded map
 	static Door* doorHit;						// The door that the player hit
 	static Player* currentPlayer;				// Current active player
+	static std::vector<Character*> party;		// List of party members
 
 	static bool isRoomTransitioning;			// Whether or not the game is switching between rooms
 
@@ -43,15 +45,17 @@ public:
 	static void DeactivateScene();
 
 	// Get a prototyle
-	static ProtoTile* GetProtoTile(int index);
+	static const ProtoTile* GetProtoTile(int index);
 	// Get a room
-	static Room* GetRoom(int index);
+	static const Room* GetRoom(int index);
 	// Get the current room
-	static Room* GetCurrentRoom();
+	static const Room* GetCurrentRoom();
 	// Get the current map
-	static Map* GetCurrentMap();
+	static const Map* GetCurrentMap();
 	// Get the current player
-	static Player* GetCurrentPlayer();
+	static const Player* GetCurrentPlayer();
+	// Get the current party
+	static const std::vector<Character*> GetCurrentParty();
 
 	// Handle transitioning rooms when the player enters a door
 	static void HitDoor(Door* hit);

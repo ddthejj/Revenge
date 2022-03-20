@@ -7,7 +7,7 @@
 #include "FileReader.h"
 #include "InputManager.h"
 
-MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _texture, Texture* _arrowTexture, float _layer, float _opacity, ANCHOR_POINT _anchor) 
+MenuBox::MenuBox(float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, float _layer, float _opacity, ANCHOR_POINT _anchor)
 	: BorderedBox(_x, _y, _width, _height, _texture, _layer, _opacity, _anchor)
 {
 	optionAt = new Point<int>();
@@ -32,7 +32,7 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _text
 	}
 }
 
-MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _texture, Texture* _arrowTexture, const char* filename) 
+MenuBox::MenuBox(float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, const char* filename)
 	: BorderedBox(_x, _y, _width, _height, _texture, .8f, 1.f, ANCHOR_POINT::ANCHOR_TOP_LEFT)
 {
 	// use the MenuReader class to read the menu data from a file
@@ -141,7 +141,7 @@ FOUNDOPTION:
 	UpdateArrowLocation();
 }
 
-void MenuBox::SetOptions(char** texts, int* option, Point<float>* positions, Point<int>* layout, int sizeX, int sizeY)
+void MenuBox::SetOptions(const char** texts, int* option, Point<float>* positions, Point<int>* layout, int sizeX, int sizeY)
 {
 	for (int i = 0; i < optionsWidth; i++)
 	{

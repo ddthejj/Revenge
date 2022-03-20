@@ -26,7 +26,6 @@ private:
 	static SpriteBatch* spriteBatch;			// Renderer class
 	static std::vector<Object*> UpdateList;		// Items that are being updated
 	static std::vector<Object*> DrawList;		// Items that are being drawn
-	static std::vector<Character*> party;		// List of party members
 
 	static bool fadingIn, fadingOut;			// Whether or not the screen is being faded in or out
 	static float fadeOpacity;					// What the current opacity of the fade is
@@ -39,11 +38,11 @@ public:
 #pragma region GameManager Access
 
 	// Get the party list
-	static std::vector<Character*> GetParty() { return party; }
+	static const std::vector<Character*> GetParty();
 	// Get a texture with index
-	static Texture* GetTexture(int index);
+	static const Texture* GetTexture(int index);
 	// Get a texture with string
-	static Texture* GetTexture(const char* name);
+	static const Texture* GetTexture(const char* name);
 	// Get the game state
 	static GAME_STATE GetGameState() { return gameState; }
 

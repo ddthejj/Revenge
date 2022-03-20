@@ -52,18 +52,18 @@ public:
 
 #pragma region Methods
 
-	Character(float x, float y, float height, float width, Texture* _texture, float _layer);
+	Character(float x, float y, float height, float width, const Texture* _texture, float _layer);
 	~Character();
 	virtual void Draw(SpriteBatch* spriteBatch);
 
-	char* Name() { return name; }	// returns the name of the character
-	int AT() { return attack; }		// returns the attack of the character
-	int DF() { return defense; }	// returns the defense of the character
-	int MN() { return mind; }		// returns the mind of the character
-	int SR() { return spirit; }		// returns the spirit of the character
-	int EN() { return energy; }		// returns the energy of the character
+	const char* Name() const  { return name; }	// returns the name of the character
+	int AT() const { return attack; }			// returns the attack of the character
+	int DF() const { return defense; }			// returns the defense of the character
+	int MN() const { return mind; }				// returns the mind of the character
+	int SR() const { return spirit; }			// returns the spirit of the character
+	int EN() const { return energy; }			// returns the energy of the character
 
-	MAGIC_TYPE Magic() { return magicType; }
+	MAGIC_TYPE Magic() const { return magicType; }
 
 #pragma endregion
 
@@ -76,7 +76,7 @@ public:
 
 #pragma region Methods
 
-	Player(float x, float y, float height, float width, Texture* _texture, float _layer);
+	Player(float x, float y, float height, float width, const Texture* _texture, float _layer);
 	~Player();
 
 	// update the player
@@ -112,9 +112,9 @@ protected:
 	// move the player based on input
 	void Move();
 	// check if you're going to collide into walls
-	void TestCollision(bool* up, bool* down, bool* left, bool* right, Room* currentRoom);
+	void TestCollision(bool* up, bool* down, bool* left, bool* right, const Room* currentRoom);
 	// returns the interact point of the player 
-	Point<float> GetInteractPoint();
+	Point<float> GetInteractPoint() const;
 
 #pragma endregion
 };
@@ -126,7 +126,7 @@ public:
 
 #pragma region Methods
 
-	NonPlayer(float x, float y, float height, float width, Texture* _texture, float _layer);
+	NonPlayer(float x, float y, float height, float width, const Texture* _texture, float _layer);
 	~NonPlayer();
 
 	// update the NPC

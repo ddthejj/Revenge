@@ -36,9 +36,9 @@ public:
 	virtual void Update(float delta_time) = 0;
 
 	// returns whether or not the object is active 
-	bool IsActive() { return active; }
+	bool IsActive() const { return active; }
 	// returns whether or not the object is frozen
-	bool IsFrozen() { return frozen; }
+	bool IsFrozen() const { return frozen; }
 
 
 	virtual void BindCallbacks() {}

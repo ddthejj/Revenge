@@ -21,8 +21,8 @@ public:
 	virtual void Update(float delta_time) {}
 	virtual void Draw(SpriteBatch* spriteBatch) {}
 
-	Room* CurrentRoom() { return currentRoom; }
-	Room* GetRoom(unsigned int index);
+	const Room* CurrentRoom() const { return currentRoom; }
+	const Room* GetRoom(unsigned int index) const;
 	void SetRoom(unsigned int index);
 };
 

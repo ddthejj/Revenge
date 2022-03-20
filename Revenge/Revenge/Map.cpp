@@ -56,7 +56,7 @@ void Map::Unfreeze()
 	currentRoom->Unfreeze();
 }
 
-Room* Map::GetRoom(unsigned int index)
+const Room* Map::GetRoom(unsigned int index) const
 {
 	if (index < roomCount && index >= 0)
 		return rooms[index];

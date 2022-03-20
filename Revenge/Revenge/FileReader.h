@@ -13,7 +13,7 @@ public:
 	virtual bool Open(const char* filepath);
 	virtual void Close();
 
-	std::vector<std::string> ParseLine(std::string line, char delim);
+	std::vector<std::string> ParseLine(std::string line, char delim) const;
 };
 
 class RoomReader : public FileReader
@@ -21,17 +21,17 @@ class RoomReader : public FileReader
 public:
 
 	// return the dimensions of the room in tiles
-	Point<int> GetDimensions();
+	Point<int> GetDimensions() const;
 	// return the tile layers (in ints) of the room
-	Point<int> GetLayers(int**** layers);
+	Point<int> GetLayers(int**** layers) const;
 	// return the number of doors in the room
-	int GetDoorCount();
+	int GetDoorCount() const;
 	// return the data of each door in the room
-	int GetDoorData(int*** doorData);
+	int GetDoorData(int*** doorData) const;
 	// return the number of interactable tiles in the room
-	int GetTextCount();
+	int GetTextCount() const;
 	// return 
-	int GetTextList(std::vector<std::vector<std::string>>& textList);
+	int GetTextList(std::vector<std::vector<std::string>>& textList) const;
 };
 
 class MenuReader : public FileReader
@@ -46,11 +46,11 @@ public:
 	};
 
 	// return the dimensions of the options within the menu
-	Point<int> GetDimensions();
+	Point<int> GetDimensions() const;
 	// returns the options within the menu
-	int GetOptions(MenuReader::OptionData** optionsList);
+	int GetOptions(MenuReader::OptionData** optionsList) const;
 	// returns the anchor point of the menu
-	ANCHOR_POINT GetAnchor();
+	ANCHOR_POINT GetAnchor() const;
 };
 
 class SoundReader : public FileReader

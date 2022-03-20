@@ -33,8 +33,8 @@ class MenuManager
 {
 	static MenuBox** menuList;									// the list of loaded menus
 	static MenuBox* activeMenu;									// the currently active menu
-	static Texture* menuTex;									// the texture of all menus
-	static DialogueBox* activeDialogueBox;							// the dialogue box to use during dialogue
+	static const Texture* menuTex;								// the texture of all menus
+	static DialogueBox* activeDialogueBox;						// the dialogue box to use during dialogue
 public:
 	static void Init();											// initialize the menu manager and load all menus
 	static void Clean();										// clean all menus

@@ -68,7 +68,7 @@ bool TextureManager::LoadTextures(const wchar_t* filepath, SpriteBatch* spriteBa
 	return true;
 }
 
-Texture* TextureManager::GetTexture(unsigned int index)
+const Texture* TextureManager::GetTexture(unsigned int index)
 {
 	if (texNames.size() > index)
 		return (textures[index]);
@@ -76,7 +76,7 @@ Texture* TextureManager::GetTexture(unsigned int index)
 		return nullptr;
 }
 
-Texture* TextureManager::GetTexture(const char* name)
+const Texture* TextureManager::GetTexture(const char* name)
 {
 	if (texNames.find(name) != texNames.end())
 		return textures[texNames.at(name)];

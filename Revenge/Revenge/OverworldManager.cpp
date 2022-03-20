@@ -13,6 +13,7 @@ std::vector<Map*> OverworldManager::maps;
 Map* OverworldManager::currentMap = nullptr;
 Door* OverworldManager::doorHit = nullptr;
 Player* OverworldManager::currentPlayer = nullptr;
+std::vector<Character*> OverworldManager::party;
 
 bool OverworldManager::isRoomTransitioning = false;
 
@@ -31,6 +32,8 @@ void OverworldManager::Init()
 	maps.push_back(new Map("../Assets/RoomData/TestRoom/TestRoom", 2));
 	currentMap = maps[0];
 	currentMap->Activate();
+
+	party.push_back(currentPlayer);
 }
 
 void OverworldManager::Clean()
@@ -73,7 +76,7 @@ void OverworldManager::DeactivateScene()
 }
 
 
-ProtoTile * OverworldManager::GetProtoTile(int index)
+const ProtoTile* OverworldManager::GetProtoTile(int index)
 {
 	if (index < (int)TILES::TILE_MAX)
 		return protoTiles[index];
@@ -81,24 +84,29 @@ ProtoTile * OverworldManager::GetProtoTile(int index)
 		return nullptr;
 }
 
-Room * OverworldManager::GetRoom(int index)
+const Room* OverworldManager::GetRoom(int index)
 {
 	return currentMap->GetRoom(index);
 }
 
-Room * OverworldManager::GetCurrentRoom()
+const Room* OverworldManager::GetCurrentRoom()
 {
 	return currentMap->CurrentRoom();
 }
 
-Map* OverworldManager::GetCurrentMap()
+const Map* OverworldManager::GetCurrentMap()
 {
 	return currentMap;
 }
 
-Player* OverworldManager::GetCurrentPlayer()
+const Player* OverworldManager::GetCurrentPlayer()
 {
 	return currentPlayer;
+}
+
+const std::vector<Character*> OverworldManager::GetCurrentParty()
+{
+	return party;
 }
 
 
@@ -156,11 +164,11 @@ void OverworldManager::Update(float delta_time)
 
 void OverworldManager::OnInteract(Point<float> interactPoint)
 {
-	Interactable** tiles = currentMap->CurrentRoom()->GetInteractables();
-	
+	Interactable** const tiles = currentMap->CurrentRoom()->GetInteractables();
+
 	for (int i = 0; i < currentMap->CurrentRoom()->GetInteractableCount(); i++)
 	{
-		Interactable* tile = tiles[i];
+		const Interactable* tile = tiles[i];
 
 		if (tile->GetRectangle()->Contains(interactPoint))
 		{

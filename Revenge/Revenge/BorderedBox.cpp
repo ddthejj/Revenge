@@ -3,12 +3,12 @@
 #include "SpriteBatch.h"
 #include "Texture.h"
 
-BorderedBox::BorderedBox(float x, float y, float width, float height, Texture* _texture, float _layer, float _opacity, ANCHOR_POINT _anchor) 
+BorderedBox::BorderedBox(float x, float y, float width, float height, const Texture* _texture, float _layer, float _opacity, ANCHOR_POINT _anchor) 
 	: UISprite(x, y, width, height, _texture, _layer, _opacity, _anchor)
 {
 }
 
-BorderedBox::BorderedBox(float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, Texture* _texture, float _layer, float _opacity, ANCHOR_POINT _anchor) 
+BorderedBox::BorderedBox(float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, const Texture* _texture, float _layer, float _opacity, ANCHOR_POINT _anchor) 
 	: UISprite(x, y, width, height, sX, sY, sWidth, sHeight, _texture, _layer, _opacity, _anchor)
 {
 }

@@ -43,7 +43,7 @@ void SpriteBatch::Begin()
 	renderer->Begin();
 }
 
-void SpriteBatch::Draw(Texture* texture, MyRectangle* rectangle, MyRectangle* source, float opacity, float layer, int rot)
+void SpriteBatch::Draw(const Texture* texture, const MyRectangle* rectangle, const MyRectangle* source, float opacity, float layer, int rot)
 {
 	if (!source)
 	{
@@ -99,7 +99,7 @@ void SpriteBatch::Draw(Texture* texture, MyRectangle* rectangle, MyRectangle* so
 	}
 }
 
-void SpriteBatch::DrawUI(Texture* texture, MyRectangle* rectangle, MyRectangle* source, float opacity, float layer, int rot, ANCHOR_POINT anchor)
+void SpriteBatch::DrawUI(const Texture* texture, const MyRectangle* rectangle, const MyRectangle* source, float opacity, float layer, int rot, ANCHOR_POINT anchor)
 {
 	MyRectangle screnRec = MyRectangle(0, 0, (float)windowWidth, (float)windowHeight);
 	Point<float> drawLocation = GetAbsolutePos(rectangle, &screnRec, anchor);
@@ -116,7 +116,7 @@ void SpriteBatch::DrawUI(Texture* texture, MyRectangle* rectangle, MyRectangle* 
 			opacity, layer, rot);
 }
 
-void SpriteBatch::WriteText(const char* text, MyRectangle* rectangle, float layer, float opacity, ANCHOR_POINT anchor)
+void SpriteBatch::WriteText(const char* text, const MyRectangle* rectangle, float layer, float opacity, ANCHOR_POINT anchor)
 {
 	Point<float> writeLocation = Point<float>(rectangle->X(), rectangle->Y());
 
@@ -141,21 +141,21 @@ void SpriteBatch::WriteText(const char* text, MyRectangle* rectangle, float laye
 	renderer->Write(text, writeLocation.x, writeLocation.y, rectangle->Width(), rectangle->Height(), layer, opacity);
 }
 
-void SpriteBatch::DrawUIInSprite(Texture* texture, MyRectangle* rectangle, MyRectangle* source, UISprite* sourceSprite, float opacity, float layer, int rot, ANCHOR_POINT anchor)
+void SpriteBatch::DrawUIInSprite(const Texture* texture, const MyRectangle* rectangle, const MyRectangle* source, const UISprite* sourceSprite, float opacity, float layer, int rot, ANCHOR_POINT anchor)
 {
-	MyRectangle screenRec = MyRectangle(0, 0, (float)windowWidth, (float)windowHeight);	
+	MyRectangle screenRec = MyRectangle(0, 0, (float)windowWidth, (float)windowHeight);
 	MyRectangle boundsRectangle = MyRectangle(GetAbsolutePos(sourceSprite->GetRectangle(), &screenRec, sourceSprite->GetAnchorPoint()), sourceSprite->GetRectangle()->Width(), sourceSprite->GetRectangle()->Height());
 	Point<float> absoluteLocation = GetAbsolutePos(rectangle, &boundsRectangle, anchor);
 	MyRectangle absoluteRectangle = MyRectangle(absoluteLocation, rectangle->Width(), rectangle->Height());
 	DrawUI(texture, &absoluteRectangle, source, opacity, layer, rot, ANCHOR_POINT::ANCHOR_TOP_LEFT);
 }
 
-void SpriteBatch::WriteText(Text* text)
+void SpriteBatch::WriteText(const Text* text)
 {
 	WriteText(text->GetText().c_str(), text->Rectangle(), text->Layer(), text->Opacity(), text->Anchor());
 }
 
-void SpriteBatch::WriteTextInSprite(const char* text, MyRectangle* textRectangle, UISprite* sourceSprite, float layer, float opacity, ANCHOR_POINT anchor)
+void SpriteBatch::WriteTextInSprite(const char* text, const MyRectangle* textRectangle, const UISprite* sourceSprite, float layer, float opacity, ANCHOR_POINT anchor)
 {
 	MyRectangle screenRec = MyRectangle(0, 0, (float)windowWidth, (float)windowHeight);
 	MyRectangle sourceRectangle = MyRectangle(GetAbsolutePos(sourceSprite->GetRectangle(), &screenRec, sourceSprite->GetAnchorPoint()), sourceSprite->GetRectangle()->Width(), sourceSprite->GetRectangle()->Height());

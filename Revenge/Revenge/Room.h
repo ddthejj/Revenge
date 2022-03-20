@@ -22,9 +22,9 @@ public:
 	void Draw(SpriteBatch* spriteBatch) {}
 	void Update(float delta_time) {}
 
-	Tile* GetTile(int layer, int x, int y);
-	Point<int> GetDimensions();
-	Interactable** GetInteractables();
-	int GetInteractableCount();
+	const Tile* GetTile(int layer, int x, int y) const;
+	Point<int> GetDimensions() const;
+	Interactable** const GetInteractables() const;
+	int GetInteractableCount() const;
 };
 

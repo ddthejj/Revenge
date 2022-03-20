@@ -11,7 +11,7 @@
 
 MenuBox** MenuManager::menuList = nullptr;
 MenuBox* MenuManager::activeMenu = nullptr;
-Texture* MenuManager::menuTex = nullptr;
+const Texture* MenuManager::menuTex = nullptr;
 DialogueBox* MenuManager::activeDialogueBox = nullptr;
 
 void MenuManager::Init()
@@ -123,7 +123,7 @@ void MenuManager::OpenMenu(int index)
 				return;
 			}
 
-			char** texts = new char* [party.size()];
+			const char** texts = new const char* [party.size()];
 			int* options = new int[party.size()];
 			Point<float>* positions = new Point<float>[party.size()];
 			Point<int>* layouts = new Point<int>[party.size()];

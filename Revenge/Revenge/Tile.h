@@ -8,11 +8,11 @@ class Room;
 
 struct ProtoTile
 {
-	Texture* texture;
+	const Texture* texture;
 	float height, width;
 	bool collidable, door, interactable;
 
-	ProtoTile(Texture* _texture, float _height, float _width, bool _collidable = false, bool _door = false, bool _interactable = false)
+	ProtoTile(const Texture* _texture, float _height, float _width, bool _collidable = false, bool _door = false, bool _interactable = false)
 	{
 		texture = _texture; height = _height; width = _width; collidable = _collidable; door = _door; interactable = _interactable;
 	}
@@ -24,10 +24,10 @@ class Tile : public Sprite
 	bool collidable;
 
 public:
-	Tile(ProtoTile* prototype, float _x, float _y, float _layer);
+	Tile(const ProtoTile* prototype, float _x, float _y, float _layer);
 	virtual ~Tile();
 
-	bool Collidable() { return collidable; }
+	bool Collidable() const { return collidable; }
 
 	virtual void Interact() {}
 	virtual void Update(float delta_time);
@@ -39,12 +39,12 @@ class Door : public Tile
 	float destX = 0, destY = 0;
 
 public:
-	Door(ProtoTile* prototype, float _x, float _y, float _layer, int _destination, float _destX, float _destY);
+	Door(const ProtoTile* prototype, float _x, float _y, float _layer, int _destination, float _destX, float _destY);
 	virtual ~Door();
 
-	int Destination() { return destination; }
-	float DestinationX() { return destX; }
-	float DestinationY() { return destY; }
+	int Destination() const { return destination; }
+	float DestinationX() const { return destX; }
+	float DestinationY() const { return destY; }
 
 	virtual void Update(float delta_time);
 };
@@ -54,9 +54,9 @@ class Interactable : public Tile
 	std::vector<std::string> lines;
 
 public:
-	Interactable(ProtoTile* prototype, float _x, float _y, float _layer, std::vector<std::string> _lines);
+	Interactable(const ProtoTile* prototype, float _x, float _y, float _layer, std::vector<std::string> _lines);
 	virtual ~Interactable();
 
-	virtual void Interact();
+	virtual void Interact() const;
 	virtual void Update(float delta_time);
 };

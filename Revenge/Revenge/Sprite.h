@@ -15,7 +15,7 @@ protected:
 
 	MyRectangle* rectangle;			// the rectangle to draw the spirte on
 	MyRectangle* sourceRectangle;	// the source rectangle for drawing the sprite (can be nullptr)
-	Texture* texture;				// the sprite's texture
+	const Texture* texture;				// the sprite's texture
 	float layer = 0.f;				// the sprite's layer
 	float opacity = 1.f;			// the sprite's opacity
 
@@ -26,9 +26,9 @@ public:
 #pragma region Methods
 
 	// create a sprite without a source rectangle
-	Sprite(float x, float y, float width, float height, Texture* _texture, float _layer, float _opacity = 1.f);
+	Sprite(float x, float y, float width, float height, const Texture* _texture, float _layer, float _opacity = 1.f);
 	// create a sprite with a source rectangle
-	Sprite(float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, Texture* _texture, float _layer, float _opacity = 1.f);
+	Sprite(float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, const Texture* _texture, float _layer, float _opacity = 1.f);
 	~Sprite();
 
 	// set the main rectangle
@@ -51,7 +51,7 @@ public:
 	// return the main rectangle's position
 	Point<float> GetPos() const;
 	// return the opacity
-	float Opacity() { return opacity; }
+	float Opacity() const { return opacity; }
 
 	// draw the sprite in the world
 	virtual void Draw(SpriteBatch* spriteBatch);
@@ -79,9 +79,9 @@ protected:
 public: 
 
 	// create a sprite without a source rectangle
-	UISprite(float x, float y, float width, float height, Texture* _texture, float _layer, float _opacity = 1.f, ANCHOR_POINT _anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
+	UISprite(float x, float y, float width, float height, const Texture* _texture, float _layer, float _opacity = 1.f, ANCHOR_POINT _anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
 	// create a sprite with a source rectangle
-	UISprite(float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, Texture* _texture, float _layer, float _opacity = 1.f, ANCHOR_POINT _anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
+	UISprite(float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, const Texture* _texture, float _layer, float _opacity = 1.f, ANCHOR_POINT _anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
 	
 	virtual void Deactivate();
 	// draw the sprite as UI
@@ -89,5 +89,5 @@ public:
 
 	virtual void DrawInSprite(SpriteBatch* spriteBatch, UISprite* parent);
 
-	ANCHOR_POINT GetAnchorPoint() { return anchor; }
+	ANCHOR_POINT GetAnchorPoint() const { return anchor; }
 };

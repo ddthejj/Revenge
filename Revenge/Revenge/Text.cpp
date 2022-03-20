@@ -37,7 +37,7 @@ void Text::SetLocation(Point<float> location)
 	rectangle->SetLocation(location);
 }
 
-Point<float> Text::Location()
+Point<float> Text::Location() const
 {
 	return rectangle->Location();
 }
@@ -47,7 +47,7 @@ void Text::SetX(float x)
 	rectangle->SetX(x);
 }
 
-float Text::X()
+float Text::X() const
 {
 	return rectangle->X();
 }
@@ -57,12 +57,10 @@ void Text::SetY(float y)
 	rectangle->SetY(y);
 }
 
-float Text::Y()
+float Text::Y() const
 {
 	return rectangle->Y();
 }
-
-
 
 void Text::Activate()
 {

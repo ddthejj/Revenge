@@ -54,7 +54,7 @@ void TitleManager::AnyKeyPressed(char key)
 
 void TitleManager::Init()
 {
-	Texture* logoTexture = Manager::GetTexture("LOGO");
+	const Texture* logoTexture = Manager::GetTexture("LOGO");
 	float desiredheight = logoTexture->Height() * ((float)(Manager::GetScreenWidth() * .75f) / (float)logoTexture->Width());
 
 	logo = new UISprite(0, 0, Manager::GetScreenWidth() * .75f, desiredheight, logoTexture, 1.f, 0.f, ANCHOR_POINT::ANCHOR_CENTER);
@@ -88,12 +88,12 @@ void TitleManager::EndSplash()
 	SafeDelete(logo);
 
 	// make the actual title sprite
-	Texture* titleTexture = Manager::GetTexture("TITLE");
+	const Texture* titleTexture = Manager::GetTexture("TITLE");
 	float desiredHeight = titleTexture->Height() * ((float)(Manager::GetScreenWidth() * .75f) / (float)titleTexture->Width());
 	title = new UISprite(0, 0, Manager::GetScreenWidth() * .75f, desiredHeight, titleTexture, .1f, 0.f, ANCHOR_POINT::ANCHOR_CENTER);
 	title->Activate();
 	// make the title background sprite
-	Texture* titleBackgroundTexture = Manager::GetTexture("TITLE_BACKGROUND");
+	const Texture* titleBackgroundTexture = Manager::GetTexture("TITLE_BACKGROUND");
 	float widthRatio = (float)Manager::GetScreenWidth() / (float)titleBackgroundTexture->Width(),
 		heightRatio = (float)Manager::GetScreenHeight() / (float)titleBackgroundTexture->Height();
 	float titleBackgroundHeight, titleBackgroundWidth;

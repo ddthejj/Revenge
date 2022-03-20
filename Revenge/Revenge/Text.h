@@ -32,22 +32,22 @@ public:
 	virtual void Unfreeze();
 
 	void SetRectangle(MyRectangle _rectangle);
-	MyRectangle* Rectangle() { return rectangle; }
+	const MyRectangle* Rectangle() const { return rectangle; }
 	void SetLocation(Point<float> location);
-	Point<float> Location();
+	Point<float> Location() const;
 	void SetX(float x);
-	float X();
+	float X() const;
 	void SetY(float y);
-	float Y();
+	float Y() const;
 	void SetText(std::string _text) { text = _text; }
 	void SetText(const char* _text) { text = std::string(_text); }
-	std::string GetText() { return text; }
+	std::string GetText() const { return text; }
 	void SetLayer(float _layer) { layer = _layer; }
-	float Layer() { return layer; }
+	float Layer() const { return layer; }
 	void SetOpacity(float _opacity) { opacity = _opacity; }
-	float Opacity() { return opacity; }
+	float Opacity() const { return opacity; }
 	void SetAnchor(ANCHOR_POINT _anchor) { anchor = _anchor; }
-	ANCHOR_POINT Anchor() { return anchor; }
+	ANCHOR_POINT Anchor() const { return anchor; }
 
 	virtual void Draw(SpriteBatch* spriteBatch);
 };

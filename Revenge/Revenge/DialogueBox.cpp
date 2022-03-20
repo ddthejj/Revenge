@@ -5,7 +5,7 @@
 #include "InputManager.h"
 #include "MenuManager.h"
 
-DialogueBox::DialogueBox(float _x, float _y, float _width, float _height, Texture* _texture, Texture* _arrowTexture, float _layer, float _opacity, ANCHOR_POINT _anchor) 
+DialogueBox::DialogueBox(float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, float _layer, float _opacity, ANCHOR_POINT _anchor)
 	: BorderedBox(_x, _y, _width, _height, _texture, _layer, _opacity, _anchor)
 {
 	arrow = new UISprite(15, 15, 7, 7, 0, 0, 15, 15, _arrowTexture, _layer + .01f, _opacity, ANCHOR_POINT::ANCHOR_BOTTOM_RIGHT);

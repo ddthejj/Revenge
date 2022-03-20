@@ -19,7 +19,6 @@ GAME_STATE Manager::gameState = GAME_STATE::STATE_OVERWORLD;
 SpriteBatch* Manager::spriteBatch = nullptr;
 std::vector<Object*> Manager::UpdateList;
 std::vector<Object*> Manager::DrawList;
-std::vector<Character*> Manager::party;
 
 bool Manager::fadingIn = false;
 bool Manager::fadingOut = false;
@@ -27,12 +26,17 @@ bool Manager::fadingOut = false;
 Sprite* Manager::fadeRectangle = nullptr;
 
 
-Texture* Manager::GetTexture(int index)
+const std::vector<Character*> Manager::GetParty() 
+{ 
+	return OverworldManager::GetCurrentParty();
+}
+
+const Texture* Manager::GetTexture(int index)
 {
 	return TextureManager::GetTexture(index);
 }
 
-Texture* Manager::GetTexture(const char* name)
+const Texture* Manager::GetTexture(const char* name)
 {
 	return TextureManager::GetTexture(name);
 }
@@ -204,7 +208,6 @@ void Manager::InitOverworld()
 	MenuManager::LoadOverworldMenus();
 	// load the overworld
 	OverworldManager::Init();
-	party.push_back(OverworldManager::GetCurrentPlayer());
 
 	MenuManager::Init();
 

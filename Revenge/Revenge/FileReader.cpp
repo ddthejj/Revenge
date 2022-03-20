@@ -29,7 +29,7 @@ void FileReader::Close()
 	lines.clear();
 }
 
-std::vector<std::string> FileReader::ParseLine(std::string line, char delim)
+std::vector<std::string> FileReader::ParseLine(std::string line, char delim) const
 {
 	std::vector<std::string> lineList;
 
@@ -56,7 +56,7 @@ std::vector<std::string> FileReader::ParseLine(std::string line, char delim)
 }
 
 
-Point<int> RoomReader::GetDimensions()
+Point<int> RoomReader::GetDimensions() const
 {
 	// the file either didn't correctly open or contained nothing
 	if (lines.size() == 0)
@@ -67,7 +67,7 @@ Point<int> RoomReader::GetDimensions()
 	return Point<int>(atoi(dims[0].c_str()), atoi(dims[1].c_str()));
 }
 
-Point<int> RoomReader::GetLayers(int**** layers)
+Point<int> RoomReader::GetLayers(int**** layers) const
 {
 	// the file either didn't correctly open or contained nothing
 	if (lines.size() == 0)
@@ -117,7 +117,7 @@ Point<int> RoomReader::GetLayers(int**** layers)
 	return dims;
 }
 
-int RoomReader::GetDoorCount()
+int RoomReader::GetDoorCount() const
 {
 	// the file either didn't correctly open or contained nothing
 	if (lines.size() == 0)
@@ -130,7 +130,7 @@ int RoomReader::GetDoorCount()
 	return atoi(lines[(GetDimensions().y * 3) + 5].c_str());
 }
 
-int RoomReader::GetDoorData(int*** doorData)
+int RoomReader::GetDoorData(int*** doorData) const
 {
 	// the file either didn't correctly open or contained nothing
 	if (lines.size() == 0)
@@ -161,7 +161,7 @@ int RoomReader::GetDoorData(int*** doorData)
 	return doorCount;
 }
 
-int RoomReader::GetTextCount()
+int RoomReader::GetTextCount() const
 {
 	// the file either didn't correctly open or contained nothing
 	if (lines.size() == 0)
@@ -176,7 +176,7 @@ int RoomReader::GetTextCount()
 	return atoi(lines[(GetDimensions().y * 3) + 5 + GetDoorCount() + 2].c_str());
 }
 
-int RoomReader::GetTextList(std::vector<std::vector<std::string>>& textList)
+int RoomReader::GetTextList(std::vector<std::vector<std::string>>& textList) const
 {
 	// the file either didn't correctly open or contained nothing
 	if (lines.size() == 0)
@@ -213,7 +213,7 @@ int RoomReader::GetTextList(std::vector<std::vector<std::string>>& textList)
 }
 
 
-Point<int> MenuReader::GetDimensions()
+Point<int> MenuReader::GetDimensions() const
 {
 	// the file either didn't correctly open or contained nothing
 	if (lines.size() == 0)
@@ -223,7 +223,7 @@ Point<int> MenuReader::GetDimensions()
 	return Point<int>(atoi(dims[0].c_str()), atoi(dims[1].c_str()));
 }
 
-int MenuReader::GetOptions(MenuReader::OptionData** optionsList)
+int MenuReader::GetOptions(MenuReader::OptionData** optionsList) const
 {
 	// get the number of options
 	int optionCount = atoi(lines[2].c_str());
@@ -246,7 +246,7 @@ int MenuReader::GetOptions(MenuReader::OptionData** optionsList)
 	return optionCount;
 }
 
-ANCHOR_POINT MenuReader::GetAnchor()
+ANCHOR_POINT MenuReader::GetAnchor() const
 {
 	
 	return EnumParser::ParseAnchorPoint(lines[1]);

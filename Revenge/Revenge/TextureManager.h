@@ -12,8 +12,8 @@ class TextureManager
 
 public:
 	static bool LoadTextures(const wchar_t* filepath, SpriteBatch* spriteBatch);
-	static Texture* GetTexture(unsigned int index);
-	static Texture* GetTexture(const char* name);
+	static const Texture* GetTexture(unsigned int index);
+	static const Texture* GetTexture(const char* name);
 	static void Clean();
 };
 

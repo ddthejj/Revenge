@@ -11,7 +11,7 @@
 #include "MenuManager.h"
 
 #pragma region Character
-Character::Character(float x, float y, float height, float width, Texture* _texture, float _layer) : Sprite(x, y, height, width, 0, 0, 32, 32, _texture, _layer)
+Character::Character(float x, float y, float height, float width, const Texture* _texture, float _layer) : Sprite(x, y, height, width, 0, 0, 32, 32, _texture, _layer)
 {
 	for (int i = 0; i < (int)DIRECTION::MAX; i++)
 	{
@@ -32,7 +32,7 @@ void Character::Draw(SpriteBatch* spriteBatch)
 
 #pragma region Player Character
 
-Player::Player(float x, float y, float height, float width, Texture* _texture, float _layer) : Character(x, y, height, width, _texture, _layer)
+Player::Player(float x, float y, float height, float width, const Texture* _texture, float _layer) : Character(x, y, height, width, _texture, _layer)
 {
 }
 
@@ -199,7 +199,7 @@ void Player::ResetInputs()
 
 void Player::Move()
 {
-	Room* currentRoom = OverworldManager::GetCurrentRoom();
+	const Room* currentRoom = OverworldManager::GetCurrentRoom();
 
 	if (!currentRoom)
 		return;
@@ -236,7 +236,7 @@ void Player::Move()
 	sourceRectangle->SetY((int)wayFacing * TILE_HEIGHT);
 }
 
-void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, Room* currentRoom)
+void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, const Room* currentRoom)
 {
 	int tilesRight = (int)(rectangle->Width() / TILE_HEIGHT) + 1;
 	int tilesDown = (int)(rectangle->Height() / TILE_HEIGHT) + 1;
@@ -256,7 +256,7 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, Room* 
 		{
 			for (int i = atX; i < atX + tilesRight; i++)
 			{
-				Tile* testing = currentRoom->GetTile(1, i, j);
+				const Tile* testing = currentRoom->GetTile(1, i, j);
 				if (!testing)
 					continue;
 
@@ -301,7 +301,7 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, Room* 
 		{
 			for (int i = atX; i < atX + tilesRight; i++)
 			{
-				Tile* testing = currentRoom->GetTile(1, i, j);
+				const Tile* testing = currentRoom->GetTile(1, i, j);
 				if (!testing)
 					continue;
 
@@ -346,7 +346,7 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, Room* 
 		{
 			for (int i = atX; i < atX + tilesRight; i++)
 			{
-				Tile* testing = currentRoom->GetTile(1, i, j);
+				const Tile* testing = currentRoom->GetTile(1, i, j);
 				if (!testing)
 					continue;
 
@@ -391,7 +391,7 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, Room* 
 		{
 			for (int i = atX; i < atX + tilesRight; i++)
 			{
-				Tile* testing = currentRoom->GetTile(1, i, j);
+				const Tile* testing = currentRoom->GetTile(1, i, j);
 				if (!testing)
 					continue;
 
@@ -422,7 +422,7 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, Room* 
 #pragma endregion
 }
 
-Point<float> Player::GetInteractPoint()
+Point<float> Player::GetInteractPoint() const
 {
 	return Point<float>();
 }
@@ -430,7 +430,7 @@ Point<float> Player::GetInteractPoint()
 #pragma endregion
 
 #pragma region NonPlayer Character
-NonPlayer::NonPlayer(float x, float y, float height, float width, Texture* _texture, float _layer) : Character(x, y, height, width, _texture, _layer)
+NonPlayer::NonPlayer(float x, float y, float height, float width, const Texture* _texture, float _layer) : Character(x, y, height, width, _texture, _layer)
 {
 
 }

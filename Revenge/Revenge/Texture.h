@@ -28,9 +28,9 @@ public:
 	Texture(Texture* that, MyRectangle source);
 	~Texture();
 
-	float Width() { return width; }
-	float Height() { return height; }
-	unsigned int ID() { return textureID; }
-	MyRectangle* SourceRectangle() { return source; }
+	float Width() const { return width; }
+	float Height() const { return height; }
+	unsigned int ID() const { return textureID; }
+	const MyRectangle* SourceRectangle() const { return source; }
 };
 

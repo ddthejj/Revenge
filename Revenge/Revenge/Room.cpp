@@ -42,7 +42,7 @@ Room::Room(const char* filepath)
 			{
 				if (layers[l][i][j] != -1 && layers[l][i][j] != -2)
 				{
-					ProtoTile* prototype = OverworldManager::GetProtoTile(layers[l][i][j]);
+					const ProtoTile* prototype = OverworldManager::GetProtoTile(layers[l][i][j]);
 					if (prototype->door)
 					{
 						if (doorAt < doorCount)
@@ -195,24 +195,24 @@ void Room::Unfreeze()
 	Object::Unfreeze();
 }
 
-Tile* Room::GetTile(int layer, int x, int y)
+const Tile* Room::GetTile(int layer, int x, int y) const 
 {
 	if (x >= dimensions.x || x < 0 || y >= dimensions.y || y < 0)
 		return nullptr;
 	return tiles[layer][x][y];
 }
 
-Point<int> Room::GetDimensions()
+Point<int> Room::GetDimensions() const
 {
 	return dimensions;	
 }
 
-Interactable** Room::GetInteractables()
+Interactable** const Room::GetInteractables() const
 {
 	return interactableTiles;
 }
 
-int Room::GetInteractableCount()
+int Room::GetInteractableCount() const 
 {
 	return interactableCount;
 }
