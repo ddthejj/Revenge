@@ -11,17 +11,20 @@
     <Filter Include="Mapping">
       <UniqueIdentifier>{50c16e10-75e0-4d8f-a59c-01efa2af13e1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Basic Types">
-      <UniqueIdentifier>{ff3f6ee2-b1b9-47ff-bd22-e6ebd54455e3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Managers">
       <UniqueIdentifier>{fcf34dec-9333-4723-82f5-94bc8765fcc4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Essentials">
-      <UniqueIdentifier>{edc34036-fe98-41d8-8b5d-e1cf52b56d67}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Sounds">
       <UniqueIdentifier>{f09d1e29-1872-4622-a9e6-5b2a57b676bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Menus">
+      <UniqueIdentifier>{928614e2-2fe9-4647-ab75-aeca0976fd84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities">
+      <UniqueIdentifier>{edc34036-fe98-41d8-8b5d-e1cf52b56d67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base Classes">
+      <UniqueIdentifier>{ff3f6ee2-b1b9-47ff-bd22-e6ebd54455e3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -44,13 +47,13 @@
       <Filter>Mapping</Filter>
     </ClCompile>
     <ClCompile Include="Character.cpp">
-      <Filter>Basic Types</Filter>
+      <Filter>Base Classes</Filter>
     </ClCompile>
     <ClCompile Include="Rectangle.cpp">
-      <Filter>Basic Types</Filter>
+      <Filter>Base Classes</Filter>
     </ClCompile>
     <ClCompile Include="Sprite.cpp">
-      <Filter>Basic Types</Filter>
+      <Filter>Base Classes</Filter>
     </ClCompile>
     <ClCompile Include="Manager.cpp">
       <Filter>Managers</Filter>
@@ -58,11 +61,8 @@
     <ClCompile Include="MenuManager.cpp">
       <Filter>Managers</Filter>
     </ClCompile>
-    <ClCompile Include="MenuBox.cpp">
-      <Filter>Basic Types</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>Essentials</Filter>
+      <Filter>Utilities</Filter>
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
       <Filter>Managers</Filter>
@@ -79,29 +79,32 @@
     <ClCompile Include="TextureManager.cpp">
       <Filter>Managers</Filter>
     </ClCompile>
-    <ClCompile Include="Text.cpp">
-      <Filter>Basic Types</Filter>
-    </ClCompile>
     <ClCompile Include="FileReader.cpp">
-      <Filter>Essentials</Filter>
+      <Filter>Utilities</Filter>
     </ClCompile>
     <ClCompile Include="directSound.cpp">
       <Filter>Sounds</Filter>
     </ClCompile>
     <ClCompile Include="Math.cpp">
-      <Filter>Essentials</Filter>
+      <Filter>Utilities</Filter>
     </ClCompile>
     <ClCompile Include="SoundManager.cpp">
       <Filter>Managers</Filter>
     </ClCompile>
     <ClCompile Include="EnumParser.cpp">
-      <Filter>Essentials</Filter>
+      <Filter>Utilities</Filter>
     </ClCompile>
     <ClCompile Include="DialogueBox.cpp">
-      <Filter>Basic Types</Filter>
+      <Filter>Menus</Filter>
     </ClCompile>
     <ClCompile Include="BorderedBox.cpp">
-      <Filter>Basic Types</Filter>
+      <Filter>Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuBox.cpp">
+      <Filter>Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Text.cpp">
+      <Filter>Menus</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -121,16 +124,16 @@
       <Filter>Mapping</Filter>
     </ClInclude>
     <ClInclude Include="Sprite.h">
-      <Filter>Basic Types</Filter>
+      <Filter>Base Classes</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
-      <Filter>Basic Types</Filter>
+      <Filter>Base Classes</Filter>
     </ClInclude>
     <ClInclude Include="Character.h">
-      <Filter>Basic Types</Filter>
+      <Filter>Base Classes</Filter>
     </ClInclude>
     <ClInclude Include="Rectangle.h">
-      <Filter>Basic Types</Filter>
+      <Filter>Base Classes</Filter>
     </ClInclude>
     <ClInclude Include="Manager.h">
       <Filter>Managers</Filter>
@@ -138,11 +141,8 @@
     <ClInclude Include="MenuManager.h">
       <Filter>Managers</Filter>
     </ClInclude>
-    <ClInclude Include="MenuBox.h">
-      <Filter>Basic Types</Filter>
-    </ClInclude>
     <ClInclude Include="defines.h">
-      <Filter>Essentials</Filter>
+      <Filter>Utilities</Filter>
     </ClInclude>
     <ClInclude Include="InputManager.h">
       <Filter>Managers</Filter>
@@ -157,28 +157,31 @@
       <Filter>Managers</Filter>
     </ClInclude>
     <ClInclude Include="Math.h">
-      <Filter>Essentials</Filter>
-    </ClInclude>
-    <ClInclude Include="Text.h">
-      <Filter>Basic Types</Filter>
+      <Filter>Utilities</Filter>
     </ClInclude>
     <ClInclude Include="FileReader.h">
-      <Filter>Essentials</Filter>
+      <Filter>Utilities</Filter>
     </ClInclude>
     <ClInclude Include="AudioPlayer.h">
       <Filter>Sounds</Filter>
     </ClInclude>
     <ClInclude Include="EnumParser.h">
-      <Filter>Essentials</Filter>
+      <Filter>Utilities</Filter>
     </ClInclude>
     <ClInclude Include="SoundManager.h">
       <Filter>Managers</Filter>
     </ClInclude>
     <ClInclude Include="DialogueBox.h">
-      <Filter>Basic Types</Filter>
+      <Filter>Menus</Filter>
     </ClInclude>
     <ClInclude Include="BorderedBox.h">
-      <Filter>Basic Types</Filter>
+      <Filter>Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuBox.h">
+      <Filter>Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.h">
+      <Filter>Menus</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

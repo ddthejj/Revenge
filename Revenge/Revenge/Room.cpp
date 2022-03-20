@@ -11,7 +11,6 @@
 
 Room::Room(const char* filepath)
 {
-
 #pragma region Read Data
 
 	RoomReader roomReader;
@@ -26,7 +25,6 @@ Room::Room(const char* filepath)
 	interactableTiles = new Interactable*[interactableCount];
 
 #pragma endregion
-
 
 #pragma region Translate Read Data into Tiles
 
@@ -107,7 +105,6 @@ Room::Room(const char* filepath)
 	//delete[] textList;
 
 #pragma endregion
-
 }
 
 Room::~Room()

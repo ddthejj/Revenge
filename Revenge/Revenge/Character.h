@@ -13,18 +13,38 @@ protected:
 	enum class DIRECTION 
 	{ UP, DOWN, LEFT, RIGHT, MAX };
 
+	enum class MAGIC_TYPE
+	{
+		NONE = 0,
+
+		ELEMENTAL = 1 << 5,
+		HUMANITY = 1 << 6,
+
+		FIRE = ELEMENTAL | (1 << 0),
+		WATER = ELEMENTAL | (1 << 1),
+		LIFE = ELEMENTAL | (1 << 2),
+		EARTH = ELEMENTAL | (1 << 3),
+		VENOM = ELEMENTAL | (1 << 4),
+
+		MAGNET = HUMANITY | (1 << 0),
+		WARD = HUMANITY | (1 << 1),
+		LIGHT = HUMANITY | (1 << 2),
+		MIND = HUMANITY | (1 << 3),
+		NECRO = HUMANITY | (1 << 4),
+	};
+
 #pragma endregion
 
 #pragma region Properties
 
 	char name[32] = "DEFAULT";	// the name of the character
 	float mvmntSpeed = 3.f;		// how quickly the character moves across the map
-	float attack = 0, defense = 0, mind = 0, spirit = 0, speed = 0, dexterity = 0, accuracy = 0;	// the characters stats
-	//MyRectangle* sourceRectangle = new MyRectangle(0, 0, 32, 32);
+	int attack = 0, defense = 0, mind = 0, spirit = 0, energy = 0;	// the characters stats
 
 	bool moving[(int)DIRECTION::MAX];
 	DIRECTION wayFacing = DIRECTION::DOWN;
 	float animTimer = 0;
+	MAGIC_TYPE magicType = MAGIC_TYPE::NONE;
 
 #pragma endregion
 
@@ -36,14 +56,14 @@ public:
 	~Character();
 	virtual void Draw(SpriteBatch* spriteBatch);
 
-	char* Name() { return name; }		// returns the name of the character
-	float AT() { return attack; }		// returns the attack of the character
-	float DF() { return defense; }		// returns the defense of the character
-	float MN() { return mind; }			// returns the mind of the character
-	float SR() { return spirit; }		// returns the spirit of the character
-	float SP() { return speed; }		// returns the speed of the character
-	float DX() { return dexterity; }	// returns the dexterity of the character
-	float AC() { return accuracy; }		// returns the accuracy of the character
+	char* Name() { return name; }	// returns the name of the character
+	int AT() { return attack; }		// returns the attack of the character
+	int DF() { return defense; }	// returns the defense of the character
+	int MN() { return mind; }		// returns the mind of the character
+	int SR() { return spirit; }		// returns the spirit of the character
+	int EN() { return energy; }		// returns the energy of the character
+
+	MAGIC_TYPE Magic() { return magicType; }
 
 #pragma endregion
 
