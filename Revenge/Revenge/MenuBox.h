@@ -1,5 +1,5 @@
 #pragma once
-#include "Sprite.h"
+#include "BorderedBox.h"
 #include <string>
 #include <vector>
 
@@ -7,7 +7,7 @@ template <typename T>
 struct Point;
 
 // class for menu boxes
-class MenuBox : public UISprite
+class MenuBox : public BorderedBox
 {
 	friend class MenuManager;
 

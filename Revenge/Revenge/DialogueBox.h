@@ -1,12 +1,12 @@
 #pragma once
-#include "Sprite.h"
+#include "BorderedBox.h"
 
 #include <vector>
 #include <string>
 
 class Character;
 
-class DialogueBox : public UISprite
+class DialogueBox : public BorderedBox
 {
     friend class MenuManager;
 
@@ -16,7 +16,7 @@ private:
 
     Character* speaker = nullptr;
     std::vector<std::string> text;
-    std::string currentText;
+    std::string currentText, currentLine;
     int charAt = 0, textAt = 0;
     
     UISprite* arrow = nullptr;

@@ -7,7 +7,8 @@
 #include "FileReader.h"
 #include "InputManager.h"
 
-MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _texture, Texture* _arrowTexture, float _layer, float _opacity, ANCHOR_POINT _anchor) : UISprite(_x, _y, _width, _height, _texture, _layer, _opacity, _anchor)
+MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _texture, Texture* _arrowTexture, float _layer, float _opacity, ANCHOR_POINT _anchor) 
+	: BorderedBox(_x, _y, _width, _height, _texture, _layer, _opacity, _anchor)
 {
 	optionAt = new Point<int>();
 	arrow = new UISprite(0, 0, 7, 7, 0, 0, 15, 15, _arrowTexture, _layer + .1f, _opacity, _anchor);
@@ -31,7 +32,8 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _text
 	}
 }
 
-MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _texture, Texture* _arrowTexture, const char* filename) : UISprite(_x, _y, _width, _height, _texture, .8f, 1.f, ANCHOR_POINT::ANCHOR_TOP_LEFT)
+MenuBox::MenuBox(float _x, float _y, float _width, float _height, Texture* _texture, Texture* _arrowTexture, const char* filename) 
+	: BorderedBox(_x, _y, _width, _height, _texture, .8f, 1.f, ANCHOR_POINT::ANCHOR_TOP_LEFT)
 {
 	// use the MenuReader class to read the menu data from a file
 	MenuReader reader;
@@ -258,42 +260,7 @@ void MenuBox::Update(float delta_time)
 
 void MenuBox::Draw(SpriteBatch* spriteBatch)
 {
-	if (texture)
-	{
-		// source rectangles for menu parts
-		MyRectangle cornerSource(0, 0, 10, 10);
-		MyRectangle borderSource(10, 0, 10, 10);
-		MyRectangle backgroundSource(20, 0, 10, 10);
-
-		MyRectangle screenspaceRec = GetScreenLocation(*rectangle, anchor);
-
-		// background
-		spriteBatch->DrawUI(texture, rectangle, &backgroundSource, opacity, layer, 0, anchor);
-		// edges
-		MyRectangle edgeRectangle = MyRectangle(screenspaceRec.X(), screenspaceRec.Y(), borderSource.Width(), rectangle->Height());
-		spriteBatch->DrawUI(texture, &edgeRectangle, &borderSource, opacity, layer + .2f, 0); // left
-		borderSource.SetY(10);
-		edgeRectangle = MyRectangle(screenspaceRec.X(), screenspaceRec.Y(), rectangle->Width(), borderSource.Height());
-		spriteBatch->DrawUI(texture, &edgeRectangle, &borderSource, opacity, layer + .2f, (int)ROTATIONS::ROT_90); // top
-		borderSource.SetY(20);
-		edgeRectangle = MyRectangle(screenspaceRec.Right() - borderSource.Width(), screenspaceRec.Y(), borderSource.Width(), rectangle->Height());
-		spriteBatch->DrawUI(texture, &edgeRectangle, &borderSource, opacity, layer + .2f, (int)ROTATIONS::HORIZONTAL); // right
-		borderSource.SetY(30);
-		edgeRectangle = MyRectangle(screenspaceRec.X(), screenspaceRec.Bottom() - borderSource.Height(), rectangle->Width(), borderSource.Height());
-		spriteBatch->DrawUI(texture, &edgeRectangle, &borderSource, opacity, layer + .2f, (int)ROTATIONS::ROT_270); // bottom
-		// corners
-		MyRectangle cornerRectangle = MyRectangle(screenspaceRec.X(), screenspaceRec.Y(), cornerSource.Width(), cornerSource.Height());
-		spriteBatch->DrawUI(texture, &cornerRectangle, &cornerSource, opacity, layer + .3f, 0); // top left
-		cornerSource.SetY(10);
-		cornerRectangle = MyRectangle(screenspaceRec.Right() - cornerSource.Width(), screenspaceRec.Y(), cornerSource.Width(), cornerSource.Height());
-		spriteBatch->DrawUI(texture, &cornerRectangle, &cornerSource, opacity, layer + .3f, (int)ROTATIONS::ROT_90); // top right
-		cornerSource.SetY(20);
-		cornerRectangle = MyRectangle(screenspaceRec.Right() - cornerSource.Width(), screenspaceRec.Bottom() - cornerSource.Height(), cornerSource.Width(), cornerSource.Height());
-		spriteBatch->DrawUI(texture, &cornerRectangle, &cornerSource, opacity, layer + .3f, (int)ROTATIONS::ROT_180); // bottom right
-		cornerSource.SetY(30);
-		cornerRectangle = MyRectangle(screenspaceRec.X(), screenspaceRec.Bottom() - cornerSource.Height(), cornerSource.Width(), cornerSource.Height());
-		spriteBatch->DrawUI(texture, &cornerRectangle, &cornerSource, opacity, layer + .3f, (int)ROTATIONS::ROT_270); // bottom left
-	}
+	DrawBox(spriteBatch);
 
 	// write text
 	for (int i = 0; i < optionsWidth; i++)

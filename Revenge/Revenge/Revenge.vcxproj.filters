@@ -100,6 +100,9 @@
     <ClCompile Include="DialogueBox.cpp">
       <Filter>Basic Types</Filter>
     </ClCompile>
+    <ClCompile Include="BorderedBox.cpp">
+      <Filter>Basic Types</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Texture.h">
@@ -172,6 +175,9 @@
       <Filter>Managers</Filter>
     </ClInclude>
     <ClInclude Include="DialogueBox.h">
+      <Filter>Basic Types</Filter>
+    </ClInclude>
+    <ClInclude Include="BorderedBox.h">
       <Filter>Basic Types</Filter>
     </ClInclude>
   </ItemGroup>
