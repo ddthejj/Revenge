@@ -162,6 +162,8 @@
     <ClCompile Include="EnumParser.cpp" />
     <ClCompile Include="FileReader.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="Item.cpp" />
+    <ClCompile Include="ItemManager.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="MenuBox.cpp" />
@@ -172,6 +174,7 @@
     <ClCompile Include="Manager.cpp" />
     <ClCompile Include="Rectangle.cpp" />
     <ClCompile Include="Room.cpp" />
+    <ClCompile Include="SaveManager.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteBatch.cpp" />
@@ -190,6 +193,8 @@
     <ClInclude Include="EnumParser.h" />
     <ClInclude Include="FileReader.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="Item.h" />
+    <ClInclude Include="ItemManager.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Math.h" />
@@ -199,6 +204,7 @@
     <ClInclude Include="OverworldManager.h" />
     <ClInclude Include="Rectangle.h" />
     <ClInclude Include="Room.h" />
+    <ClInclude Include="SaveManager.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteBatch.h" />

@@ -36,7 +36,7 @@ public:
 	// return the number of NPCs in a room
 	int GetNPCCount() const;
 	// return the NPC data of the room
-	int GetNPCList(std::vector<NonPlayer*>& NPCList) const;
+	int GetNPCList(std::vector<std::string>& NPCList) const;
 
 private:
 
@@ -67,4 +67,18 @@ public:
 class SoundReader : public FileReader
 {
 
+};
+
+class SaveReader : public FileReader
+{
+public:
+
+	int GetFlags(unsigned long long** flags) const;
+};
+
+class SaveWriter
+{
+public: 
+
+	bool WriteSave(const char* filepath);
 };

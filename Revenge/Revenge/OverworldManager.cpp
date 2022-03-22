@@ -1,11 +1,13 @@
 #include "defines.h"
-#include "OverworldManager.h"
-#include "Tile.h"
-#include "Map.h"
-#include "Character.h"
 #include "Manager.h"
 #include "InputManager.h"
+#include "OverworldManager.h"
+#include "SaveManager.h"
+
+#include "Map.h"
 #include "Room.h"
+#include "Tile.h"
+#include "Character.h"
 
 ProtoTile* OverworldManager::protoTiles[(int)TILES::TILE_MAX];
 std::vector<Map*> OverworldManager::maps;
@@ -34,6 +36,9 @@ void OverworldManager::Init()
 	currentMap->Activate();
 
 	party.push_back(currentPlayer);
+
+	SaveManager::OpenSave(0);
+	SaveManager::Save();
 }
 
 void OverworldManager::Clean()

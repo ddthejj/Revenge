@@ -4,6 +4,7 @@
 #include "Manager.h"
 #include "OverworldManager.h"
 #include "FileReader.h"
+#include "Character.h"
 
 #include <iostream>
 #include <fstream>
@@ -23,6 +24,8 @@ Room::Room(const char* filepath)
 	int doorCount = roomReader.GetDoorData(&doorData);
 	interactableCount = roomReader.GetTextList(textList);
 	interactableTiles = new Interactable*[interactableCount];
+	std::vector<std::string> NPCNames;
+	int NPCCount = roomReader.GetNPCList(NPCNames);
 
 #pragma endregion
 
@@ -86,6 +89,12 @@ Room::Room(const char* filepath)
 
 #pragma endregion
 
+#pragma region Read NPC Data
+
+
+
+#pragma endregion
+
 #pragma region Clean
 
 	for (int l = 0; l < 3; l++)
@@ -101,8 +110,6 @@ Room::Room(const char* filepath)
 		delete[] doorData[i];
 	}
 	delete[] doorData;
-
-	//delete[] textList;
 
 #pragma endregion
 }
@@ -127,7 +134,11 @@ Room::~Room()
 			delete tiles[l];
 	}
 
-	delete[] interactableTiles;
+	if (interactableTiles)
+		delete[] interactableTiles;
+	
+	if (NPCs)
+		delete[] NPCs;
 }
 
 void Room::Activate()

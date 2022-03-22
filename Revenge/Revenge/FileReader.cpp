@@ -1,5 +1,7 @@
 #include "defines.h"
 #include "FileReader.h"
+#include "SaveManager.h"
+
 #include <Windows.h>
 
 #include <iostream>
@@ -199,9 +201,24 @@ int RoomReader::GetNPCCount() const
 	return atoi(lines[GetNPCCountLine()].c_str());
 }
 
-int RoomReader::GetNPCList(std::vector<NonPlayer*>& NPCList) const
+int RoomReader::GetNPCList(std::vector<std::string>& NPCList) const
 {
-	return 0;
+	// the file either didn't correctly open or contained nothing
+	if (lines.size() == 0)
+		return 0;
+
+	int NPCCountLine = GetNPCCountLine();
+	int NPCCount = atoi(lines[NPCCountLine].c_str());
+
+	int lineAt = NPCCountLine + 1;
+
+	for (int i = 0; i < NPCCount; i++)
+	{
+		NPCList.push_back(lines[lineAt]);
+		lineAt++;
+	}
+
+	return NPCCount;
 }
 
 int RoomReader::GetDoorCountLine() const
@@ -222,9 +239,12 @@ int RoomReader::GetTextCountLine() const
 
 int RoomReader::GetNPCCountLine() const
 {
-	int currentLine =  GetTextCountLine();
+	// go to the text line
+	int currentLine =  GetTextCountLine() + 1;
+	int textCount = GetTextCount();
 
-	for (int i = 0; i < GetTextCount(); i++)
+	// loop through the text lines to get to the end of them
+	for (int i = 0; i < textCount; i++)
 	{
 		int lineCount = atoi(lines[currentLine].c_str());
 
@@ -232,9 +252,10 @@ int RoomReader::GetNPCCountLine() const
 		{
 			currentLine++;
 		}
+		currentLine++;
 	}
-
-	return currentLine;
+	// extra line for blank space at the end
+	return currentLine + 1;
 }
 
 
@@ -275,4 +296,63 @@ ANCHOR_POINT MenuReader::GetAnchor() const
 {
 	
 	return EnumParser::ParseAnchorPoint(lines[1]);
+}
+
+int SaveReader::GetFlags(unsigned long long** flags) const
+{
+	(*flags) = new unsigned long long[8];
+
+	for (int i = 0; i < 8; i++)
+	{
+		char* end;
+		(*flags)[i] = strtoull(lines[i].c_str(), &end, 10);
+	}
+
+	return 8;
+}
+
+bool SaveWriter::WriteSave(const char* filepath)
+{
+	std::ofstream file(filepath, std::ios::out);
+
+	if (!file.is_open())
+		return false;
+
+	file.clear();
+
+	char buffer[32];
+	_ui64toa_s((unsigned long long)SaveManager::mainQuestProgress, buffer, 32, 10);
+	file << buffer;
+	file << '\n';
+
+	_ui64toa_s((unsigned long long)SaveManager::mainQuestDecisions, buffer, 32, 10);
+	file << buffer;
+	file << '\n';
+
+	_ui64toa_s((unsigned long long)SaveManager::sideQuestProgress, buffer, 32, 10);
+	file << buffer;
+	file << '\n';
+
+	_ui64toa_s((unsigned long long)SaveManager::sideQuestDecisions, buffer, 32, 10);
+	file << buffer;
+	file << '\n';
+
+	_ui64toa_s((unsigned long long)SaveManager::itemsCollected, buffer, 32, 10);
+	file << buffer;
+	file << '\n';
+
+	_ui64toa_s((unsigned long long)SaveManager::conversationChoices, buffer, 32, 10);
+	file << buffer;
+	file << '\n';
+
+	_ui64toa_s((unsigned long long)SaveManager::defeatedEnemies, buffer, 32, 10);
+	file << buffer;
+	file << '\n';
+
+	_ui64toa_s((unsigned long long)SaveManager::misc, buffer, 32, 10);
+	file << buffer;
+	file << '\n';
+
+	file.close();
+	return true;
 }
