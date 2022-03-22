@@ -19,6 +19,19 @@ public:
 
 class RoomReader : public FileReader
 {
+
+	// layout:
+
+	// dimensions
+		// 3 layers of tile data
+	// door count
+		// door send locations
+	// interactable count
+		// line count
+		// lines
+	// npc count
+		// npc name & locations
+
 public:
 
 	// return the dimensions of the room in tiles
@@ -47,6 +60,15 @@ private:
 
 class MenuReader : public FileReader
 {
+
+	// layout:
+
+	// options dimensions
+	// anchor 
+	// options numbers
+		// option name, send index, location, index
+
+
 public:
 
 	struct OptionData
@@ -71,14 +93,37 @@ class SoundReader : public FileReader
 
 class SaveReader : public FileReader
 {
+
+	// layout: 
+
+	// 8 unsigned long long flags
+
 public:
 
+	// returns the 8 ull flags in an array
 	int GetFlags(unsigned long long** flags) const;
 };
 
 class SaveWriter
 {
+
+	// layout: 
+
+	// 8 unsigned long long flags
+
 public: 
 
 	bool WriteSave(const char* filepath);
+};
+
+class CharacterReader :public FileReader
+{
+	
+	// layout:
+
+	// 
+
+public:
+
+
 };
