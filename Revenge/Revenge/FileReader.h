@@ -3,6 +3,7 @@
 #include <string>
 
 enum class ANCHOR_POINT : unsigned char;
+class NonPlayer;
 
 class FileReader
 {
@@ -30,8 +31,18 @@ public:
 	int GetDoorData(int*** doorData) const;
 	// return the number of interactable tiles in the room
 	int GetTextCount() const;
-	// return 
+	// return the list of text for interactable tiles in the room
 	int GetTextList(std::vector<std::vector<std::string>>& textList) const;
+	// return the number of NPCs in a room
+	int GetNPCCount() const;
+	// return the NPC data of the room
+	int GetNPCList(std::vector<NonPlayer*>& NPCList) const;
+
+private:
+
+	int GetDoorCountLine() const;
+	int GetTextCountLine() const;
+	int GetNPCCountLine() const;
 };
 
 class MenuReader : public FileReader

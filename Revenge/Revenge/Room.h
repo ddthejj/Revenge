@@ -3,6 +3,7 @@
 
 class Tile;
 class Interactable;
+class Character;
 
 class Room : public Object
 {
@@ -10,6 +11,7 @@ class Room : public Object
 	Point<int> dimensions;
 	Interactable** interactableTiles = nullptr;
 	int interactableCount = 0;
+	Character* NPCs;
 
 public:
 	Room(const char* filepath);

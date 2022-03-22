@@ -123,11 +123,7 @@ int RoomReader::GetDoorCount() const
 	if (lines.size() == 0)
 		return 0;
 
-	// there is a lot going into this calculation, but the variables are: 
-	// + 2 for the dimension line and extra space
-	// y * 3 for the number of lines in the room data
-	// + 3 for the number of lines in between rooms
-	return atoi(lines[(GetDimensions().y * 3) + 5].c_str());
+	return atoi(lines[GetDoorCountLine()].c_str());
 }
 
 int RoomReader::GetDoorData(int*** doorData) const
@@ -136,11 +132,7 @@ int RoomReader::GetDoorData(int*** doorData) const
 	if (lines.size() == 0)
 		return 0;
 
-	// there is a lot going into this calculation, but the variables are: 
-	// + 2 for the dimension line and extra space
-	// y * 3 for the number of lines in the room data
-	// + 3 for the number of lines in between rooms
-	int doorCountLine = (GetDimensions().y * 3) + 5;
+	int doorCountLine = GetDoorCountLine();
 	int doorCount = atoi(lines[doorCountLine].c_str());
 	// initialize passed in variable
 	(*doorData) = new int* [doorCount];
@@ -167,13 +159,7 @@ int RoomReader::GetTextCount() const
 	if (lines.size() == 0)
 		return 0;
 
-	// there is a lot going into this calculation, but the variables are: 
-	// + 2 for the dimension line and extra space
-	// y * 3 for the number of lines in the room data
-	// + 3 for the number of lines in between rooms
-	// this gets us to the start of the door list. We have to get the door count and pass those lines as well
-	// then + 2 for the extra line after the door list and for the door list line itself
-	return atoi(lines[(GetDimensions().y * 3) + 5 + GetDoorCount() + 2].c_str());
+	return atoi(lines[GetTextCountLine()].c_str());
 }
 
 int RoomReader::GetTextList(std::vector<std::vector<std::string>>& textList) const
@@ -182,18 +168,10 @@ int RoomReader::GetTextList(std::vector<std::vector<std::string>>& textList) con
 	if (lines.size() == 0)
 		return 0;
 
-	// there is a lot going into this calculation, but the variables are: 
-	// + 2 for the dimension line and extra space
-	// y * 3 for the number of lines in the room data
-	// + 3 for the number of lines in between rooms
-	// this gets us to the start of the door list. We have to get the door count and pass those lines as well
-	// then + 2 for the extra line after the door list and for the door list line itself
-	int TextCountLine = (GetDimensions().y * 3) + 5 + GetDoorCount() + 2;
 	// read that number into an int
+	int TextCountLine = GetTextCountLine();
 	int TextCount = atoi(lines[TextCountLine].c_str());
 
-	// initialize passed in variable
-	//(*textList) = new std::vector<std::string>[TextCount];
 	// which line we are currently reading
 	int lineAt = TextCountLine + 1;
 
@@ -210,6 +188,53 @@ int RoomReader::GetTextList(std::vector<std::vector<std::string>>& textList) con
 	}
 
 	return TextCount;
+}
+
+int RoomReader::GetNPCCount() const
+{
+	// the file either didn't correctly open or contained nothing
+	if (lines.size() == 0)
+		return 0;
+
+	return atoi(lines[GetNPCCountLine()].c_str());
+}
+
+int RoomReader::GetNPCList(std::vector<NonPlayer*>& NPCList) const
+{
+	return 0;
+}
+
+int RoomReader::GetDoorCountLine() const
+{
+	// there is a lot going into this calculation, but the variables are: 
+	// + 2 for the dimension line and extra space
+	// y * 3 for the number of lines in the room data
+	// + 3 for the number of lines in between rooms
+	return (GetDimensions().y * 3) + 5;
+}
+
+int RoomReader::GetTextCountLine() const
+{
+	// We have to get the door count and pass those lines as well
+	// then + 2 for the extra line after the door list and for the door list line itself
+	return GetDoorCountLine() + GetDoorCount() + 2;
+}
+
+int RoomReader::GetNPCCountLine() const
+{
+	int currentLine =  GetTextCountLine();
+
+	for (int i = 0; i < GetTextCount(); i++)
+	{
+		int lineCount = atoi(lines[currentLine].c_str());
+
+		for (int j = 0; j < lineCount; j++)
+		{
+			currentLine++;
+		}
+	}
+
+	return currentLine;
 }
 
 
