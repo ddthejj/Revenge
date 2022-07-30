@@ -1,5 +1,6 @@
 #pragma once
 #include "Sprite.h"
+#include <vector>
 class Room;
 class Ability;
 
@@ -14,42 +15,24 @@ protected:
 	enum class DIRECTION 
 	{ UP, DOWN, LEFT, RIGHT, MAX };
 
-	enum class MAGIC_TYPE
-	{
-		NONE = 0,
-
-		ELEMENTAL = 1 << 5,
-		HUMANITY = 1 << 6,
-
-		FIRE = ELEMENTAL | (1 << 0),
-		WATER = ELEMENTAL | (1 << 1),
-		LIFE = ELEMENTAL | (1 << 2),
-		EARTH = ELEMENTAL | (1 << 3),
-		VENOM = ELEMENTAL | (1 << 4),
-
-		MAGNET = HUMANITY | (1 << 0),
-		WARD = HUMANITY | (1 << 1),
-		LIGHT = HUMANITY | (1 << 2),
-		MIND = HUMANITY | (1 << 3),
-		NECRO = HUMANITY | (1 << 4),
-	};
-
 #pragma endregion
 
 #pragma region Properties
 
-	char firstname[32] = "DEFAULT";	// the name of the character
-	char lastname[32] = "DEFAULT";	// the name of the character
-	int ratio = 0;			// ratio of the character
-	float mvmntSpeed = 3.f;		// how quickly the character moves across the map
-	int attack = 0, defense = 0, mind = 0, spirit = 0, energy = 0;	// the characters stats
+	std::string firstname = "DEFAULT";	// the name of the character
+	std::string lastname = "DEFAULT";	// the name of the character
+	int ratio = 0;						// ratio of the character
+	float mvmntSpeed = 3.f;				// how quickly the character moves across the map
+	int startingLevel = 1;				// level the character starts at
+	int currentLevel = 1;				// level the character is at the moment
+	int attack = 0, defense = 0, mind = 0, spirit = 0, energy = 0;		// the character's base stats
+	MAGIC_TYPE magicType[2] = { MAGIC_TYPE::NONE, MAGIC_TYPE::NONE };	// the character's magic types
+	std::vector<Ability*> abilities;									// the character's abilities
 
-	bool moving[(int)DIRECTION::MAX];
-	DIRECTION wayFacing = DIRECTION::DOWN;
-	float animTimer = 0;
-	MAGIC_TYPE magicType[2] = { MAGIC_TYPE::NONE, MAGIC_TYPE::NONE };
+	bool moving[(int)DIRECTION::MAX];		// if the character is moving in each direction
+	DIRECTION wayFacing = DIRECTION::DOWN;	// way the character is looking
+	float animTimer = 0;					// timer for overworld animation
 	
-	std::vector<Ability*> abilities;
 
 #pragma endregion
 
@@ -57,16 +40,16 @@ public:
 
 #pragma region Methods
 
-	Character(float x, float y, float height, float width, const Texture* _texture, float _layer);
+	Character(float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath);
 	~Character();
 	virtual void Draw(SpriteBatch* spriteBatch);
 
 	// returns the first name of the character
-	const char* FirstName() const  { return firstname; }	
+	std::string FirstName() const { return firstname; }
 	// returns the last name of the character
-	const char* LastName() const  { return lastname; }		
+	std::string LastName() const  { return lastname; }		
 		// returns the first name and last name of the character
-	const char* FullName() const							
+	std::string FullName() const							
 	{ return std::string(firstname).append(" ").append(lastname).c_str(); }			
 	// returns the chaos ratio of the character
 	int RatioChaos() const { return ratio; }			
@@ -111,7 +94,7 @@ public:
 
 #pragma region Methods
 
-	Player(float x, float y, float height, float width, const Texture* _texture, float _layer);
+	Player(float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath);
 	~Player();
 
 	// update the player
@@ -161,7 +144,7 @@ public:
 
 #pragma region Methods
 
-	NonPlayer(float x, float y, float height, float width, const Texture* _texture, float _layer);
+	NonPlayer(float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath);
 	~NonPlayer();
 
 	// update the NPC

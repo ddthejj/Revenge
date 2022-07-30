@@ -130,7 +130,7 @@ void MenuManager::OpenMenu(int index)
 
 			for (int i = 0; i < (int)party.size(); i++)
 			{
-				texts[i] = party[i]->FirstName();
+				texts[i] = party[i]->FirstName().c_str();
 				options[i] = i;
 				positions[i] = Point<float>(40.f, 30.f * (float)(i + 1));
 				layouts[i] = Point<int>(0, i);

@@ -3,5 +3,5 @@ Alwelstow
 1
 67
 1,1,1,1,1
-Fire-Water,Magnet-
+Fire-Water,Magnet-Ward
 Punch,1,0,1|Slash,2,0,2|Smash,5,0,4

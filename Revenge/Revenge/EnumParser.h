@@ -146,6 +146,30 @@ enum class SOUND_CHANNEL
 
 #pragma endregion
 
+
+#pragma region Magic Types
+
+enum class MAGIC_TYPE
+{
+	NONE = 0,
+
+	ELEMENTAL = 1 << 5,
+	HUMANITY = 1 << 6,
+
+	FIRE = ELEMENTAL | (1 << 0),
+	WATER = ELEMENTAL | (1 << 1),
+	LIFE = ELEMENTAL | (1 << 2),
+	EARTH = ELEMENTAL | (1 << 3),
+	VENOM = ELEMENTAL | (1 << 4),
+
+	MAGNET = HUMANITY | (1 << 0),
+	WARD = HUMANITY | (1 << 1),
+	LIGHT = HUMANITY | (1 << 2),
+	MIND = HUMANITY | (1 << 3),
+	NECRO = HUMANITY | (1 << 4),
+};
+#pragma endregion
+
 #pragma endregion
 
 
@@ -160,6 +184,8 @@ class EnumParser
 	static std::map<std::string, GAME_STATE>		gameStateMap;
 	static std::map<std::string, ANCHOR_POINT>		anchorPointMap;
 	static std::map<std::string, SOUND_CHANNEL>		soundChannelMap;
+	
+	static std::map<std::string, MAGIC_TYPE>		magicTypeMap;
 
 public:
 
@@ -172,4 +198,5 @@ public:
 	static GAME_STATE ParseGameState(const std::string& name);
 	static ANCHOR_POINT ParseAnchorPoint(const std::string& name);
 	static SOUND_CHANNEL ParseSoundChannel(const std::string& name);
+	static MAGIC_TYPE ParseMagicType(const std::string& name);
 };

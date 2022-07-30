@@ -23,7 +23,7 @@ bool OverworldManager::isRoomTransitioning = false;
 void OverworldManager::Init()
 {
 	// test player
-	currentPlayer = new Player(240, 240, 32, 32, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_PLAYER), .6f);
+	currentPlayer = new Player(240, 240, 32, 32, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_PLAYER), .6f, "../Assets/CharacterData/Party/Archer.txt");
 	currentPlayer->Activate();
 	// prototype tiles
 	protoTiles[(int)TILES::TILE_BROWNFLOOR] = new ProtoTile(Manager::GetTexture((int)TEXTURES_TEST::TEX_T_BROWNFLOOR), 32, 32);

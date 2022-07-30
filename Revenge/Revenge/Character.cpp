@@ -10,14 +10,36 @@
 #include "InputManager.h"
 #include "MenuManager.h"
 #include "Ability.h"
+#include "FileReader.h"
 
 #pragma region Character
-Character::Character(float x, float y, float height, float width, const Texture* _texture, float _layer) : Sprite(x, y, height, width, 0, 0, 32, 32, _texture, _layer)
+Character::Character(float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath) : Sprite(x, y, height, width, 0, 0, 32, 32, _texture, _layer)
 {
 	for (int i = 0; i < (int)DIRECTION::MAX; i++)
 	{
 		moving[i] = false;
 	}
+
+#pragma region Read Data
+
+	CharacterReader characterReader;
+	characterReader.Open(filepath);
+
+	firstname = characterReader.GetFirstName();
+	lastname = characterReader.GetLastName();
+	ratio = characterReader.GetRatio();
+	startingLevel = characterReader.GetStartingLevel();
+	std::vector<int> stats = characterReader.GetStats();
+	attack = stats[0];
+	defense = stats[1];
+	mind = stats[2];
+	spirit = stats[3];
+	energy = stats[4];
+	magicType[0] = characterReader.GetPrimaryMagic();
+	magicType[1] = characterReader.GetSecondaryMagic();
+	abilities = characterReader.GetAbilities();
+
+#pragma endregion
 }
 
 Character::~Character()
@@ -33,7 +55,7 @@ void Character::Draw(SpriteBatch* spriteBatch)
 
 #pragma region Player Character
 
-Player::Player(float x, float y, float height, float width, const Texture* _texture, float _layer) : Character(x, y, height, width, _texture, _layer)
+Player::Player(float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath) : Character(x, y, height, width, _texture, _layer, filepath)
 {
 }
 
@@ -431,7 +453,7 @@ Point<float> Player::GetInteractPoint() const
 #pragma endregion
 
 #pragma region NonPlayer Character
-NonPlayer::NonPlayer(float x, float y, float height, float width, const Texture* _texture, float _layer) : Character(x, y, height, width, _texture, _layer)
+NonPlayer::NonPlayer(float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath) : Character(x, y, height, width, _texture, _layer, filepath)
 {
 
 }

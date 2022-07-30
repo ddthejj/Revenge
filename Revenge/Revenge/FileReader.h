@@ -125,7 +125,7 @@ class CharacterReader :public FileReader
 
 	// First Name
 	// Last Name
-	// Level
+	// Starting Level
 	// Ratio (Chaos Half)
 	// base stats: attack, defense, mind, spirit, energy, map movement speed
 	// magic types
@@ -135,7 +135,7 @@ public:
 
 	std::string GetFirstName();
 	std::string GetLastName();
-	int GetLevel();
+	int GetStartingLevel();
 	int GetRatio();
 	std::vector<int> GetStats();
 	MAGIC_TYPE GetPrimaryMagic();

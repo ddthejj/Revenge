@@ -87,6 +87,21 @@ std::map<std::string, SOUND_CHANNEL>		EnumParser::soundChannelMap =
 	{ "SOUND_CHANNEL_MAX",		SOUND_CHANNEL::SOUND_CHANNEL_MAX},
 };
 
+
+std::map<std::string, MAGIC_TYPE>			EnumParser::magicTypeMap =
+{
+	{"FIRE",	MAGIC_TYPE::FIRE },
+	{"WATER",	MAGIC_TYPE::WATER },
+	{"LIFE",	MAGIC_TYPE::LIFE },
+	{"EARTH",	MAGIC_TYPE::EARTH },
+	{"VENOM",	MAGIC_TYPE::VENOM },
+	{"MAGNET",	MAGIC_TYPE::MAGNET },
+	{"WARD",	MAGIC_TYPE::WARD },
+	{"LIGHT",	MAGIC_TYPE::LIGHT },
+	{"MIND",	MAGIC_TYPE::MIND },
+	{"NECRO",	MAGIC_TYPE::NECRO },
+};
+
 TILES EnumParser::ParseTiles(const std::string& name)
 {
 	return tilesMap[name];
@@ -130,4 +145,9 @@ ANCHOR_POINT EnumParser::ParseAnchorPoint(const std::string& name)
 SOUND_CHANNEL EnumParser::ParseSoundChannel(const std::string& name)
 {
 	return soundChannelMap[name];
+}
+
+MAGIC_TYPE EnumParser::ParseMagicType(const std::string& name)
+{
+	return magicTypeMap[name];
 }

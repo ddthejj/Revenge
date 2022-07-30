@@ -1,6 +1,7 @@
 #include "defines.h"
 #include "FileReader.h"
 #include "SaveManager.h"
+#include "Ability.h"
 
 #include <Windows.h>
 
@@ -368,7 +369,7 @@ std::string CharacterReader::GetLastName()
 	return lines[1];
 }
 
-int CharacterReader::GetLevel()
+int CharacterReader::GetStartingLevel()
 {
 	return atoi(lines[2].c_str());
 }
@@ -393,15 +394,28 @@ std::vector<int> CharacterReader::GetStats()
 
 MAGIC_TYPE CharacterReader::GetPrimaryMagic()
 {
-	return MAGIC_TYPE();
+	std::vector<std::string> magics = ParseLine(lines[5], ',');
+
+	return EnumParser::ParseMagicType(magics[0]);
 }
 
 MAGIC_TYPE CharacterReader::GetSecondaryMagic()
 {
-	return MAGIC_TYPE();
+	std::vector<std::string> magics = ParseLine(lines[5], ',');
+
+	return EnumParser::ParseMagicType(magics[1]);
 }
 
 std::vector<Ability*> CharacterReader::GetAbilities()
 {
-	return std::vector<Ability*>();
+	std::vector<Ability*> abilities_a;
+	std::vector<std::string> abilities_s = ParseLine(lines[6], '|');
+	for (int i = 0; i < abilities_s.size(); i++)
+	{
+		std::vector<std::string> ability = ParseLine(abilities_s[i], ',');
+
+		abilities_a.push_back(new Ability(ability[0], atoi(ability[1].c_str()), atoi(ability[2].c_str()), atoi(ability[3].c_str())));
+	}
+
+	return abilities_a;
 }
