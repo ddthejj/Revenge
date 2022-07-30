@@ -26,6 +26,9 @@
     <Filter Include="Base Classes">
       <UniqueIdentifier>{ff3f6ee2-b1b9-47ff-bd22-e6ebd54455e3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Battle">
+      <UniqueIdentifier>{e1b07ff2-8d67-49f9-a2b0-e7a18f13474a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SpriteBatch.cpp">
@@ -115,6 +118,9 @@
     <ClCompile Include="Item.cpp">
       <Filter>Base Classes</Filter>
     </ClCompile>
+    <ClCompile Include="Ability.cpp">
+      <Filter>Battle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Texture.h">
@@ -200,6 +206,9 @@
     </ClInclude>
     <ClInclude Include="Item.h">
       <Filter>Base Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Ability.h">
+      <Filter>Battle</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

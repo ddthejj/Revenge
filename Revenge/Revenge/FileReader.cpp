@@ -356,3 +356,52 @@ bool SaveWriter::WriteSave(const char* filepath)
 	file.close();
 	return true;
 }
+
+
+std::string CharacterReader::GetFirstName()
+{
+	return lines[0];
+}
+
+std::string CharacterReader::GetLastName()
+{
+	return lines[1];
+}
+
+int CharacterReader::GetLevel()
+{
+	return atoi(lines[2].c_str());
+}
+
+int CharacterReader::GetRatio()
+{
+	return atoi(lines[3].c_str());
+}
+
+std::vector<int> CharacterReader::GetStats()
+{
+	std::vector<std::string> stats_s = ParseLine(lines[4], ',');
+	std::vector<int> stats_i;
+
+	for (int i = 0; i < stats_s.size(); i++)
+	{
+		stats_i[i] = atoi(stats_s[i].c_str());
+	}
+
+	return stats_i;
+}
+
+MAGIC_TYPE CharacterReader::GetPrimaryMagic()
+{
+	return MAGIC_TYPE();
+}
+
+MAGIC_TYPE CharacterReader::GetSecondaryMagic()
+{
+	return MAGIC_TYPE();
+}
+
+std::vector<Ability*> CharacterReader::GetAbilities()
+{
+	return std::vector<Ability*>();
+}

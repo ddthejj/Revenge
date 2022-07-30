@@ -1,6 +1,7 @@
 #pragma once
 #include "Sprite.h"
 class Room;
+class Ability;
 
 // The base class for any character
 class Character : public Sprite
@@ -37,14 +38,18 @@ protected:
 
 #pragma region Properties
 
-	char name[32] = "DEFAULT";	// the name of the character
+	char firstname[32] = "DEFAULT";	// the name of the character
+	char lastname[32] = "DEFAULT";	// the name of the character
+	int ratio = 0;			// ratio of the character
 	float mvmntSpeed = 3.f;		// how quickly the character moves across the map
 	int attack = 0, defense = 0, mind = 0, spirit = 0, energy = 0;	// the characters stats
 
 	bool moving[(int)DIRECTION::MAX];
 	DIRECTION wayFacing = DIRECTION::DOWN;
 	float animTimer = 0;
-	MAGIC_TYPE magicType = MAGIC_TYPE::NONE;
+	MAGIC_TYPE magicType[2] = { MAGIC_TYPE::NONE, MAGIC_TYPE::NONE };
+	
+	std::vector<Ability*> abilities;
 
 #pragma endregion
 
@@ -56,15 +61,45 @@ public:
 	~Character();
 	virtual void Draw(SpriteBatch* spriteBatch);
 
-	const char* Name() const  { return name; }	// returns the name of the character
-	int AT() const { return attack; }			// returns the attack of the character
-	int DF() const { return defense; }			// returns the defense of the character
-	int MN() const { return mind; }				// returns the mind of the character
-	int SR() const { return spirit; }			// returns the spirit of the character
-	int EN() const { return energy; }			// returns the energy of the character
+	// returns the first name of the character
+	const char* FirstName() const  { return firstname; }	
+	// returns the last name of the character
+	const char* LastName() const  { return lastname; }		
+		// returns the first name and last name of the character
+	const char* FullName() const							
+	{ return std::string(firstname).append(" ").append(lastname).c_str(); }			
+	// returns the chaos ratio of the character
+	int RatioChaos() const { return ratio; }			
+	// returns the harmony ration of the charater
+	int RatioHarmony() const { return 100 - ratio; }	
+	// returns the attack of the character
+	int AT() const { return attack; }					
+	// returns the defense of the character
+	int DF() const { return defense; }					
+	// returns the mind of the character
+	int MN() const { return mind; }						
+	// returns the spirit of the character
+	int SR() const { return spirit; }					
+	// returns the energy of the character
+	int EN() const { return energy; }					
 
-	MAGIC_TYPE Magic() const { return magicType; }
+	// returns whether or not the charactre is chaotic
+	bool IsChaotic() const { return ratio > 50; }		
+	// returns whether or not the character is harmonic
+	bool IsHarmonic() const { return ratio < 50; }		
+														
+	// returns the magic type of the character 
+	const MAGIC_TYPE* Magic() const { return magicType; }		
+	// returns the first magic type of the character 
+	MAGIC_TYPE MagicPrimary() const { return magicType[0]; }	
+	// returns the second magic type of the character 
+	MAGIC_TYPE MagicSecondary() const { return magicType[1]; }	
 
+	// returns the abilities of the character
+	const std::vector<Ability*> Abilities() const { return abilities; }	
+	// returns the ability of the character at the selected index
+	const Ability* Ability(int index) const { return abilities.size() > index ? abilities[index] : nullptr; }
+														
 #pragma endregion
 
 };

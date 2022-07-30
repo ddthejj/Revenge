@@ -4,6 +4,8 @@
 
 enum class ANCHOR_POINT : unsigned char;
 class NonPlayer;
+enum class MAGIC_TYPE;
+class Ability;
 
 class FileReader
 {
@@ -88,7 +90,7 @@ public:
 
 class SoundReader : public FileReader
 {
-
+	// layout:
 };
 
 class SaveReader : public FileReader
@@ -121,9 +123,22 @@ class CharacterReader :public FileReader
 	
 	// layout:
 
-	// 
+	// First Name
+	// Last Name
+	// Level
+	// Ratio (Chaos Half)
+	// base stats: attack, defense, mind, spirit, energy, map movement speed
+	// magic types
+	// base attacks
 
 public:
 
-
+	std::string GetFirstName();
+	std::string GetLastName();
+	int GetLevel();
+	int GetRatio();
+	std::vector<int> GetStats();
+	MAGIC_TYPE GetPrimaryMagic();
+	MAGIC_TYPE GetSecondaryMagic();
+	std::vector<Ability*> GetAbilities();
 };

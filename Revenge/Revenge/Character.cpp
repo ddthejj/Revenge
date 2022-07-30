@@ -9,6 +9,7 @@
 #include "SpriteBatch.h"
 #include "InputManager.h"
 #include "MenuManager.h"
+#include "Ability.h"
 
 #pragma region Character
 Character::Character(float x, float y, float height, float width, const Texture* _texture, float _layer) : Sprite(x, y, height, width, 0, 0, 32, 32, _texture, _layer)
