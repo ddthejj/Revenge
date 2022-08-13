@@ -55,7 +55,7 @@ void MenuManager::LoadTitleMenus()
 	for (int i = 0; i < (int)TITLE_MENUS::MENU_MAX; i++)
 		menuList[i] = nullptr;
 
-	menuList[(int)TITLE_MENUS::MENU_TITLE] = new MenuBox(0, 0, 300, 300, nullptr, Manager::GetTexture((int)TEXTURES_TITLE::TEX_TITLE_ARROW), "../Assets/Menus/Menu_Title_Base.txt");
+	menuList[(int)TITLE_MENUS::MENU_TITLE] = new MenuBox(0, 0, 300, 300, nullptr, Manager::GetTexture((int)TEXTURES_TITLE::TEX_TITLE_ARROW), (int)TITLE_MENUS::MENU_TITLE, "../Assets/Menus/Menu_Title_Base.txt");
 }
 
 void MenuManager::LoadOverworldMenus()
@@ -68,10 +68,11 @@ void MenuManager::LoadOverworldMenus()
 	for (int i = 0; i < (int)OVERWORLD_MENUS::MENU_MAX; i++)
 		menuList[i] = nullptr;
 
-	menuList[(int)OVERWORLD_MENUS::MENU_BASE] = new MenuBox(50, 50, 150, 200, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), "../Assets/Menus/Menu_Base.txt");
-	menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER] = new MenuBox(50, 50, 10, 10, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW));
-
-
+	menuList[(int)OVERWORLD_MENUS::MENU_BASE] = new MenuBox(50, 50, 150, 200, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_BASE, "../Assets/Menus/Menu_Base.txt");
+	menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER] = new MenuBox(50, 50, 10, 10, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_CHARACTER);
+	menuList[(int)OVERWORLD_MENUS::MENU_INVENTORY] = new MenuBox(50, 50, 10, 10, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_INVENTORY);
+	menuList[(int)OVERWORLD_MENUS::MENU_OPTIONS] = new MenuBox(50, 50, 10, 10, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_OPTIONS);
+	menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER_STATS] = new MenuBox(50, 50, 10, 10, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_CHARACTER_STATS);
 }
 
 void MenuManager::UnloadMenus()
@@ -107,58 +108,88 @@ void MenuManager::OpenMenu(int index)
 	case GAME_STATE::STATE_OVERWORLD:
 	{
 #pragma region Overworld Menu Handling
-		switch ((OVERWORLD_MENUS)index)
+		switch (activeMenu ? (OVERWORLD_MENUS)activeMenu->menuValue : (OVERWORLD_MENUS)-1) // switch on which menu we have open
 		{
-		case OVERWORLD_MENUS::MENU_BASE:
+		case ((OVERWORLD_MENUS)-1): // no menu is open
 		{
 			break;
 		}
-		case OVERWORLD_MENUS::MENU_CHARACTER:
+		case OVERWORLD_MENUS::MENU_BASE: // base menu is open
 		{
-			std::vector<Character*> party = Manager::GetParty();
-
-			if (party.size() <= 0)
+			switch ((OVERWORLD_MENUS)index) // switch on value we recieved
 			{
-				activeMenu->Unfreeze();
-				return;
-			}
-
-			const char** texts = new const char* [party.size()];
-			int* options = new int[party.size()];
-			Point<float>* positions = new Point<float>[party.size()];
-			Point<int>* layouts = new Point<int>[party.size()];
-
-			for (int i = 0; i < (int)party.size(); i++)
+			case OVERWORLD_MENUS::MENU_CHARACTER: // character summary menu
 			{
-				texts[i] = party[i]->FirstName().c_str();
-				options[i] = i;
-				positions[i] = Point<float>(40.f, 30.f * (float)(i + 1));
-				layouts[i] = Point<int>(0, i);
+				// menu for selecting party members
+				std::vector<Character*> party = Manager::GetParty();
+
+				// debug
+				if (party.size() <= 0)
+				{
+					activeMenu->Unfreeze();
+					return;
+				}
+				// setup values for each party member plus a back button
+				std::string* texts = new std::string[party.size() + 1];
+				int* options = new int[party.size() + 1];
+				Point<float>* positions = new Point<float>[party.size() + 1];
+				Point<int>* layouts = new Point<int>[party.size() + 1];
+				// party members
+				for (int i = 0; i < (int)party.size(); i++)
+				{
+					texts[i] = party[i]->FirstName();
+					options[i] = i;
+					positions[i] = Point<float>(40.f, 30.f * (float)(i + 1));
+					layouts[i] = Point<int>(0, i);
+				}
+				// back button
+				texts[party.size()] = "Back";
+				options[party.size()] = -1;
+				positions[party.size()] = Point<float>(40.f, 30.f * (float)(party.size() + 1));
+				layouts[party.size()] = Point<int>(0, (int)party.size());
+				// setup menu
+				menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER]->SetOptions(texts, options, positions, layouts, 1, (int)party.size() + 1);
+				menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER]->SetRectangle(MyRectangle(Point<float>(activeMenu->GetRectangle()->Right(), activeMenu->GetRectangle()->Top()), 150, 150));
+				// clean
+				delete[] texts;
+				delete[] options;
+				delete[] positions;
+				delete[] layouts;
+				break;
 			}
+			case OVERWORLD_MENUS::MENU_INVENTORY:
+			{
 
-			menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER]->SetOptions(texts, options, positions, layouts, 1, (int)party.size());
-			menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER]->SetRectangle(MyRectangle(Point<float>(activeMenu->GetRectangle()->Right(), activeMenu->GetRectangle()->Top()), 150, 150));
+				break;
+			}
+			case OVERWORLD_MENUS::MENU_OPTIONS:
+			{
 
-			delete[] texts;
-			delete[] options;
-			delete[] positions;
-			delete[] layouts;
+				break;
+			}
+			}
 			break;
 		}
-		case OVERWORLD_MENUS::MENU_INVENTORY:
+		case OVERWORLD_MENUS::MENU_CHARACTER: // character select menu is open
 		{
+			// get the party member that was selected
+			Character* member = Manager::GetParty()[index];
 
+			// back button
+			std::string text = "Back";
+			int option = -1;
+			Point<float> location(0, 0);
+			Point<int> layout(0, 0);
+			// setup menu
+			menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER_STATS]->SetOptions(&text, &option, &location, &layout, 1, 1);
+			menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER_STATS]->SetRectangle(MyRectangle(Point<float>(activeMenu->GetRectangle()->Right(), activeMenu->GetRectangle()->Top()), 400, 400));
+			index = (int)OVERWORLD_MENUS::MENU_CHARACTER_STATS;
 			break;
-		}
-		case OVERWORLD_MENUS::MENU_OPTIONS:
-		{
-
-			break;
-		}
 		}
 #pragma endregion
 		break;
-	}
+		}
+		}
 	case GAME_STATE::STATE_TITLE:
 	{
 #pragma region Title Menu Handling
@@ -182,131 +213,136 @@ void MenuManager::OpenMenu(int index)
 
 	menuList[index]->Open(activeMenu);
 	activeMenu = menuList[index];
-}
-
-void MenuManager::CloseMenu()
-{
-	activeMenu->Deactivate();
-	activeMenu = activeMenu->previousMenu;
-
-	if (activeMenu)
-		activeMenu->Unfreeze();
-	else
-	{
-		Manager::UnfreezeScene();
 	}
-}
 
-void MenuManager::CloseAllMenus()
-{
-	while (activeMenu)
+	void MenuManager::CloseMenu()
 	{
 		activeMenu->Deactivate();
 		activeMenu = activeMenu->previousMenu;
+
+		if (activeMenu)
+			activeMenu->Unfreeze();
+		else
+		{
+			Manager::UnfreezeScene();
+		}
 	}
 
-	//InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_INTERACT, std::bind(&MenuManager::InteractPressed), menuList[(int)OVERWORLD_MENUS::MENU_BASE]);
-
-	Manager::UnfreezeScene();
-}
-
-void MenuManager::SetMenuOpacity(float _opacity)
-{
-	for (int i = 0; i < GetMenuCount(); i++)
+	void MenuManager::CloseAllMenus()
 	{
-		menuList[i]->SetOpacity(_opacity);
+		while (activeMenu)
+		{
+			activeMenu->Deactivate();
+			activeMenu = activeMenu->previousMenu;
+		}
+
+		//InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_INTERACT, std::bind(&MenuManager::InteractPressed), menuList[(int)OVERWORLD_MENUS::MENU_BASE]);
+
+		Manager::UnfreezeScene();
 	}
-}
 
-
-void MenuManager::Update(float delta_time)
-{
-	switch (Manager::GetGameState())
+	void MenuManager::SetMenuOpacity(float _opacity)
 	{
-	case GAME_STATE::STATE_TITLE:
+		for (int i = 0; i < GetMenuCount(); i++)
+		{
+			menuList[i]->SetOpacity(_opacity);
+		}
+	}
+
+
+	void MenuManager::Update(float delta_time)
 	{
+		switch (Manager::GetGameState())
+		{
+		case GAME_STATE::STATE_TITLE:
+		{
 
-		break;
+			break;
+		}
+		case GAME_STATE::STATE_OVERWORLD:
+		{
+
+			break;
+		}
+		default:
+		{
+			break;
+		}
+		}
 	}
-	case GAME_STATE::STATE_OVERWORLD:
+
+
+	void MenuManager::PlayHoverSound()
 	{
-
-		break;
+		Manager::PlayWAV(0);
 	}
-	default:
+
+	void MenuManager::OptionSelected(int option)
 	{
-		break;
-	}
-	}
-}
+		/*
+		if (option == (int)OVERWORLD_MENUS::MENU_PREVIOUS)
+		{
+			OpenMenu(option);
+		}
+		else if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_BASE])
+		{
+			OpenMenu(option);
+		}
+		else if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER])
+		{
 
+		}
+		else if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_INVENTORY])
+		{
 
-void MenuManager::PlayHoverSound()
-{
-	Manager::PlayWAV(0);
-}
+		}
+		else if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_OPTIONS])
+		{
 
-void MenuManager::OptionSelected(int option)
-{
-	if (option == (int)OVERWORLD_MENUS::MENU_PREVIOUS)
+		}
+		*/
+
 		OpenMenu(option);
-
-	if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_BASE])
-	{
-		OpenMenu(option);
-	}
-	else if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER])
-	{
-
-	}
-	else if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_INVENTORY])
-	{
-
-	}
-	else if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_OPTIONS])
-	{
-
-	}
-}
-
-void MenuManager::StartDialogue(Character* speaker, std::vector<std::string> text)
-{
-	if (activeDialogueBox)
-	{
-		// this function should not be called if dialogue is already open
-		return;
 	}
 
-	Manager::FreezeScene();
-
-	activeDialogueBox = new DialogueBox(0, 50, WIDTH - 100, (HEIGHT / 8.f) + 25, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW));
-	activeDialogueBox->SetText(speaker, text);
-	activeDialogueBox->Open();
-}
-
-void MenuManager::EndDialogue()
-{
-	if (!activeDialogueBox) return;
-
-	activeDialogueBox->Deactivate();
-	Manager::UnfreezeScene();
-	SafeDelete(activeDialogueBox);
-}
-
-
-int MenuManager::GetMenuCount()
-{
-	switch (Manager::GetGameState())
+	void MenuManager::StartDialogue(Character * speaker, std::vector<std::string> text)
 	{
-	case GAME_STATE::STATE_TITLE:
-		return (int)TITLE_MENUS::MENU_MAX;
-		break;
-	case GAME_STATE::STATE_OVERWORLD:
-		return (int)OVERWORLD_MENUS::MENU_MAX;
-		break;
-	default:
-		return 0;
+		if (activeDialogueBox)
+		{
+			// this function should not be called if dialogue is already open
+			return;
+		}
+
+		Manager::FreezeScene();
+
+		activeDialogueBox = new DialogueBox(0, 50, WIDTH - 100, (HEIGHT / 8.f) + 25, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW));
+		activeDialogueBox->SetText(speaker, text);
+		activeDialogueBox->Open();
 	}
-}
+
+	void MenuManager::EndDialogue()
+	{
+		if (!activeDialogueBox) return;
+
+		activeDialogueBox->Deactivate();
+		Manager::UnfreezeScene();
+		SafeDelete(activeDialogueBox);
+	}
+
+
+	int MenuManager::GetMenuCount()
+	{
+		switch (Manager::GetGameState())
+		{
+		case GAME_STATE::STATE_TITLE:
+			return (int)TITLE_MENUS::MENU_MAX;
+			break;
+		case GAME_STATE::STATE_OVERWORLD:
+			return (int)OVERWORLD_MENUS::MENU_MAX;
+			break;
+		default:
+			return 0;
+		}
+	}
 
 

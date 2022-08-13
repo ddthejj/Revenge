@@ -90,6 +90,7 @@ std::map<std::string, SOUND_CHANNEL>		EnumParser::soundChannelMap =
 
 std::map<std::string, MAGIC_TYPE>			EnumParser::magicTypeMap =
 {
+	{"NONE",    MAGIC_TYPE::NONE },	
 	{"FIRE",	MAGIC_TYPE::FIRE },
 	{"WATER",	MAGIC_TYPE::WATER },
 	{"LIFE",	MAGIC_TYPE::LIFE },

@@ -241,7 +241,7 @@ int RoomReader::GetTextCountLine() const
 int RoomReader::GetNPCCountLine() const
 {
 	// go to the text line
-	int currentLine =  GetTextCountLine() + 1;
+	int currentLine = GetTextCountLine() + 1;
 	int textCount = GetTextCount();
 
 	// loop through the text lines to get to the end of them
@@ -295,7 +295,7 @@ int MenuReader::GetOptions(MenuReader::OptionData** optionsList) const
 
 ANCHOR_POINT MenuReader::GetAnchor() const
 {
-	
+
 	return EnumParser::ParseAnchorPoint(lines[1]);
 }
 
@@ -386,7 +386,7 @@ std::vector<int> CharacterReader::GetStats()
 
 	for (int i = 0; i < stats_s.size(); i++)
 	{
-		stats_i[i] = atoi(stats_s[i].c_str());
+		stats_i.push_back(atoi(stats_s[i].c_str()));
 	}
 
 	return stats_i;
@@ -396,14 +396,28 @@ MAGIC_TYPE CharacterReader::GetPrimaryMagic()
 {
 	std::vector<std::string> magics = ParseLine(lines[5], ',');
 
-	return EnumParser::ParseMagicType(magics[0]);
+	if (ParseLine(magics[0], '-').size() > 1) // if dash is present, we're parsing a party member with multiple possible magic types
+	{
+		return EnumParser::ParseMagicType(magics[0]);
+	}
+	else
+	{
+		return MAGIC_TYPE::UNDECIDED;
+	}
 }
 
 MAGIC_TYPE CharacterReader::GetSecondaryMagic()
 {
 	std::vector<std::string> magics = ParseLine(lines[5], ',');
 
-	return EnumParser::ParseMagicType(magics[1]);
+	if (ParseLine(magics[1], '-').size() > 1)
+	{
+		return EnumParser::ParseMagicType(magics[1]);
+	}
+	else
+	{
+		return MAGIC_TYPE::UNDECIDED;
+	}
 }
 
 std::vector<Ability*> CharacterReader::GetAbilities()

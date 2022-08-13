@@ -1,6 +1,6 @@
 #pragma once
 
-// MEMORY LEAK
+// MEMORY LEAK DETECTION
 #if defined(DEBUG) || defined (_DEBUG)
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>

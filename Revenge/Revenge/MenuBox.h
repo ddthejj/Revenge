@@ -22,7 +22,7 @@ protected:
 		float x = 0.f, y = 0.f;
 
 		MenuOption() = default;
-		MenuOption(const char* _text, int _option, float _x, float _y) { text = std::string(_text); option = _option; x = _x; y = _y; }
+		MenuOption(std::string _text, int _option, float _x, float _y) { text = std::string(_text); option = _option; x = _x; y = _y; }
 	};
 
 #pragma endregion
@@ -35,7 +35,8 @@ protected:
 	UISprite* arrow = nullptr;						// the sprite for the arrow 
 	int arrowTimer = 0;								// the timer to blink the arrow
 	MenuBox* previousMenu = nullptr;				// pointer to the previous menu (if nullptr, no previous menu)
-	Point<float> textOffset;
+	Point<float> textOffset;						// initial offset of the text
+	unsigned int menuValue;							// value of the menu (used in menu manager)
 
 #pragma endregion
 	
@@ -55,15 +56,15 @@ public:
 #pragma region Methods
 
 	// load a menu without a file
-	MenuBox(float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, float _layer = .8f, float _opacity = 1.f, ANCHOR_POINT _anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
+	MenuBox(float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, int _menuValue, float _layer = .8f, float _opacity = 1.f, ANCHOR_POINT _anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
 	// load a menu from a file
-	MenuBox(float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, const char* filename);
+	MenuBox(float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, int _menuValue, const char* filename);
 	~MenuBox();
 
 	// create a menu with _previousMenu as its previousMenu
 	void Open(MenuBox* _previousMenu);
 	// set the options of a menu to passed in values
-	void SetOptions(const char** texts, int* option, Point<float>* positions, Point<int>* layout, int sizeX, int sizeY);
+	void SetOptions(std::string* texts, int* option, Point<float>* positions, Point<int>* layout, int sizeX, int sizeY);
 	// resize the menu box
 	void Resize(float x, float y, float width, float height);
 	// move the menu box

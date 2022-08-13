@@ -167,6 +167,8 @@ enum class MAGIC_TYPE
 	LIGHT = HUMANITY | (1 << 2),
 	MIND = HUMANITY | (1 << 3),
 	NECRO = HUMANITY | (1 << 4),
+
+	UNDECIDED = 1 << 7,
 };
 #pragma endregion
 

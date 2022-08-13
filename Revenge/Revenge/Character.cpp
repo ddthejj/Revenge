@@ -40,11 +40,17 @@ Character::Character(float x, float y, float height, float width, const Texture*
 	abilities = characterReader.GetAbilities();
 
 #pragma endregion
+
 }
 
 Character::~Character()
 {
 	if (active) Deactivate();
+
+	for (int i = 0; i < abilities.size(); i++)
+	{
+		SafeDelete(abilities[i]);
+	}
 }
 
 void Character::Draw(SpriteBatch* spriteBatch)

@@ -9,7 +9,7 @@ class Ability;
 
 class FileReader
 {
-public: 
+public:
 
 	std::vector<std::string> lines = std::vector<std::string>();
 
@@ -77,7 +77,7 @@ public:
 	{
 		std::string text = "";
 		int returnValue = -1;
-		Point<int> position = Point<int>(0,0), matrixLocation = Point<int>(0, 0);
+		Point<int> position = Point<int>(0, 0), matrixLocation = Point<int>(0, 0);
 	};
 
 	// return the dimensions of the options within the menu
@@ -113,14 +113,14 @@ class SaveWriter
 
 	// 8 unsigned long long flags
 
-public: 
+public:
 
 	bool WriteSave(const char* filepath);
 };
 
-class CharacterReader :public FileReader
+class CharacterReader : public FileReader
 {
-	
+
 	// layout:
 
 	// First Name
@@ -138,7 +138,7 @@ public:
 	int GetStartingLevel();
 	int GetRatio();
 	std::vector<int> GetStats();
-	MAGIC_TYPE GetPrimaryMagic();
-	MAGIC_TYPE GetSecondaryMagic();
+	virtual MAGIC_TYPE GetPrimaryMagic();
+	virtual MAGIC_TYPE GetSecondaryMagic();
 	std::vector<Ability*> GetAbilities();
 };

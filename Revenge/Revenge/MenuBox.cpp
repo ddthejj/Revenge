@@ -7,11 +7,12 @@
 #include "FileReader.h"
 #include "InputManager.h"
 
-MenuBox::MenuBox(float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, float _layer, float _opacity, ANCHOR_POINT _anchor)
+MenuBox::MenuBox(float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, int _menuValue, float _layer, float _opacity, ANCHOR_POINT _anchor)
 	: BorderedBox(_x, _y, _width, _height, _texture, _layer, _opacity, _anchor)
 {
 	optionAt = new Point<int>();
 	arrow = new UISprite(0, 0, 7, 7, 0, 0, 15, 15, _arrowTexture, _layer + .1f, _opacity, _anchor);
+	menuValue = _menuValue;
 	// options need to be set later
 	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::HCENTER)
 	{
@@ -32,9 +33,11 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, const Texture*
 	}
 }
 
-MenuBox::MenuBox(float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, const char* filename)
+MenuBox::MenuBox(float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, int _menuValue, const char* filename)
 	: BorderedBox(_x, _y, _width, _height, _texture, .8f, 1.f, ANCHOR_POINT::ANCHOR_TOP_LEFT)
 {
+	menuValue = _menuValue;
+
 	// use the MenuReader class to read the menu data from a file
 	MenuReader reader;
 	reader.Open(filename);
@@ -64,15 +67,15 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, const Texture*
 
 		options[optionData[i].matrixLocation.x][optionData[i].matrixLocation.y] = option;
 	}
-	
+
 	anchor = reader.GetAnchor();
 
 	reader.Close();
 
 	delete[] optionData;
 
-	optionAt = new Point<int>();\
-	arrow = new UISprite(0, 0, 7, 7, 0, 0, 15, 15, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), layer + .1f, opacity, anchor);
+	optionAt = new Point<int>(); \
+		arrow = new UISprite(0, 0, 7, 7, 0, 0, 15, 15, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), layer + .1f, opacity, anchor);
 	// options need to be set later
 	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::HCENTER)
 	{
@@ -141,7 +144,7 @@ FOUNDOPTION:
 	UpdateArrowLocation();
 }
 
-void MenuBox::SetOptions(const char** texts, int* option, Point<float>* positions, Point<int>* layout, int sizeX, int sizeY)
+void MenuBox::SetOptions(std::string* texts, int* option, Point<float>* positions, Point<int>* layout, int sizeX, int sizeY)
 {
 	for (int i = 0; i < optionsWidth; i++)
 	{
@@ -161,14 +164,13 @@ void MenuBox::SetOptions(const char** texts, int* option, Point<float>* position
 	for (int i = 0; i < optionsWidth; i++)
 	{
 		options[i] = new MenuOption * [optionsHeight];
-		for (int j = 0; j < optionsWidth; j++)
+		for (int j = 0; j < optionsHeight; j++)
 			options[i][j] = nullptr;
 	}
 
-	for (int i = 0; i < optionsWidth; i++)
+	for (int i = 0; i < optionsWidth * optionsHeight; i++)
 	{
-		MenuOption* newOption = new MenuOption(texts[i], option[i], positions[i].x, positions[i].y);
-		options[layout[i].x][layout[i].y] = newOption;
+		options[layout[i].x][layout[i].y] = new MenuOption(texts[i], option[i], positions[i].x, positions[i].y);
 	}
 }
 
