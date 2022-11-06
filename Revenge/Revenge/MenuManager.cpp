@@ -134,6 +134,7 @@ void MenuManager::OpenMenu(int index)
 				int* options = new int[party.size() + 1];
 				Point<float>* positions = new Point<float>[party.size() + 1];
 				Point<int>* layouts = new Point<int>[party.size() + 1];
+				ANCHOR_POINT* anchors = new ANCHOR_POINT[party.size() + 1];
 				// party members
 				for (int i = 0; i < (int)party.size(); i++)
 				{
@@ -141,20 +142,23 @@ void MenuManager::OpenMenu(int index)
 					options[i] = i;
 					positions[i] = Point<float>(40.f, 30.f * (float)(i + 1));
 					layouts[i] = Point<int>(0, i);
+					anchors[i] = ANCHOR_POINT::ANCHOR_TOP_LEFT;
 				}
 				// back button
 				texts[party.size()] = "Back";
 				options[party.size()] = -1;
 				positions[party.size()] = Point<float>(40.f, 30.f * (float)(party.size() + 1));
 				layouts[party.size()] = Point<int>(0, (int)party.size());
+				anchors[party.size()] = ANCHOR_POINT::ANCHOR_TOP_LEFT;
 				// setup menu
-				menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER]->SetOptions(texts, options, positions, layouts, 1, (int)party.size() + 1);
+				menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER]->SetOptions(texts, options, positions, layouts, anchors, 1, (int)party.size() + 1);
 				menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER]->SetRectangle(MyRectangle(Point<float>(activeMenu->GetRectangle()->Right(), activeMenu->GetRectangle()->Top()), 150, 150));
 				// clean
 				delete[] texts;
 				delete[] options;
 				delete[] positions;
 				delete[] layouts;
+				delete[] anchors;
 				break;
 			}
 			case OVERWORLD_MENUS::MENU_INVENTORY:
@@ -180,8 +184,9 @@ void MenuManager::OpenMenu(int index)
 			int option = -1;
 			Point<float> location(0, 0);
 			Point<int> layout(0, 0);
+			ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_BOTTOM_RIGHT;
 			// setup menu
-			menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER_STATS]->SetOptions(&text, &option, &location, &layout, 1, 1);
+			menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER_STATS]->SetOptions(&text, &option, &location, &layout, &anchor, 1, 1);
 			menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER_STATS]->SetRectangle(MyRectangle(Point<float>(activeMenu->GetRectangle()->Right(), activeMenu->GetRectangle()->Top()), 400, 400));
 			index = (int)OVERWORLD_MENUS::MENU_CHARACTER_STATS;
 			break;

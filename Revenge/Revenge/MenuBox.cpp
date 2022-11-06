@@ -144,7 +144,7 @@ FOUNDOPTION:
 	UpdateArrowLocation();
 }
 
-void MenuBox::SetOptions(std::string* texts, int* option, Point<float>* positions, Point<int>* layout, int sizeX, int sizeY)
+void MenuBox::SetOptions(std::string* texts, int* option, Point<float>* positions, Point<int>* layout, ANCHOR_POINT* anchors, int sizeX, int sizeY)
 {
 	for (int i = 0; i < optionsWidth; i++)
 	{
@@ -170,7 +170,7 @@ void MenuBox::SetOptions(std::string* texts, int* option, Point<float>* position
 
 	for (int i = 0; i < optionsWidth * optionsHeight; i++)
 	{
-		options[layout[i].x][layout[i].y] = new MenuOption(texts[i], option[i], positions[i].x, positions[i].y);
+		options[layout[i].x][layout[i].y] = new MenuOption(texts[i], option[i], positions[i].x, positions[i].y, anchors[i]);
 	}
 }
 

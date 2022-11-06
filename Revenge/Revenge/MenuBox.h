@@ -20,9 +20,16 @@ protected:
 		std::string text = "DEFAULT";
 		int option = 0;
 		float x = 0.f, y = 0.f;
+		ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT;
 
 		MenuOption() = default;
-		MenuOption(std::string _text, int _option, float _x, float _y) { text = std::string(_text); option = _option; x = _x; y = _y; }
+		MenuOption(std::string _text, int _option, float _x, float _y, ANCHOR_POINT _anchor) 
+		{ 
+			text = std::string(_text); 
+			option = _option;
+			x = _x; y = _y;
+			anchor = _anchor;
+		}
 	};
 
 #pragma endregion
@@ -64,7 +71,7 @@ public:
 	// create a menu with _previousMenu as its previousMenu
 	void Open(MenuBox* _previousMenu);
 	// set the options of a menu to passed in values
-	void SetOptions(std::string* texts, int* option, Point<float>* positions, Point<int>* layout, int sizeX, int sizeY);
+	void SetOptions(std::string* texts, int* option, Point<float>* positions, Point<int>* layout, ANCHOR_POINT* anchors, int sizeX, int sizeY);
 	// resize the menu box
 	void Resize(float x, float y, float width, float height);
 	// move the menu box
