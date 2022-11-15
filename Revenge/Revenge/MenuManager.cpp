@@ -182,7 +182,7 @@ void MenuManager::OpenMenu(int index)
 			// back button
 			std::string text = "Back";
 			int option = -1;
-			Point<float> location(0, 0);
+			Point<float> location(40, 40);
 			Point<int> layout(0, 0);
 			ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_BOTTOM_RIGHT;
 			// setup menu
@@ -194,7 +194,7 @@ void MenuManager::OpenMenu(int index)
 #pragma endregion
 		break;
 		}
-		}
+	}
 	case GAME_STATE::STATE_TITLE:
 	{
 #pragma region Title Menu Handling
@@ -218,136 +218,136 @@ void MenuManager::OpenMenu(int index)
 
 	menuList[index]->Open(activeMenu);
 	activeMenu = menuList[index];
-	}
+}
 
-	void MenuManager::CloseMenu()
+void MenuManager::CloseMenu()
+{
+	activeMenu->Deactivate();
+	activeMenu = activeMenu->previousMenu;
+
+	if (activeMenu)
+		activeMenu->Unfreeze();
+	else
+	{
+		Manager::UnfreezeScene();
+	}
+}
+
+void MenuManager::CloseAllMenus()
+{
+	while (activeMenu)
 	{
 		activeMenu->Deactivate();
 		activeMenu = activeMenu->previousMenu;
-
-		if (activeMenu)
-			activeMenu->Unfreeze();
-		else
-		{
-			Manager::UnfreezeScene();
-		}
 	}
 
-	void MenuManager::CloseAllMenus()
+	//InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_INTERACT, std::bind(&MenuManager::InteractPressed), menuList[(int)OVERWORLD_MENUS::MENU_BASE]);
+
+	Manager::UnfreezeScene();
+}
+
+void MenuManager::SetMenuOpacity(float _opacity)
+{
+	for (int i = 0; i < GetMenuCount(); i++)
 	{
-		while (activeMenu)
-		{
-			activeMenu->Deactivate();
-			activeMenu = activeMenu->previousMenu;
-		}
-
-		//InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_INTERACT, std::bind(&MenuManager::InteractPressed), menuList[(int)OVERWORLD_MENUS::MENU_BASE]);
-
-		Manager::UnfreezeScene();
+		menuList[i]->SetOpacity(_opacity);
 	}
+}
 
-	void MenuManager::SetMenuOpacity(float _opacity)
+
+void MenuManager::Update(float delta_time)
+{
+	switch (Manager::GetGameState())
 	{
-		for (int i = 0; i < GetMenuCount(); i++)
-		{
-			menuList[i]->SetOpacity(_opacity);
-		}
+	case GAME_STATE::STATE_TITLE:
+	{
+
+		break;
 	}
-
-
-	void MenuManager::Update(float delta_time)
+	case GAME_STATE::STATE_OVERWORLD:
 	{
-		switch (Manager::GetGameState())
-		{
-		case GAME_STATE::STATE_TITLE:
-		{
 
-			break;
-		}
-		case GAME_STATE::STATE_OVERWORLD:
-		{
-
-			break;
-		}
-		default:
-		{
-			break;
-		}
-		}
+		break;
 	}
-
-
-	void MenuManager::PlayHoverSound()
+	default:
 	{
-		Manager::PlayWAV(0);
+		break;
 	}
+	}
+}
 
-	void MenuManager::OptionSelected(int option)
+
+void MenuManager::PlayHoverSound()
+{
+	Manager::PlayWAV(0);
+}
+
+void MenuManager::OptionSelected(int option)
+{
+	/*
+	if (option == (int)OVERWORLD_MENUS::MENU_PREVIOUS)
 	{
-		/*
-		if (option == (int)OVERWORLD_MENUS::MENU_PREVIOUS)
-		{
-			OpenMenu(option);
-		}
-		else if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_BASE])
-		{
-			OpenMenu(option);
-		}
-		else if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER])
-		{
-
-		}
-		else if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_INVENTORY])
-		{
-
-		}
-		else if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_OPTIONS])
-		{
-
-		}
-		*/
-
 		OpenMenu(option);
 	}
-
-	void MenuManager::StartDialogue(Character * speaker, std::vector<std::string> text)
+	else if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_BASE])
 	{
-		if (activeDialogueBox)
-		{
-			// this function should not be called if dialogue is already open
-			return;
-		}
+		OpenMenu(option);
+	}
+	else if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER])
+	{
 
-		Manager::FreezeScene();
+	}
+	else if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_INVENTORY])
+	{
 
-		activeDialogueBox = new DialogueBox(0, 50, WIDTH - 100, (HEIGHT / 8.f) + 25, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW));
-		activeDialogueBox->SetText(speaker, text);
-		activeDialogueBox->Open();
+	}
+	else if (activeMenu == menuList[(int)OVERWORLD_MENUS::MENU_OPTIONS])
+	{
+
+	}
+	*/
+
+	OpenMenu(option);
+}
+
+void MenuManager::StartDialogue(Character* speaker, std::vector<std::string> text)
+{
+	if (activeDialogueBox)
+	{
+		// this function should not be called if dialogue is already open
+		return;
 	}
 
-	void MenuManager::EndDialogue()
+	Manager::FreezeScene();
+
+	activeDialogueBox = new DialogueBox(0, 50, WIDTH - 100, (HEIGHT / 8.f) + 25, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW));
+	activeDialogueBox->SetText(speaker, text);
+	activeDialogueBox->Open();
+}
+
+void MenuManager::EndDialogue()
+{
+	if (!activeDialogueBox) return;
+
+	activeDialogueBox->Deactivate();
+	Manager::UnfreezeScene();
+	SafeDelete(activeDialogueBox);
+}
+
+
+int MenuManager::GetMenuCount()
+{
+	switch (Manager::GetGameState())
 	{
-		if (!activeDialogueBox) return;
-
-		activeDialogueBox->Deactivate();
-		Manager::UnfreezeScene();
-		SafeDelete(activeDialogueBox);
+	case GAME_STATE::STATE_TITLE:
+		return (int)TITLE_MENUS::MENU_MAX;
+		break;
+	case GAME_STATE::STATE_OVERWORLD:
+		return (int)OVERWORLD_MENUS::MENU_MAX;
+		break;
+	default:
+		return 0;
 	}
-
-
-	int MenuManager::GetMenuCount()
-	{
-		switch (Manager::GetGameState())
-		{
-		case GAME_STATE::STATE_TITLE:
-			return (int)TITLE_MENUS::MENU_MAX;
-			break;
-		case GAME_STATE::STATE_OVERWORLD:
-			return (int)OVERWORLD_MENUS::MENU_MAX;
-			break;
-		default:
-			return 0;
-		}
-	}
+}
 
 

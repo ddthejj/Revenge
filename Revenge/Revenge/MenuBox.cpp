@@ -60,7 +60,7 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, const Texture*
 	for (int i = 0; i < optionCount; i++)
 	{
 		MenuOption* option = new MenuOption;
-		option->text = optionData[i].text;
+		option->SetText(optionData[i].text);
 		option->option = optionData[i].returnValue;
 		option->x = (float)optionData[i].position.x;
 		option->y = (float)optionData[i].position.y;
@@ -205,7 +205,8 @@ void MenuBox::UpdateArrowLocation()
 
 	Point<float> drawLocation = Point<float>(options[optionAt->x][optionAt->y]->x + offsetX, options[optionAt->x][optionAt->y]->y + offsetY);
 
-	// adjust the horizontal location of the arrow based on the orientation of the text
+	// adjust the horizontal location of the arrow based on the orientation of the box
+	/*
 	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::HCENTER)
 	{
 		drawLocation.x -= Manager::MeasureString(options[optionAt->x][optionAt->y]->text).x / 2.f;
@@ -214,8 +215,10 @@ void MenuBox::UpdateArrowLocation()
 	{
 		drawLocation.x -= Manager::MeasureString(options[optionAt->x][optionAt->y]->text).x;
 	}
+	*/
 
 	arrow->SetPos(drawLocation);
+	//arrow->SetAnchorPoint(anchor);
 }
 
 void MenuBox::ResetArrow()
@@ -272,8 +275,8 @@ void MenuBox::Draw(SpriteBatch* spriteBatch)
 			MenuOption* option = options[i][j];
 			if (option)
 			{
-				MyRectangle textRectangle = MyRectangle(rectangle->X() + option->x + textOffset.x, rectangle->Y() + option->y + textOffset.y, 100, 10);//Manager::MeasureString(option->text).x, 10);
-				spriteBatch->WriteText(option->text.c_str(), &textRectangle, layer + .1f, opacity, anchor);
+				MyRectangle textRectangle = MyRectangle(option->x + textOffset.x, option->y + textOffset.y, option->GetDimenstions().x, option->GetDimenstions().y);//Manager::MeasureString(option->text).x, 20);
+				spriteBatch->WriteTextInSprite(option->GetText().c_str(), &textRectangle, this, layer + .1f, opacity, option->anchor);
 			}
 		}
 	}
@@ -407,4 +410,19 @@ void MenuBox::MenuPressed()
 {
 	MenuManager::CloseAllMenus();
 	Manager::UnfreezeScene();
+}
+
+MenuBox::MenuOption::MenuOption(std::string _text, int _option, float _x, float _y, ANCHOR_POINT _anchor)
+{
+	text = std::string(_text);
+	option = _option;
+	x = _x; y = _y;
+	anchor = _anchor;
+	dimensions = Manager::MeasureString(_text);
+}
+
+void MenuBox::MenuOption::SetText(std::string _text)
+{
+	text = _text;
+	dimensions = Manager::MeasureString(_text);
 }

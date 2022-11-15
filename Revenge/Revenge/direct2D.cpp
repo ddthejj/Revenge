@@ -334,6 +334,7 @@ Point<float> Renderer::MeasureString(std::string text, float screenWidth, float 
 		return Point<float>(0.f, 0.f);
 	}
 
+	//elements->
 	IDWriteTextLayout* layout;
 
 	size_t ret, size = strlen(text.c_str() + 1);

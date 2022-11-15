@@ -90,4 +90,6 @@ public:
 	virtual void DrawInSprite(SpriteBatch* spriteBatch, UISprite* parent);
 
 	ANCHOR_POINT GetAnchorPoint() const { return anchor; }
+
+	void SetAnchorPoint(ANCHOR_POINT _anchor) { anchor = _anchor; }
 };

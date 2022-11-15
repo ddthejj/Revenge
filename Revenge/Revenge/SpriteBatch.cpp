@@ -161,7 +161,7 @@ void SpriteBatch::WriteTextInSprite(const char* text, const MyRectangle* textRec
 	MyRectangle sourceRectangle = MyRectangle(GetAbsolutePos(sourceSprite->GetRectangle(), &screenRec, sourceSprite->GetAnchorPoint()), sourceSprite->GetRectangle()->Width(), sourceSprite->GetRectangle()->Height());
 	Point<float> sourceLocation = GetAbsolutePos(textRectangle, &sourceRectangle, anchor);
 	MyRectangle absoluteRectangle = MyRectangle(sourceLocation, textRectangle->Width(), textRectangle->Height());
-	WriteText(text, &absoluteRectangle, layer, opacity, ANCHOR_POINT::ANCHOR_TOP_LEFT);
+	renderer->Write(text, sourceLocation.x, sourceLocation.y, textRectangle->Width(), textRectangle->Height(), layer, opacity);
 }
 
 void SpriteBatch::End()

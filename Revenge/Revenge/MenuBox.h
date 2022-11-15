@@ -17,19 +17,23 @@ protected:
 
 	struct MenuOption
 	{
-		std::string text = "DEFAULT";
 		int option = 0;
 		float x = 0.f, y = 0.f;
 		ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT;
 
+	private:
+
+		std::string text = "DEFAULT";
+		Point<float> dimensions;
+
+	public:
+
 		MenuOption() = default;
-		MenuOption(std::string _text, int _option, float _x, float _y, ANCHOR_POINT _anchor) 
-		{ 
-			text = std::string(_text); 
-			option = _option;
-			x = _x; y = _y;
-			anchor = _anchor;
-		}
+		MenuOption(std::string _text, int _option, float _x, float _y, ANCHOR_POINT _anchor);
+		
+		Point<float> GetDimenstions() const { return dimensions; };
+		void SetText(std::string _text);
+		std::string GetText() const { return text; }
 	};
 
 #pragma endregion
