@@ -197,28 +197,26 @@ void MenuBox::SetOpacity(float _opacity)
 
 void MenuBox::UpdateArrowLocation()
 {
-	int offsetX = -12, offsetY = 0;
-	float fontSize = 20.f; // this should probably be like retrieved from the renderer
-	offsetX += (int)rectangle->X();
-	offsetY += (int)rectangle->Y();
-	offsetY += (int)((fontSize / 2.f) - (arrow->GetRectangle()->Height() / 2.f) - 2);
+	int offsetX = (unsigned char)options[optionAt->x][optionAt->y]->anchor & (unsigned char)ANCHOR_POINT::RIGHT ? 12 : -12, offsetY = 0;
+	float fontSize = options[optionAt->x][optionAt->y]->GetDimenstions().y; // this should probably be like retrieved from the renderer
+	//offsetX += (int)rectangle->X();
+	//offsetY += (int)rectangle->Y();
+	offsetY += (arrow->GetRectangle()->Height() / 2.f) - 2 + (int)(fontSize / 2.f);
 
 	Point<float> drawLocation = Point<float>(options[optionAt->x][optionAt->y]->x + offsetX, options[optionAt->x][optionAt->y]->y + offsetY);
 
 	// adjust the horizontal location of the arrow based on the orientation of the box
-	/*
-	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::HCENTER)
+	if ((unsigned char)options[optionAt->x][optionAt->y]->anchor & (unsigned char)ANCHOR_POINT::HCENTER)
 	{
-		drawLocation.x -= Manager::MeasureString(options[optionAt->x][optionAt->y]->text).x / 2.f;
+		drawLocation.x += options[optionAt->x][optionAt->y]->GetDimenstions().x / 2.f;
 	}
-	else if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::RIGHT)
+	else if ((unsigned char)options[optionAt->x][optionAt->y]->anchor & (unsigned char)ANCHOR_POINT::RIGHT)
 	{
-		drawLocation.x -= Manager::MeasureString(options[optionAt->x][optionAt->y]->text).x;
+		drawLocation.x += options[optionAt->x][optionAt->y]->GetDimenstions().x;
 	}
-	*/
 
 	arrow->SetPos(drawLocation);
-	//arrow->SetAnchorPoint(anchor);
+	arrow->SetAnchorPoint(options[optionAt->x][optionAt->y]->anchor);
 }
 
 void MenuBox::ResetArrow()
@@ -282,7 +280,7 @@ void MenuBox::Draw(SpriteBatch* spriteBatch)
 	}
 
 	// draw the arrow
-	arrow->Draw(spriteBatch);
+	arrow->DrawInSprite(spriteBatch, this);
 	return;
 }
 
