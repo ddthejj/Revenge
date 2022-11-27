@@ -41,7 +41,7 @@ public:
 
 	void SetX(float _x);
 	void SetY(float _y);
-	void SetWidth(float _width) { width = _width; }
+	virtual void SetWidth(float _width) { width = _width; }
 	void SetHeight(float _height) { height = _height; }
 	void SetLocation(Point<float> _location);
 
@@ -54,4 +54,3 @@ public:
 #pragma endregion
 
 };
-

@@ -44,11 +44,13 @@ public:
 	~Character();
 	virtual void Draw(SpriteBatch* spriteBatch);
 
+	// read character data from a file
+	virtual void ReadData(const char* filepath);
 	// returns the first name of the character
 	std::string FirstName() const { return firstname; }
 	// returns the last name of the character
 	std::string LastName() const  { return lastname; }		
-		// returns the first name and last name of the character
+	// returns the first name and last name of the character
 	std::string FullName() const							
 	{ return std::string(firstname).append(" ").append(lastname).c_str(); }			
 	// returns the chaos ratio of the character
@@ -142,11 +144,16 @@ class NonPlayer : public Character
 {
 public:
 
+	MOVE_MODE movementMode = MOVE_MODE::NONE;
+	float moveTime = 0.f;
+
 #pragma region Methods
 
 	NonPlayer(float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath);
 	~NonPlayer();
 
+	// read character data from file
+	virtual void ReadData(const char* filepath) override;
 	// update the NPC
 	void Update(float delta_time);
 

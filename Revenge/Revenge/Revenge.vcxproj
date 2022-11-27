@@ -160,6 +160,7 @@
     <ClCompile Include="DialogueBox.cpp" />
     <ClCompile Include="direct2D.cpp" />
     <ClCompile Include="directSound.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnumParser.cpp" />
     <ClCompile Include="FileReader.cpp" />
     <ClCompile Include="InputManager.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="Character.h" />
     <ClInclude Include="defines.h" />
     <ClInclude Include="DialogueBox.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnumParser.h" />
     <ClInclude Include="FileReader.h" />
     <ClInclude Include="InputManager.h" />

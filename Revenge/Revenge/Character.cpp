@@ -20,8 +20,26 @@ Character::Character(float x, float y, float height, float width, const Texture*
 		moving[i] = false;
 	}
 
-#pragma region Read Data
+	ReadData(filepath);
+}
 
+Character::~Character()
+{
+	if (active) Deactivate();
+
+	for (int i = 0; i < abilities.size(); i++)
+	{
+		SafeDelete(abilities[i]);
+	}
+}
+
+void Character::Draw(SpriteBatch* spriteBatch)
+{
+	spriteBatch->Draw(texture, rectangle, sourceRectangle, 1.0f, layer);
+}
+
+void Character::ReadData(const char* filepath)
+{
 	CharacterReader characterReader;
 	characterReader.Open(filepath);
 
@@ -38,24 +56,6 @@ Character::Character(float x, float y, float height, float width, const Texture*
 	magicType[0] = characterReader.GetPrimaryMagic();
 	magicType[1] = characterReader.GetSecondaryMagic();
 	abilities = characterReader.GetAbilities();
-
-#pragma endregion
-
-}
-
-Character::~Character()
-{
-	if (active) Deactivate();
-
-	for (int i = 0; i < abilities.size(); i++)
-	{
-		SafeDelete(abilities[i]);
-	}
-}
-
-void Character::Draw(SpriteBatch* spriteBatch)
-{
-	spriteBatch->Draw(texture, rectangle, sourceRectangle, 1.0f, layer);
 }
 #pragma endregion
 
@@ -469,8 +469,23 @@ NonPlayer::~NonPlayer()
 	if (active) Deactivate();
 }
 
+void NonPlayer::ReadData(const char* filepath)
+{
+}
+
 void NonPlayer::Update(float delta_time)
 {
+	switch (movementMode)
+	{
+	case (MOVE_MODE::NONE):
 
+		break;
+	case (MOVE_MODE::RANDOM_RADIUS):
+
+		break;
+	case (MOVE_MODE::ATTACK):
+
+		break;
+	}
 }
 #pragma endregion

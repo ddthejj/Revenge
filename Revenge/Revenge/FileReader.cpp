@@ -2,6 +2,7 @@
 #include "FileReader.h"
 #include "SaveManager.h"
 #include "Ability.h"
+#include "Character.h"
 
 #include <Windows.h>
 
@@ -202,7 +203,7 @@ int RoomReader::GetNPCCount() const
 	return atoi(lines[GetNPCCountLine()].c_str());
 }
 
-int RoomReader::GetNPCList(std::vector<std::string>& NPCList) const
+int RoomReader::GetNPCList(std::map<std::string, Point<float>>& NPCList) const
 {
 	// the file either didn't correctly open or contained nothing
 	if (lines.size() == 0)
@@ -215,7 +216,9 @@ int RoomReader::GetNPCList(std::vector<std::string>& NPCList) const
 
 	for (int i = 0; i < NPCCount; i++)
 	{
-		NPCList.push_back(lines[lineAt]);
+		std::vector<std::string> line = ParseLine(lines[lineAt], ',');
+
+		NPCList.insert(std::pair<std::string, Point<float>>(line[0], Point<float>(atoi(line[1].c_str()), atoi(line[2].c_str()))));
 		lineAt++;
 	}
 
@@ -410,13 +413,20 @@ MAGIC_TYPE CharacterReader::GetSecondaryMagic()
 {
 	std::vector<std::string> magics = ParseLine(lines[5], ',');
 
-	if (ParseLine(magics[1], '-').size() > 1)
+	if (magics.size() == 1)
 	{
-		return EnumParser::ParseMagicType(magics[1]);
+		return MAGIC_TYPE::NONE;
 	}
 	else
 	{
-		return MAGIC_TYPE::UNDECIDED;
+		if (ParseLine(magics[1], '-').size() > 1)
+		{
+			return EnumParser::ParseMagicType(magics[1]);
+		}
+		else
+		{
+			return MAGIC_TYPE::UNDECIDED;
+		}
 	}
 }
 
@@ -432,4 +442,9 @@ std::vector<Ability*> CharacterReader::GetAbilities()
 	}
 
 	return abilities_a;
+}
+
+MOVE_MODE NPCReader::GetMovementMode()
+{
+	return (MOVE_MODE)(atoi(lines[7].c_str()));
 }

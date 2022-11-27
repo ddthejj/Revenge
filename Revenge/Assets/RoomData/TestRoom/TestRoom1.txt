@@ -58,4 +58,4 @@
 0
 
 1
-"TestMan",200,200
+../Assets/CharacterData/NPC/TestNPC.txt,200,200

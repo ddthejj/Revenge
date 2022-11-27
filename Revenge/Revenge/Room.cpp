@@ -24,8 +24,8 @@ Room::Room(const char* filepath)
 	int doorCount = roomReader.GetDoorData(&doorData);
 	interactableCount = roomReader.GetTextList(textList);
 	interactableTiles = new Interactable*[interactableCount];
-	std::vector<std::string> NPCNames;
-	int NPCCount = roomReader.GetNPCList(NPCNames);
+	std::map<std::string, Point<float>> NPCPaths;
+	npcCount = roomReader.GetNPCList(NPCPaths);
 
 #pragma endregion
 
@@ -90,8 +90,13 @@ Room::Room(const char* filepath)
 #pragma endregion
 
 #pragma region Read NPC Data
-
-
+	
+	NPCs = new NonPlayer * [npcCount];
+	int NPCAt = 0;
+	for (auto it = NPCPaths.begin(); it != NPCPaths.end(); ++it, ++NPCAt)
+	{
+		NPCs[NPCAt] = new NonPlayer(it->second.x, it->second.y, 32, 32, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_PLAYER), .6f, it->first.c_str());
+	}
 
 #pragma endregion
 
@@ -137,6 +142,11 @@ Room::~Room()
 	if (interactableTiles)
 		delete[] interactableTiles;
 	
+	for (int i = 0; i < npcCount; i++)
+	{
+		delete NPCs[i];
+	}
+
 	if (NPCs)
 		delete[] NPCs;
 }
@@ -154,6 +164,12 @@ void Room::Activate()
 			}
 		}
 	}
+
+	for (int i = 0; i < npcCount; i++)
+	{
+		NPCs[i]->Activate();
+	}
+
 	Object::Activate();
 }
 

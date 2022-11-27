@@ -6,6 +6,7 @@ enum class ANCHOR_POINT : unsigned char;
 class NonPlayer;
 enum class MAGIC_TYPE;
 class Ability;
+enum class MOVE_MODE;
 
 class FileReader
 {
@@ -32,7 +33,7 @@ class RoomReader : public FileReader
 		// line count
 		// lines
 	// npc count
-		// npc name & locations
+		// npc locations
 
 public:
 
@@ -51,7 +52,7 @@ public:
 	// return the number of NPCs in a room
 	int GetNPCCount() const;
 	// return the NPC data of the room
-	int GetNPCList(std::vector<std::string>& NPCList) const;
+	int GetNPCList(std::map<std::string, Point<float>>& NPCList) const;
 
 private:
 
@@ -141,4 +142,20 @@ public:
 	virtual MAGIC_TYPE GetPrimaryMagic();
 	virtual MAGIC_TYPE GetSecondaryMagic();
 	std::vector<Ability*> GetAbilities();
+};
+
+class NPCReader : public CharacterReader
+{
+	// layout:
+
+	// First Name
+	// Last Name
+	// Starting Level
+	// Ratio (Chaos Half)
+	// base stats: attack, defense, mind, spirit, energy, map movement speed
+	// magic types
+	// base attacks
+	// movement mode
+	
+	MOVE_MODE GetMovementMode();
 };

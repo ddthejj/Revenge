@@ -11,7 +11,8 @@ class Room : public Object
 	Point<int> dimensions;
 	Interactable** interactableTiles = nullptr;
 	int interactableCount = 0;
-	NonPlayer* NPCs = nullptr;
+	NonPlayer** NPCs;
+	int npcCount = 0;
 
 public:
 	Room(const char* filepath);

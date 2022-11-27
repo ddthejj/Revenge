@@ -146,6 +146,16 @@ enum class SOUND_CHANNEL
 
 #pragma endregion
 
+#pragma region Characters
+
+enum class MOVE_MODE
+{
+	NONE,
+	RANDOM_RADIUS,
+	ATTACK
+};
+
+#pragma endregion
 
 #pragma region Magic Types
 
