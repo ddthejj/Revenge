@@ -198,14 +198,12 @@ void MenuBox::SetOpacity(float _opacity)
 void MenuBox::UpdateArrowLocation()
 {
 	int offsetX = (unsigned char)options[optionAt->x][optionAt->y]->anchor & (unsigned char)ANCHOR_POINT::RIGHT ? 12 : -12, offsetY = 0;
-	float fontSize = options[optionAt->x][optionAt->y]->GetDimenstions().y; // this should probably be like retrieved from the renderer
-	//offsetX += (int)rectangle->X();
-	//offsetY += (int)rectangle->Y();
-	offsetY += (arrow->GetRectangle()->Height() / 2.f) - 2 + (int)(fontSize / 2.f);
+	float fontSize = options[optionAt->x][optionAt->y]->GetDimenstions().y; 
+	offsetY += (int)(fontSize * ((unsigned char)options[optionAt->x][optionAt->y]->anchor & (unsigned char)ANCHOR_POINT::RIGHT ? .6f : .2f));
 
 	Point<float> drawLocation = Point<float>(options[optionAt->x][optionAt->y]->x + offsetX, options[optionAt->x][optionAt->y]->y + offsetY);
 
-	// adjust the horizontal location of the arrow based on the orientation of the box
+	// adjust the horizontal location of the arrow based on the anchor point of the option
 	if ((unsigned char)options[optionAt->x][optionAt->y]->anchor & (unsigned char)ANCHOR_POINT::HCENTER)
 	{
 		drawLocation.x += options[optionAt->x][optionAt->y]->GetDimenstions().x / 2.f;
