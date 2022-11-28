@@ -32,7 +32,6 @@ protected:
 	bool moving[(int)DIRECTION::MAX];		// if the character is moving in each direction
 	DIRECTION wayFacing = DIRECTION::DOWN;	// way the character is looking
 	float animTimer = 0;					// timer for overworld animation
-	
 
 #pragma endregion
 
@@ -40,6 +39,9 @@ public:
 
 #pragma region Methods
 
+protected:
+	Character(float x, float y, float height, float width, const Texture* _texture, float _layer);
+public:
 	Character(float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath);
 	~Character();
 	virtual void Draw(SpriteBatch* spriteBatch);
@@ -84,6 +86,12 @@ public:
 	const std::vector<Ability*> Abilities() const { return abilities; }	
 	// returns the ability of the character at the selected index
 	const Ability* Ability(int index) const { return abilities.size() > index ? abilities[index] : nullptr; }
+
+
+	// move the player based on input
+	void Move();
+	// check if you're going to collide into walls
+	void TestCollision(bool* up, bool* down, bool* left, bool* right, const Room* currentRoom);
 														
 #pragma endregion
 
@@ -129,10 +137,6 @@ protected:
 
 #pragma region Methods
 
-	// move the player based on input
-	void Move();
-	// check if you're going to collide into walls
-	void TestCollision(bool* up, bool* down, bool* left, bool* right, const Room* currentRoom);
 	// returns the interact point of the player 
 	Point<float> GetInteractPoint() const;
 
@@ -145,7 +149,10 @@ class NonPlayer : public Character
 public:
 
 	MOVE_MODE movementMode = MOVE_MODE::NONE;
-	float moveTime = 0.f;
+	float moveRadius = 0.f;
+	int moveTimer = 0.f, moveDelay = 5000.f;
+	Point<float> startLocation;
+	Point<float> moveToLocation;
 
 #pragma region Methods
 

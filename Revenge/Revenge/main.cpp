@@ -3,6 +3,8 @@
 #include "vld.h"
 #include "Manager.h"
 #include <time.h>
+#include <random>
+#include <ctime>
 
 
 int CALLBACK WinMain(_In_ HINSTANCE hInstance,_In_opt_ HINSTANCE hPrevInstance,_In_ LPSTR lpCmdLine,_In_ int nShowCmd);
@@ -13,6 +15,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 {
 	// Target framerate
 	const float FPS = 60.f;
+	// Seed randomness
+	std::srand(std::time(nullptr));
 
 #ifdef _DEBUG
 	// Sets debug flag to have Windows dump memory leaks (not 100% reliable, trust Visual Leak Detector more with this)

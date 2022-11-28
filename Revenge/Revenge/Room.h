@@ -29,5 +29,7 @@ public:
 	Point<int> GetDimensions() const;
 	Interactable** const GetInteractables() const;
 	int GetInteractableCount() const;
+	NonPlayer** const GetNPCs() const { return NPCs; }
+	int GetNPCCount() const { return npcCount; }
 };
 

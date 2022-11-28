@@ -157,5 +157,8 @@ class NPCReader : public CharacterReader
 	// base attacks
 	// movement mode
 	
+public: 
+
 	MOVE_MODE GetMovementMode();
+	float GetMovementRadius();
 };

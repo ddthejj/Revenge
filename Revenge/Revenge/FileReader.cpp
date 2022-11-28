@@ -218,7 +218,7 @@ int RoomReader::GetNPCList(std::map<std::string, Point<float>>& NPCList) const
 	{
 		std::vector<std::string> line = ParseLine(lines[lineAt], ',');
 
-		NPCList.insert(std::pair<std::string, Point<float>>(line[0], Point<float>(atoi(line[1].c_str()), atoi(line[2].c_str()))));
+		NPCList.insert(std::pair<std::string, Point<float>>(line[0], Point<float>((float)atoi(line[1].c_str()), (float)atoi(line[2].c_str()))));
 		lineAt++;
 	}
 
@@ -444,7 +444,13 @@ std::vector<Ability*> CharacterReader::GetAbilities()
 	return abilities_a;
 }
 
+
 MOVE_MODE NPCReader::GetMovementMode()
 {
-	return (MOVE_MODE)(atoi(lines[7].c_str()));
+	return (MOVE_MODE)(atoi(ParseLine(lines[7], ',')[0].c_str()));
+}
+
+float NPCReader::GetMovementRadius()
+{
+	return (float)atoi(ParseLine(lines[7], ',')[1].c_str());
 }

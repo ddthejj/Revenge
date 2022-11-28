@@ -5,4 +5,4 @@ Alwelstow
 1,1,1,1,1
 Water
 Punch,1,0,1|Stab,2,0,2|Ram,5,0,4
-0
+1,30

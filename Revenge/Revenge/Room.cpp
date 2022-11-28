@@ -187,6 +187,11 @@ void Room::Deactivate()
 		}
 	}
 
+	for (int i = 0; i < npcCount; i++)
+	{
+		NPCs[i]->Deactivate();
+	}
+
 	Object::Deactivate();
 }
 

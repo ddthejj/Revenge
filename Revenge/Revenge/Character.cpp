@@ -12,7 +12,18 @@
 #include "Ability.h"
 #include "FileReader.h"
 
+#include <random>
+#include <ctime>
+#include <cmath>
+
 #pragma region Character
+Character::Character(float x, float y, float height, float width, const Texture* _texture, float _layer) : Sprite(x, y, height, width, 0, 0, 32, 32, _texture, _layer)
+{
+	for (int i = 0; i < (int)DIRECTION::MAX; i++)
+	{
+		moving[i] = false;
+	}
+}
 Character::Character(float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath) : Sprite(x, y, height, width, 0, 0, 32, 32, _texture, _layer)
 {
 	for (int i = 0; i < (int)DIRECTION::MAX; i++)
@@ -226,7 +237,7 @@ void Player::ResetInputs()
 }
 
 
-void Player::Move()
+void Character::Move()
 {
 	const Room* currentRoom = OverworldManager::GetCurrentRoom();
 
@@ -252,7 +263,7 @@ void Player::Move()
 	else
 		animTimer = 0.f;
 
-	if (/*wayFacing != preciousWayFacing || (*/ismoving && animTimer < 1.f)/*)*/
+	if (ismoving && animTimer < 1.f)
 	{
 		animTimer = 1.f;
 	}
@@ -265,7 +276,7 @@ void Player::Move()
 	sourceRectangle->SetY((int)wayFacing * TILE_HEIGHT);
 }
 
-void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, const Room* currentRoom)
+void Character::TestCollision(bool* up, bool* down, bool* left, bool* right, const Room* currentRoom)
 {
 	int tilesRight = (int)(rectangle->Width() / TILE_HEIGHT) + 1;
 	int tilesDown = (int)(rectangle->Height() / TILE_HEIGHT) + 1;
@@ -298,6 +309,21 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, const 
 					}
 			}
 		}
+
+		{
+			NonPlayer** NPCs = currentRoom->GetNPCs();
+			for (int i = 0; i < currentRoom->GetNPCCount(); i++)
+			{
+				const NonPlayer* testing = NPCs[i];
+				if (testing->GetRectangle()->Intersects(futureRectangle))
+				{
+					collided = true;
+					rectangle->SetY(testing->GetRectangle()->Bottom() + 1);
+					goto COLLIDEDUP;
+				}
+			}
+		}
+
 	COLLIDEDUP:
 
 		if (!collided)
@@ -341,6 +367,20 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, const 
 						rectangle->SetY(testing->GetRectangle()->Top() - 1 - TILE_HEIGHT);
 						goto COLLIDEDDOWN;
 					}
+			}
+		}
+
+		{
+			NonPlayer** NPCs = currentRoom->GetNPCs();
+			for (int i = 0; i < currentRoom->GetNPCCount(); i++)
+			{
+				const NonPlayer* testing = NPCs[i];
+				if (testing->GetRectangle()->Intersects(futureRectangle))
+				{
+					collided = true;
+					rectangle->SetY(testing->GetRectangle()->Top() - 1 - TILE_HEIGHT);
+					goto COLLIDEDDOWN;
+				}
 			}
 		}
 	COLLIDEDDOWN:
@@ -388,6 +428,20 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, const 
 					}
 			}
 		}
+
+		{
+			NonPlayer** NPCs = currentRoom->GetNPCs();
+			for (int i = 0; i < currentRoom->GetNPCCount(); i++)
+			{
+				const NonPlayer* testing = NPCs[i];
+				if (testing->GetRectangle()->Intersects(futureRectangle))
+				{
+					collided = true;
+					rectangle->SetX(testing->GetRectangle()->Right() + 1);
+					goto COLLIDELEFT;
+				}
+			}
+		}
 	COLLIDELEFT:
 
 		if (!collided)
@@ -433,6 +487,20 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, const 
 					}
 			}
 		}
+
+		{
+			NonPlayer** NPCs = currentRoom->GetNPCs();
+			for (int i = 0; i < currentRoom->GetNPCCount(); i++)
+			{
+				const NonPlayer* testing = NPCs[i];
+				if (testing->GetRectangle()->Intersects(futureRectangle))
+				{
+					collided = true;
+					rectangle->SetX(testing->GetRectangle()->Left() - 1 - TILE_WIDTH);
+					goto COLLIDERIGHT;
+				}
+			}
+		}
 	COLLIDERIGHT:
 
 		if (!collided)
@@ -449,6 +517,7 @@ void Player::TestCollision(bool* up, bool* down, bool* left, bool* right, const 
 		}
 	}
 #pragma endregion
+
 }
 
 Point<float> Player::GetInteractPoint() const
@@ -459,9 +528,12 @@ Point<float> Player::GetInteractPoint() const
 #pragma endregion
 
 #pragma region NonPlayer Character
-NonPlayer::NonPlayer(float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath) : Character(x, y, height, width, _texture, _layer, filepath)
+NonPlayer::NonPlayer(float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath) : Character(x, y, height, width, _texture, _layer)
 {
+	ReadData(filepath);
 
+	startLocation = Point<float>(x, y);
+	moveToLocation = startLocation;
 }
 
 NonPlayer::~NonPlayer()
@@ -471,6 +543,24 @@ NonPlayer::~NonPlayer()
 
 void NonPlayer::ReadData(const char* filepath)
 {
+	NPCReader npcReader;
+	npcReader.Open(filepath);
+
+	firstname = npcReader.GetFirstName();
+	lastname = npcReader.GetLastName();
+	ratio = npcReader.GetRatio();
+	startingLevel = npcReader.GetStartingLevel();
+	std::vector<int> stats = npcReader.GetStats();
+	attack = stats[0];
+	defense = stats[1];
+	mind = stats[2];
+	spirit = stats[3];
+	energy = stats[4];
+	magicType[0] = npcReader.GetPrimaryMagic();
+	magicType[1] = npcReader.GetSecondaryMagic();
+	abilities = npcReader.GetAbilities();
+	movementMode = npcReader.GetMovementMode();
+	moveRadius = npcReader.GetMovementRadius();
 }
 
 void NonPlayer::Update(float delta_time)
@@ -482,10 +572,58 @@ void NonPlayer::Update(float delta_time)
 		break;
 	case (MOVE_MODE::RANDOM_RADIUS):
 
+		moveTimer += (int)delta_time;
+		if (moveTimer >= moveDelay)
+		{
+			moveTimer = 0;
+
+			//random point within radius
+
+			float r = moveRadius * std::sqrt((float)std::rand() / RAND_MAX);
+			float theta = ((float)std::rand() / RAND_MAX) * 2 * std::_Pi;
+			float x = startLocation.x + r * std::cos(theta);
+			float y = startLocation.y + r * std::sin(theta);
+
+			moveToLocation = Point<float>(x, y);
+		}
 		break;
 	case (MOVE_MODE::ATTACK):
 
 		break;
 	}
+
+
+	if (moveToLocation != GetPos())
+	{
+		if (moveToLocation.x > GetPos().x)
+		{
+			moving[(int)DIRECTION::LEFT] = true;
+		}
+		else if (moveToLocation.x < GetPos().x)
+		{
+			moving[(int)DIRECTION::RIGHT] = true;
+		}
+		else
+		{
+			moving[(int)DIRECTION::LEFT] = false;
+			moving[(int)DIRECTION::RIGHT] = false;
+		}
+
+		if (moveToLocation.y > GetPos().y)
+		{
+			moving[(int)DIRECTION::DOWN] = true;
+		}
+		else if (moveToLocation.y < GetPos().y)
+		{
+			moving[(int)DIRECTION::UP] = true;
+		}
+		else
+		{
+			moving[(int)DIRECTION::UP] = false;
+			moving[(int)DIRECTION::DOWN] = false;
+		}
+	}
+
+	Move();
 }
 #pragma endregion
