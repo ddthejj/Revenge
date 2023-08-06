@@ -315,11 +315,15 @@ void Character::TestCollision(bool* up, bool* down, bool* left, bool* right, con
 			for (int i = 0; i < currentRoom->GetNPCCount(); i++)
 			{
 				const NonPlayer* testing = NPCs[i];
-				if (testing->GetRectangle()->Intersects(futureRectangle))
+
+				if (testing != this) // don't collide with ourselves
 				{
-					collided = true;
-					rectangle->SetY(testing->GetRectangle()->Bottom() + 1);
-					goto COLLIDEDUP;
+					if (testing->GetRectangle()->Intersects(futureRectangle))
+					{
+						collided = true;
+						rectangle->SetY(testing->GetRectangle()->Bottom() + 1);
+						goto COLLIDEDUP;
+					}
 				}
 			}
 		}
@@ -375,11 +379,15 @@ void Character::TestCollision(bool* up, bool* down, bool* left, bool* right, con
 			for (int i = 0; i < currentRoom->GetNPCCount(); i++)
 			{
 				const NonPlayer* testing = NPCs[i];
-				if (testing->GetRectangle()->Intersects(futureRectangle))
+
+				if (testing != this) // don't collide with ourselves
 				{
-					collided = true;
-					rectangle->SetY(testing->GetRectangle()->Top() - 1 - TILE_HEIGHT);
-					goto COLLIDEDDOWN;
+					if (testing->GetRectangle()->Intersects(futureRectangle))
+					{
+						collided = true;
+						rectangle->SetY(testing->GetRectangle()->Top() - 1 - TILE_HEIGHT);
+						goto COLLIDEDDOWN;
+					}
 				}
 			}
 		}
@@ -434,11 +442,15 @@ void Character::TestCollision(bool* up, bool* down, bool* left, bool* right, con
 			for (int i = 0; i < currentRoom->GetNPCCount(); i++)
 			{
 				const NonPlayer* testing = NPCs[i];
-				if (testing->GetRectangle()->Intersects(futureRectangle))
+
+				if (testing != this) // don't collide with ourselves
 				{
-					collided = true;
-					rectangle->SetX(testing->GetRectangle()->Right() + 1);
-					goto COLLIDELEFT;
+					if (testing->GetRectangle()->Intersects(futureRectangle))
+					{
+						collided = true;
+						rectangle->SetX(testing->GetRectangle()->Right() + 1);
+						goto COLLIDELEFT;
+					}
 				}
 			}
 		}
@@ -493,11 +505,15 @@ void Character::TestCollision(bool* up, bool* down, bool* left, bool* right, con
 			for (int i = 0; i < currentRoom->GetNPCCount(); i++)
 			{
 				const NonPlayer* testing = NPCs[i];
-				if (testing->GetRectangle()->Intersects(futureRectangle))
+
+				if (testing != this) // don't collide with ourselves
 				{
-					collided = true;
-					rectangle->SetX(testing->GetRectangle()->Left() - 1 - TILE_WIDTH);
-					goto COLLIDERIGHT;
+					if (testing->GetRectangle()->Intersects(futureRectangle))
+					{
+						collided = true;
+						rectangle->SetX(testing->GetRectangle()->Left() - 1 - TILE_WIDTH);
+						goto COLLIDERIGHT;
+					}
 				}
 			}
 		}
@@ -586,6 +602,15 @@ void NonPlayer::Update(float delta_time)
 
 			moveToLocation = Point<float>(x, y);
 		}
+
+		if (moveToLocation == GetPos())
+		{
+			moving[(int)DIRECTION::LEFT] = false;
+			moving[(int)DIRECTION::RIGHT] = false;
+			moving[(int)DIRECTION::UP] = false;
+			moving[(int)DIRECTION::DOWN] = false;
+		}
+
 		break;
 	case (MOVE_MODE::ATTACK):
 
@@ -597,11 +622,13 @@ void NonPlayer::Update(float delta_time)
 	{
 		if (moveToLocation.x > GetPos().x)
 		{
-			moving[(int)DIRECTION::LEFT] = true;
+			moving[(int)DIRECTION::RIGHT] = true;
+			moving[(int)DIRECTION::LEFT] = false;
 		}
 		else if (moveToLocation.x < GetPos().x)
 		{
-			moving[(int)DIRECTION::RIGHT] = true;
+			moving[(int)DIRECTION::LEFT] = true;
+			moving[(int)DIRECTION::RIGHT] = false;
 		}
 		else
 		{
@@ -612,10 +639,12 @@ void NonPlayer::Update(float delta_time)
 		if (moveToLocation.y > GetPos().y)
 		{
 			moving[(int)DIRECTION::DOWN] = true;
+			moving[(int)DIRECTION::UP] = false;
 		}
 		else if (moveToLocation.y < GetPos().y)
 		{
 			moving[(int)DIRECTION::UP] = true;
+			moving[(int)DIRECTION::DOWN] = false;
 		}
 		else
 		{
