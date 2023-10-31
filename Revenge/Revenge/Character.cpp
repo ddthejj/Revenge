@@ -68,174 +68,6 @@ void Character::ReadData(const char* filepath)
 	magicType[1] = characterReader.GetSecondaryMagic();
 	abilities = characterReader.GetAbilities();
 }
-#pragma endregion
-
-#pragma region Player Character
-
-Player::Player(float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath) : Character(x, y, height, width, _texture, _layer, filepath)
-{
-}
-
-Player::~Player()
-{
-	if (active) Deactivate();
-}
-
-void Player::Update(float delta_time)
-{
-	Move();
-}
-
-void Player::UpPressedCallback()
-{
-	if (!moving[(int)DIRECTION::DOWN])
-		moving[(int)DIRECTION::UP] = true;
-	else
-		moving[(int)DIRECTION::DOWN] = false;
-}
-
-void Player::DownPressedCallback()
-{
-	if (!moving[(int)DIRECTION::UP])
-		moving[(int)DIRECTION::DOWN] = true;
-	else
-		moving[(int)DIRECTION::UP] = false;
-}
-
-void Player::LeftPressedCallback()
-{
-	if (!moving[(int)DIRECTION::RIGHT])
-		moving[(int)DIRECTION::LEFT] = true;
-	else
-		moving[(int)DIRECTION::RIGHT] = false;
-}
-
-void Player::RightPressedCallback()
-{
-	if (!moving[(int)DIRECTION::LEFT])
-		moving[(int)DIRECTION::RIGHT] = true;
-	else
-		moving[(int)DIRECTION::LEFT] = false;
-}
-
-void Player::UpReleasedCallback()
-{
-	if (!moving[(int)DIRECTION::UP])
-		moving[(int)DIRECTION::DOWN] = true;
-	else
-		moving[(int)DIRECTION::UP] = false;
-}
-
-void Player::DownReleasedCallback()
-{
-	if (!moving[(int)DIRECTION::DOWN])
-		moving[(int)DIRECTION::UP] = true;
-	else
-		moving[(int)DIRECTION::DOWN] = false;
-}
-
-void Player::LeftReleasedCallback()
-{
-	if (!moving[(int)DIRECTION::LEFT])
-		moving[(int)DIRECTION::RIGHT] = true;
-	else
-		moving[(int)DIRECTION::LEFT] = false;
-}
-
-void Player::RightReleasedCallback()
-{
-	if (!moving[(int)DIRECTION::RIGHT])
-		moving[(int)DIRECTION::LEFT] = true;
-	else
-		moving[(int)DIRECTION::RIGHT] = false;
-}
-
-void Player::OnInteractCallback()
-{
-	if (frozen || !active)
-		return;
-
-
-	Point<float> interactPoint;
-
-	switch (wayFacing)
-	{
-	case DIRECTION::UP:
-		interactPoint = Point<float>(rectangle->CenterX(), rectangle->Top() - (rectangle->Height() / 3.f));
-		break;
-	case DIRECTION::DOWN:
-		interactPoint = Point<float>(rectangle->CenterX(), rectangle->Bottom() + (rectangle->Height() / 3.f));
-		break;
-	case DIRECTION::LEFT:
-		interactPoint = Point<float>(rectangle->Left() - (rectangle->Width() / 3.f), rectangle->CenterY());
-		break;
-	case DIRECTION::RIGHT:
-		interactPoint = Point<float>(rectangle->Right() + (rectangle->Width() / 3.f), rectangle->CenterY());
-		break;
-	}
-
-	OverworldManager::OnInteract(interactPoint);
-}
-
-void Player::OnMenuCallback()
-{
-	MenuManager::OpenMenu((int)OVERWORLD_MENUS::MENU_BASE);
-	Manager::FreezeScene();
-}
-
-void Player::BindCallbacks()
-{
-	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_UP, std::bind(&Player::UpPressedCallback, this), this);
-	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_DOWN, std::bind(&Player::DownPressedCallback, this), this);
-	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_LEFT, std::bind(&Player::LeftPressedCallback, this), this);
-	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_RIGHT, std::bind(&Player::RightPressedCallback, this), this);
-
-	InputManager::KeyReleasedCallbacks_Attach(KEYS::KEY_UP, std::bind(&Player::UpReleasedCallback, this), this);
-	InputManager::KeyReleasedCallbacks_Attach(KEYS::KEY_DOWN, std::bind(&Player::DownReleasedCallback, this), this);
-	InputManager::KeyReleasedCallbacks_Attach(KEYS::KEY_LEFT, std::bind(&Player::LeftReleasedCallback, this), this);
-	InputManager::KeyReleasedCallbacks_Attach(KEYS::KEY_RIGHT, std::bind(&Player::RightReleasedCallback, this), this);
-
-	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_INTERACT, std::bind(&Player::OnInteractCallback, this), this);
-	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_MENU, std::bind(&Player::OnMenuCallback, this), this);
-	ResetInputs();
-}
-
-void Player::UnbindCallbacks()
-{
-	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_UP, std::bind(&Player::UpPressedCallback, this), this);
-	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_DOWN, std::bind(&Player::DownPressedCallback, this), this);
-	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_LEFT, std::bind(&Player::LeftPressedCallback, this), this);
-	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_RIGHT, std::bind(&Player::RightPressedCallback, this), this);
-
-	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_UP, std::bind(&Player::UpReleasedCallback, this), this);
-	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_DOWN, std::bind(&Player::DownReleasedCallback, this), this);
-	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_LEFT, std::bind(&Player::LeftReleasedCallback, this), this);
-	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_RIGHT, std::bind(&Player::RightReleasedCallback, this), this);
-
-	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_INTERACT, std::bind(&Player::OnInteractCallback, this), this);
-	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_MENU, std::bind(&Player::OnMenuCallback, this), this);
-
-	ResetInputs();
-}
-
-void Player::ResetInputs()
-{
-	if (frozen || !active)
-	{
-		for (int i = 0; i < (int)DIRECTION::MAX; i++)
-		{
-			moving[i] = false;
-		}
-	}
-	else
-	{
-		moving[(int)DIRECTION::UP] = InputManager::IsKeyDown(KEYS::KEY_UP);
-		moving[(int)DIRECTION::DOWN] = InputManager::IsKeyDown(KEYS::KEY_DOWN);
-		moving[(int)DIRECTION::LEFT] = InputManager::IsKeyDown(KEYS::KEY_LEFT);
-		moving[(int)DIRECTION::RIGHT] = InputManager::IsKeyDown(KEYS::KEY_RIGHT);
-	}
-}
-
 
 void Character::Move()
 {
@@ -536,6 +368,174 @@ void Character::TestCollision(bool* up, bool* down, bool* left, bool* right, con
 
 }
 
+#pragma endregion
+
+#pragma region Player Character
+
+Player::Player(float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath) : Character(x, y, height, width, _texture, _layer, filepath)
+{
+}
+
+Player::~Player()
+{
+	if (active) Deactivate();
+}
+
+void Player::Update(float delta_time)
+{
+	Move();
+}
+
+void Player::UpPressedCallback()
+{
+	if (!moving[(int)DIRECTION::DOWN])
+		moving[(int)DIRECTION::UP] = true;
+	else
+		moving[(int)DIRECTION::DOWN] = false;
+}
+
+void Player::DownPressedCallback()
+{
+	if (!moving[(int)DIRECTION::UP])
+		moving[(int)DIRECTION::DOWN] = true;
+	else
+		moving[(int)DIRECTION::UP] = false;
+}
+
+void Player::LeftPressedCallback()
+{
+	if (!moving[(int)DIRECTION::RIGHT])
+		moving[(int)DIRECTION::LEFT] = true;
+	else
+		moving[(int)DIRECTION::RIGHT] = false;
+}
+
+void Player::RightPressedCallback()
+{
+	if (!moving[(int)DIRECTION::LEFT])
+		moving[(int)DIRECTION::RIGHT] = true;
+	else
+		moving[(int)DIRECTION::LEFT] = false;
+}
+
+void Player::UpReleasedCallback()
+{
+	if (!moving[(int)DIRECTION::UP])
+		moving[(int)DIRECTION::DOWN] = true;
+	else
+		moving[(int)DIRECTION::UP] = false;
+}
+
+void Player::DownReleasedCallback()
+{
+	if (!moving[(int)DIRECTION::DOWN])
+		moving[(int)DIRECTION::UP] = true;
+	else
+		moving[(int)DIRECTION::DOWN] = false;
+}
+
+void Player::LeftReleasedCallback()
+{
+	if (!moving[(int)DIRECTION::LEFT])
+		moving[(int)DIRECTION::RIGHT] = true;
+	else
+		moving[(int)DIRECTION::LEFT] = false;
+}
+
+void Player::RightReleasedCallback()
+{
+	if (!moving[(int)DIRECTION::RIGHT])
+		moving[(int)DIRECTION::LEFT] = true;
+	else
+		moving[(int)DIRECTION::RIGHT] = false;
+}
+
+void Player::OnInteractCallback()
+{
+	if (frozen || !active)
+		return;
+
+
+	Point<float> interactPoint;
+
+	switch (wayFacing)
+	{
+	case DIRECTION::UP:
+		interactPoint = Point<float>(rectangle->CenterX(), rectangle->Top() - (rectangle->Height() / 3.f));
+		break;
+	case DIRECTION::DOWN:
+		interactPoint = Point<float>(rectangle->CenterX(), rectangle->Bottom() + (rectangle->Height() / 3.f));
+		break;
+	case DIRECTION::LEFT:
+		interactPoint = Point<float>(rectangle->Left() - (rectangle->Width() / 3.f), rectangle->CenterY());
+		break;
+	case DIRECTION::RIGHT:
+		interactPoint = Point<float>(rectangle->Right() + (rectangle->Width() / 3.f), rectangle->CenterY());
+		break;
+	}
+
+	OverworldManager::OnInteract(interactPoint);
+}
+
+void Player::OnMenuCallback()
+{
+	MenuManager::OpenMenu((int)OVERWORLD_MENUS::MENU_BASE);
+	Manager::FreezeScene();
+}
+
+void Player::BindCallbacks()
+{
+	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_UP, std::bind(&Player::UpPressedCallback, this), this);
+	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_DOWN, std::bind(&Player::DownPressedCallback, this), this);
+	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_LEFT, std::bind(&Player::LeftPressedCallback, this), this);
+	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_RIGHT, std::bind(&Player::RightPressedCallback, this), this);
+
+	InputManager::KeyReleasedCallbacks_Attach(KEYS::KEY_UP, std::bind(&Player::UpReleasedCallback, this), this);
+	InputManager::KeyReleasedCallbacks_Attach(KEYS::KEY_DOWN, std::bind(&Player::DownReleasedCallback, this), this);
+	InputManager::KeyReleasedCallbacks_Attach(KEYS::KEY_LEFT, std::bind(&Player::LeftReleasedCallback, this), this);
+	InputManager::KeyReleasedCallbacks_Attach(KEYS::KEY_RIGHT, std::bind(&Player::RightReleasedCallback, this), this);
+
+	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_INTERACT, std::bind(&Player::OnInteractCallback, this), this);
+	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_MENU, std::bind(&Player::OnMenuCallback, this), this);
+	ResetInputs();
+}
+
+void Player::UnbindCallbacks()
+{
+	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_UP, std::bind(&Player::UpPressedCallback, this), this);
+	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_DOWN, std::bind(&Player::DownPressedCallback, this), this);
+	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_LEFT, std::bind(&Player::LeftPressedCallback, this), this);
+	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_RIGHT, std::bind(&Player::RightPressedCallback, this), this);
+
+	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_UP, std::bind(&Player::UpReleasedCallback, this), this);
+	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_DOWN, std::bind(&Player::DownReleasedCallback, this), this);
+	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_LEFT, std::bind(&Player::LeftReleasedCallback, this), this);
+	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_RIGHT, std::bind(&Player::RightReleasedCallback, this), this);
+
+	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_INTERACT, std::bind(&Player::OnInteractCallback, this), this);
+	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_MENU, std::bind(&Player::OnMenuCallback, this), this);
+
+	ResetInputs();
+}
+
+void Player::ResetInputs()
+{
+	if (frozen || !active)
+	{
+		for (int i = 0; i < (int)DIRECTION::MAX; i++)
+		{
+			moving[i] = false;
+		}
+	}
+	else
+	{
+		moving[(int)DIRECTION::UP] = InputManager::IsKeyDown(KEYS::KEY_UP);
+		moving[(int)DIRECTION::DOWN] = InputManager::IsKeyDown(KEYS::KEY_DOWN);
+		moving[(int)DIRECTION::LEFT] = InputManager::IsKeyDown(KEYS::KEY_LEFT);
+		moving[(int)DIRECTION::RIGHT] = InputManager::IsKeyDown(KEYS::KEY_RIGHT);
+	}
+}
+
 Point<float> Player::GetInteractPoint() const
 {
 	return Point<float>();
@@ -544,6 +544,7 @@ Point<float> Player::GetInteractPoint() const
 #pragma endregion
 
 #pragma region NonPlayer Character
+
 NonPlayer::NonPlayer(float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath) : Character(x, y, height, width, _texture, _layer)
 {
 	ReadData(filepath);
@@ -588,27 +589,35 @@ void NonPlayer::Update(float delta_time)
 		break;
 	case (MOVE_MODE::RANDOM_RADIUS):
 
-		moveTimer += (int)delta_time;
-		if (moveTimer >= moveDelay)
+		moveTimer += delta_time;
+		if (!IsMoving())
 		{
-			moveTimer = 0;
+			if (moveTimer >= moveDelay)
+			{
+				moveTimer = 0;
 
-			//random point within radius
+				//random point within radius
 
-			float r = moveRadius * std::sqrt((float)std::rand() / RAND_MAX);
-			float theta = ((float)std::rand() / RAND_MAX) * 2 * std::_Pi;
-			float x = startLocation.x + r * std::cos(theta);
-			float y = startLocation.y + r * std::sin(theta);
+				float r = moveRadius * std::sqrt((float)std::rand() / RAND_MAX);
+				float theta = (float)(std::rand() / RAND_MAX) * 2 * (float)std::_Pi;
+				float x = startLocation.x + r * std::cos(theta);
+				float y = startLocation.y + r * std::sin(theta);
 
-			moveToLocation = Point<float>(x, y);
+				moveToLocation = Point<float>(x, y);
+			}
 		}
 
-		if (moveToLocation == GetPos())
+		if (IsMoving())
 		{
-			moving[(int)DIRECTION::LEFT] = false;
-			moving[(int)DIRECTION::RIGHT] = false;
-			moving[(int)DIRECTION::UP] = false;
-			moving[(int)DIRECTION::DOWN] = false;
+			if (moveToLocation.Equals(GetPos(), mvmntSpeed))
+			{
+				SetPos(moveToLocation);
+
+				moving[(int)DIRECTION::LEFT] = false;
+				moving[(int)DIRECTION::RIGHT] = false;
+				moving[(int)DIRECTION::UP] = false;
+				moving[(int)DIRECTION::DOWN] = false;
+			}
 		}
 
 		break;
@@ -655,4 +664,5 @@ void NonPlayer::Update(float delta_time)
 
 	Move();
 }
+
 #pragma endregion

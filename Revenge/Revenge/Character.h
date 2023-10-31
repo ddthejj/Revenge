@@ -88,10 +88,12 @@ public:
 	const Ability* Ability(int index) const { return abilities.size() > index ? abilities[index] : nullptr; }
 
 
-	// move the player based on input
+	// move the character based on velocity
 	void Move();
-	// check if you're going to collide into walls
+	// check if current velocity will take you inside collision
 	void TestCollision(bool* up, bool* down, bool* left, bool* right, const Room* currentRoom);
+	// check if character is moving
+	bool IsMoving() { return moving[0] || moving[1] || moving[2] || moving[3]; }
 														
 #pragma endregion
 
@@ -150,7 +152,7 @@ public:
 
 	MOVE_MODE movementMode = MOVE_MODE::NONE;
 	float moveRadius = 0.f;
-	int moveTimer = 0.f, moveDelay = 5000.f;
+	float moveTimer = 0.f, moveDelay = 5000.f;
 	Point<float> startLocation;
 	Point<float> moveToLocation;
 
