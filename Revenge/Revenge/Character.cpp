@@ -19,18 +19,9 @@
 #pragma region Character
 Character::Character(float x, float y, float height, float width, const Texture* _texture, float _layer) : Sprite(x, y, height, width, 0, 0, 32, 32, _texture, _layer)
 {
-	for (int i = 0; i < (int)DIRECTION::MAX; i++)
-	{
-		moving[i] = false;
-	}
 }
 Character::Character(float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath) : Sprite(x, y, height, width, 0, 0, 32, 32, _texture, _layer)
 {
-	for (int i = 0; i < (int)DIRECTION::MAX; i++)
-	{
-		moving[i] = false;
-	}
-
 	ReadData(filepath);
 }
 
@@ -71,300 +62,78 @@ void Character::ReadData(const char* filepath)
 
 void Character::Move()
 {
+	if (!IsMoving())
+		return;
+
+	TestCollision();
+
+	AnimateMovement();
+}
+
+void Character::TestCollision()
+{
 	const Room* currentRoom = OverworldManager::GetCurrentRoom();
 
 	if (!currentRoom)
 		return;
 
-	DIRECTION preciousWayFacing = wayFacing;
+	// horizontal movement first
+	MyRectangle futureRectangle(*rectangle);
+	futureRectangle.SetLocation(Point<float>(futureRectangle.Location().x + velocity.x, futureRectangle.Location().y));
 
-	if (!moving[(int)DIRECTION::UP] && !moving[(int)DIRECTION::DOWN] && !moving[(int)DIRECTION::LEFT] && !moving[(int)DIRECTION::RIGHT])
+	std::vector<Tile*> collidedTiles = currentRoom->TestCollision(futureRectangle);
+
+	for (int i = 0; i < collidedTiles.size(); i++)
 	{
-		int i = 0;
+		Tile* collidedTile = collidedTiles[i];
+
+		if (velocity.x > 0) // moving right
+		{
+			if (futureRectangle.Right() - collidedTile->GetRectangle()->Left() <= velocity.x)
+			{
+				futureRectangle.SetX(collidedTile->GetRectangle()->Left() - 1 - futureRectangle.Width());
+			}
+		}
+		else if (velocity.x < 0) // moving left
+		{
+			if (futureRectangle.Left() - collidedTile->GetRectangle()->Right() >= velocity.x)
+			{
+				futureRectangle.SetX(collidedTile->GetRectangle()->Right() + 1);
+			}
+		}
 	}
 
-	bool up = moving[(int)DIRECTION::UP], down = moving[(int)DIRECTION::DOWN], left = moving[(int)DIRECTION::LEFT], right = moving[(int)DIRECTION::RIGHT];
-	TestCollision(&up, &down, &left, &right, currentRoom);
+	rectangle->SetLocation(futureRectangle.Location());
 
-	bool ismoving = false;
-	if (up || down || left || right)
+	// vertical movement second
+	futureRectangle.SetLocation(Point<float>(futureRectangle.Location().x, futureRectangle.Location().y + velocity.y));
+	collidedTiles = currentRoom->TestCollision(futureRectangle);
+
+	for (int i = 0; i < collidedTiles.size(); i++)
 	{
-		animTimer += .05f;
-		ismoving = true;
+		Tile* collidedTile = collidedTiles[i];
+
+		if (velocity.y < 0) // moving up
+		{
+			if (futureRectangle.Top() - collidedTile->GetRectangle()->Bottom() >= velocity.y)
+			{
+				futureRectangle.SetY(collidedTile->GetRectangle()->Bottom() + 1);
+			}
+		}
+		else if (velocity.y > 0) // moving down
+		{
+			if (futureRectangle.Bottom() - collidedTile->GetRectangle()->Top() <= velocity.y)
+			{
+				futureRectangle.SetY(collidedTile->GetRectangle()->Top() - 1 - futureRectangle.Height());
+			}
+		}
 	}
-	else
-		animTimer = 0.f;
 
-	if (ismoving && animTimer < 1.f)
-	{
-		animTimer = 1.f;
-	}
-
-	if (animTimer >= 4.f)
-		animTimer = 1.f;
-
-
-	sourceRectangle->SetX((int)animTimer * TILE_WIDTH);
-	sourceRectangle->SetY((int)wayFacing * TILE_HEIGHT);
+	rectangle->SetLocation(futureRectangle.Location());
 }
 
-void Character::TestCollision(bool* up, bool* down, bool* left, bool* right, const Room* currentRoom)
+void Character::AnimateMovement()
 {
-	int tilesRight = (int)(rectangle->Width() / TILE_HEIGHT) + 1;
-	int tilesDown = (int)(rectangle->Height() / TILE_HEIGHT) + 1;
-
-#pragma region TEST TOP
-	bool collided = false;;
-
-	if (*up)
-	{
-		MyRectangle futureRectangle(*rectangle);
-		futureRectangle.MoveY(-mvmntSpeed);
-
-		int atX = (int)(futureRectangle.X() / TILE_WIDTH);
-		int atY = (int)(futureRectangle.Y() / TILE_HEIGHT);
-
-		for (int j = atY; j < atY + tilesDown; j++)
-		{
-			for (int i = atX; i < atX + tilesRight; i++)
-			{
-				const Tile* testing = currentRoom->GetTile(1, i, j);
-				if (!testing)
-					continue;
-
-				if (testing->Collidable())
-					if (testing->GetRectangle()->Intersects(futureRectangle))
-					{
-						collided = true;
-						rectangle->SetY(testing->GetRectangle()->Bottom() + 1);
-						goto COLLIDEDUP;
-					}
-			}
-		}
-
-		{
-			NonPlayer** NPCs = currentRoom->GetNPCs();
-			for (int i = 0; i < currentRoom->GetNPCCount(); i++)
-			{
-				const NonPlayer* testing = NPCs[i];
-
-				if (testing != this) // don't collide with ourselves
-				{
-					if (testing->GetRectangle()->Intersects(futureRectangle))
-					{
-						collided = true;
-						rectangle->SetY(testing->GetRectangle()->Bottom() + 1);
-						goto COLLIDEDUP;
-					}
-				}
-			}
-		}
-
-	COLLIDEDUP:
-
-		if (!collided)
-		{
-			rectangle->MoveY(-mvmntSpeed);
-			wayFacing = DIRECTION::UP;
-		}
-		else
-		{
-			if (wayFacing != DIRECTION::UP)
-				wayFacing = DIRECTION::UP;
-			*up = false;
-		}
-
-	}
-#pragma endregion
-
-#pragma region TEST DOWN
-	collided = false;
-
-	if (*down)
-	{
-		MyRectangle futureRectangle(*rectangle);
-		futureRectangle.MoveY(mvmntSpeed);
-
-		int atX = (int)(futureRectangle.X() / TILE_WIDTH);
-		int atY = (int)(futureRectangle.Y() / TILE_HEIGHT);
-
-		for (int j = atY; j < atY + tilesDown; j++)
-		{
-			for (int i = atX; i < atX + tilesRight; i++)
-			{
-				const Tile* testing = currentRoom->GetTile(1, i, j);
-				if (!testing)
-					continue;
-
-				if (testing->Collidable())
-					if (testing->GetRectangle()->Intersects(futureRectangle))
-					{
-						collided = true;
-						rectangle->SetY(testing->GetRectangle()->Top() - 1 - TILE_HEIGHT);
-						goto COLLIDEDDOWN;
-					}
-			}
-		}
-
-		{
-			NonPlayer** NPCs = currentRoom->GetNPCs();
-			for (int i = 0; i < currentRoom->GetNPCCount(); i++)
-			{
-				const NonPlayer* testing = NPCs[i];
-
-				if (testing != this) // don't collide with ourselves
-				{
-					if (testing->GetRectangle()->Intersects(futureRectangle))
-					{
-						collided = true;
-						rectangle->SetY(testing->GetRectangle()->Top() - 1 - TILE_HEIGHT);
-						goto COLLIDEDDOWN;
-					}
-				}
-			}
-		}
-	COLLIDEDDOWN:
-
-		if (!collided)
-		{
-			rectangle->MoveY(mvmntSpeed);
-			//if (!*right && !*left)
-			wayFacing = DIRECTION::DOWN;
-		}
-		else
-		{
-			if (wayFacing != DIRECTION::DOWN)
-				wayFacing = DIRECTION::DOWN;
-			*down = false;
-		}
-	}
-#pragma endregion
-
-#pragma region TEST LEFT
-	collided = false;
-
-	if (*left)
-	{
-		MyRectangle futureRectangle(*rectangle);
-		futureRectangle.MoveX(-mvmntSpeed);
-
-		int atX = (int)(futureRectangle.X() / TILE_WIDTH);
-		int atY = (int)(futureRectangle.Y() / TILE_HEIGHT);
-
-		for (int j = atY; j < atY + tilesDown; j++)
-		{
-			for (int i = atX; i < atX + tilesRight; i++)
-			{
-				const Tile* testing = currentRoom->GetTile(1, i, j);
-				if (!testing)
-					continue;
-
-				if (testing->Collidable())
-					if (testing->GetRectangle()->Intersects(futureRectangle))
-					{
-						collided = true;
-						rectangle->SetX(testing->GetRectangle()->Right() + 1);
-						goto COLLIDELEFT;
-					}
-			}
-		}
-
-		{
-			NonPlayer** NPCs = currentRoom->GetNPCs();
-			for (int i = 0; i < currentRoom->GetNPCCount(); i++)
-			{
-				const NonPlayer* testing = NPCs[i];
-
-				if (testing != this) // don't collide with ourselves
-				{
-					if (testing->GetRectangle()->Intersects(futureRectangle))
-					{
-						collided = true;
-						rectangle->SetX(testing->GetRectangle()->Right() + 1);
-						goto COLLIDELEFT;
-					}
-				}
-			}
-		}
-	COLLIDELEFT:
-
-		if (!collided)
-		{
-			rectangle->MoveX(-mvmntSpeed);
-			//if (!*up && !*down)
-			wayFacing = DIRECTION::LEFT;
-		}
-		else
-		{
-			if (wayFacing != DIRECTION::LEFT)
-				wayFacing = DIRECTION::LEFT;
-			*left = false;
-		}
-	}
-#pragma endregion
-
-#pragma region TEST RIGHT
-	collided = false;
-
-	if (*right)
-	{
-		MyRectangle futureRectangle(*rectangle);
-		futureRectangle.MoveX(mvmntSpeed);
-
-		int atX = (int)(futureRectangle.X() / TILE_WIDTH);
-		int atY = (int)(futureRectangle.Y() / TILE_HEIGHT);
-
-		for (int j = atY; j < atY + tilesDown; j++)
-		{
-			for (int i = atX; i < atX + tilesRight; i++)
-			{
-				const Tile* testing = currentRoom->GetTile(1, i, j);
-				if (!testing)
-					continue;
-
-				if (testing->Collidable())
-					if (testing->GetRectangle()->Intersects(futureRectangle))
-					{
-						collided = true;
-						rectangle->SetX(testing->GetRectangle()->Left() - 1 - TILE_WIDTH);
-						goto COLLIDERIGHT;
-					}
-			}
-		}
-
-		{
-			NonPlayer** NPCs = currentRoom->GetNPCs();
-			for (int i = 0; i < currentRoom->GetNPCCount(); i++)
-			{
-				const NonPlayer* testing = NPCs[i];
-
-				if (testing != this) // don't collide with ourselves
-				{
-					if (testing->GetRectangle()->Intersects(futureRectangle))
-					{
-						collided = true;
-						rectangle->SetX(testing->GetRectangle()->Left() - 1 - TILE_WIDTH);
-						goto COLLIDERIGHT;
-					}
-				}
-			}
-		}
-	COLLIDERIGHT:
-
-		if (!collided)
-		{
-			rectangle->MoveX(mvmntSpeed);
-			//if (!*up && !*down)
-			wayFacing = DIRECTION::RIGHT;
-		}
-		else
-		{
-			if (wayFacing != DIRECTION::RIGHT)
-				wayFacing = DIRECTION::RIGHT;
-			*right = false;
-		}
-	}
-#pragma endregion
 
 }
 
@@ -388,66 +157,42 @@ void Player::Update(float delta_time)
 
 void Player::UpPressedCallback()
 {
-	if (!moving[(int)DIRECTION::DOWN])
-		moving[(int)DIRECTION::UP] = true;
-	else
-		moving[(int)DIRECTION::DOWN] = false;
+	velocity += Point<float>(0.f, -mvmntSpeed);
 }
 
 void Player::DownPressedCallback()
 {
-	if (!moving[(int)DIRECTION::UP])
-		moving[(int)DIRECTION::DOWN] = true;
-	else
-		moving[(int)DIRECTION::UP] = false;
+	velocity += Point<float>(0.f, mvmntSpeed);
 }
 
 void Player::LeftPressedCallback()
 {
-	if (!moving[(int)DIRECTION::RIGHT])
-		moving[(int)DIRECTION::LEFT] = true;
-	else
-		moving[(int)DIRECTION::RIGHT] = false;
+	velocity += Point<float>(-mvmntSpeed, 0.f);
 }
 
 void Player::RightPressedCallback()
 {
-	if (!moving[(int)DIRECTION::LEFT])
-		moving[(int)DIRECTION::RIGHT] = true;
-	else
-		moving[(int)DIRECTION::LEFT] = false;
+	velocity += Point<float>(mvmntSpeed, 0.f);
 }
 
 void Player::UpReleasedCallback()
 {
-	if (!moving[(int)DIRECTION::UP])
-		moving[(int)DIRECTION::DOWN] = true;
-	else
-		moving[(int)DIRECTION::UP] = false;
+	velocity -= Point<float>(0.f, -mvmntSpeed);
 }
 
 void Player::DownReleasedCallback()
 {
-	if (!moving[(int)DIRECTION::DOWN])
-		moving[(int)DIRECTION::UP] = true;
-	else
-		moving[(int)DIRECTION::DOWN] = false;
+	velocity -= Point<float>(0.f, mvmntSpeed);
 }
 
 void Player::LeftReleasedCallback()
 {
-	if (!moving[(int)DIRECTION::LEFT])
-		moving[(int)DIRECTION::RIGHT] = true;
-	else
-		moving[(int)DIRECTION::LEFT] = false;
+	velocity -= Point<float>(-mvmntSpeed, 0.f);
 }
 
 void Player::RightReleasedCallback()
 {
-	if (!moving[(int)DIRECTION::RIGHT])
-		moving[(int)DIRECTION::LEFT] = true;
-	else
-		moving[(int)DIRECTION::RIGHT] = false;
+	velocity -= Point<float>(mvmntSpeed, 0.f);
 }
 
 void Player::OnInteractCallback()
@@ -520,12 +265,10 @@ void Player::UnbindCallbacks()
 
 void Player::ResetInputs()
 {
+	/*
 	if (frozen || !active)
 	{
-		for (int i = 0; i < (int)DIRECTION::MAX; i++)
-		{
-			moving[i] = false;
-		}
+		velocity = Point<float>(0.f, 0.f);
 	}
 	else
 	{
@@ -534,6 +277,7 @@ void Player::ResetInputs()
 		moving[(int)DIRECTION::LEFT] = InputManager::IsKeyDown(KEYS::KEY_LEFT);
 		moving[(int)DIRECTION::RIGHT] = InputManager::IsKeyDown(KEYS::KEY_RIGHT);
 	}
+	*/
 }
 
 Point<float> Player::GetInteractPoint() const
@@ -613,10 +357,7 @@ void NonPlayer::Update(float delta_time)
 			{
 				SetPos(moveToLocation);
 
-				moving[(int)DIRECTION::LEFT] = false;
-				moving[(int)DIRECTION::RIGHT] = false;
-				moving[(int)DIRECTION::UP] = false;
-				moving[(int)DIRECTION::DOWN] = false;
+				velocity = Point<float>(0.f, 0.f);
 			}
 		}
 
@@ -631,34 +372,28 @@ void NonPlayer::Update(float delta_time)
 	{
 		if (moveToLocation.x > GetPos().x)
 		{
-			moving[(int)DIRECTION::RIGHT] = true;
-			moving[(int)DIRECTION::LEFT] = false;
+			velocity.x = mvmntSpeed;
 		}
 		else if (moveToLocation.x < GetPos().x)
 		{
-			moving[(int)DIRECTION::LEFT] = true;
-			moving[(int)DIRECTION::RIGHT] = false;
+			velocity.x = -mvmntSpeed;
 		}
 		else
 		{
-			moving[(int)DIRECTION::LEFT] = false;
-			moving[(int)DIRECTION::RIGHT] = false;
+			velocity.x = 0;
 		}
 
 		if (moveToLocation.y > GetPos().y)
 		{
-			moving[(int)DIRECTION::DOWN] = true;
-			moving[(int)DIRECTION::UP] = false;
+			velocity.y = mvmntSpeed;
 		}
 		else if (moveToLocation.y < GetPos().y)
 		{
-			moving[(int)DIRECTION::UP] = true;
-			moving[(int)DIRECTION::DOWN] = false;
+			velocity.y = -mvmntSpeed;
 		}
 		else
 		{
-			moving[(int)DIRECTION::UP] = false;
-			moving[(int)DIRECTION::DOWN] = false;
+			velocity.y = 0;
 		}
 	}
 

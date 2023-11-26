@@ -1,9 +1,13 @@
 #pragma once
 #include "Object.h"
 
+#include <vector>
+
 class Tile;
 class Interactable;
 class NonPlayer;
+
+#define SECTOR_SIZE 4
 
 class Room : public Object
 {
@@ -13,6 +17,8 @@ class Room : public Object
 	int interactableCount = 0;
 	NonPlayer** NPCs;
 	int npcCount = 0;
+
+	Tile*** sectors;
 
 public:
 	Room(const char* filepath);
@@ -31,5 +37,12 @@ public:
 	int GetInteractableCount() const;
 	NonPlayer** const GetNPCs() const { return NPCs; }
 	int GetNPCCount() const { return npcCount; }
+
+	std::vector<Tile*> const TestCollision(MyRectangle collisionRectangle) const;
+
+private:
+
+	void CreateSectors();
+	std::vector<int> const GetSectors(MyRectangle collisionRectangle) const;
 };
 

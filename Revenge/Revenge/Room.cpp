@@ -17,13 +17,13 @@ Room::Room(const char* filepath)
 	RoomReader roomReader;
 	roomReader.Open(filepath);
 
-	int*** layers; 
-	int** doorData; 
-	std::vector<std::vector<std::string>> textList; 
+	int*** layers;
+	int** doorData;
+	std::vector<std::vector<std::string>> textList;
 	dimensions = roomReader.GetLayers(&layers);
 	int doorCount = roomReader.GetDoorData(&doorData);
 	interactableCount = roomReader.GetTextList(textList);
-	interactableTiles = new Interactable*[interactableCount];
+	interactableTiles = new Interactable * [interactableCount];
 	std::map<std::string, Point<float>> NPCPaths;
 	npcCount = roomReader.GetNPCList(NPCPaths);
 
@@ -90,7 +90,7 @@ Room::Room(const char* filepath)
 #pragma endregion
 
 #pragma region Read NPC Data
-	
+
 	NPCs = new NonPlayer * [npcCount];
 	int NPCAt = 0;
 	for (auto it = NPCPaths.begin(); it != NPCPaths.end(); ++it, ++NPCAt)
@@ -117,6 +117,8 @@ Room::Room(const char* filepath)
 	delete[] doorData;
 
 #pragma endregion
+
+	CreateSectors();
 }
 
 Room::~Room()
@@ -141,7 +143,7 @@ Room::~Room()
 
 	if (interactableTiles)
 		delete[] interactableTiles;
-	
+
 	for (int i = 0; i < npcCount; i++)
 	{
 		delete NPCs[i];
@@ -149,6 +151,16 @@ Room::~Room()
 
 	if (NPCs)
 		delete[] NPCs;
+
+	if (sectors)
+	{
+		int sectorCount = std::ceil(dimensions.x / SECTOR_SIZE) * std::ceil(dimensions.y / SECTOR_SIZE);
+		for (int i = 0; i < sectorCount; i++)
+		{
+			delete[] sectors[i];
+		}
+		delete[] sectors;
+	}
 }
 
 void Room::Activate()
@@ -227,7 +239,7 @@ void Room::Unfreeze()
 	Object::Unfreeze();
 }
 
-const Tile* Room::GetTile(int layer, int x, int y) const 
+const Tile* Room::GetTile(int layer, int x, int y) const
 {
 	if (x >= dimensions.x || x < 0 || y >= dimensions.y || y < 0)
 		return nullptr;
@@ -236,7 +248,7 @@ const Tile* Room::GetTile(int layer, int x, int y) const
 
 Point<int> Room::GetDimensions() const
 {
-	return dimensions;	
+	return dimensions;
 }
 
 Interactable** const Room::GetInteractables() const
@@ -244,7 +256,75 @@ Interactable** const Room::GetInteractables() const
 	return interactableTiles;
 }
 
-int Room::GetInteractableCount() const 
+int Room::GetInteractableCount() const
 {
 	return interactableCount;
+}
+
+std::vector<Tile*> const Room::TestCollision(MyRectangle collisionRectangle) const
+{
+	std::vector<int> collidedSectors = GetSectors(collisionRectangle);
+	int sectorTileNum = SECTOR_SIZE * SECTOR_SIZE;
+	std::vector<Tile*> collidedTiles;
+
+	for (int i = 0; i < collidedSectors.size(); i++)
+	{
+		for (int j = 0; j < sectorTileNum; j++)
+		{
+			if (sectors[collidedSectors[i]][j] && sectors[collidedSectors[i]][j]->Collidable() && sectors[collidedSectors[i]][j]->GetRectangle()->Intersects(collisionRectangle))
+			{
+				collidedTiles.push_back(sectors[collidedSectors[i]][j]);
+			}
+		}
+	}
+
+	return collidedTiles;
+}
+
+std::vector<int> const Room::GetSectors(MyRectangle collisionRectangle) const
+{
+	int sectorDimsX = std::ceil(dimensions.x / SECTOR_SIZE);
+	int sectorDimsY = std::ceil(dimensions.y / SECTOR_SIZE);
+	int sectorNum = sectorDimsX * sectorDimsY;
+
+	std::vector<int> outSectors;
+
+	for (int i = 0; i < sectorNum; i++)
+	{
+		MyRectangle sectorRectangle(i % sectorDimsX * SECTOR_SIZE * TILE_WIDTH, std::floor(i / sectorDimsY) * SECTOR_SIZE * TILE_HEIGHT, SECTOR_SIZE * TILE_WIDTH, SECTOR_SIZE * TILE_HEIGHT);
+
+		if (outSectors.size() == 0 && sectorRectangle.Contains(collisionRectangle))
+		{
+			outSectors.push_back(i);
+			return outSectors;
+		}
+		if (sectorRectangle.Intersects(collisionRectangle))
+		{
+			outSectors.push_back(i);
+		}
+	}
+
+	return outSectors;
+}
+
+void Room::CreateSectors()
+{
+	int sectorDimsX = std::ceil(dimensions.x / SECTOR_SIZE);
+	int sectorDimsY = std::ceil(dimensions.y / SECTOR_SIZE);
+
+	sectors = new Tile * *[sectorDimsX * sectorDimsY];
+
+	for (int sectorAt = 0; sectorAt < sectorDimsX * sectorDimsY; sectorAt++)
+	{
+		sectors[sectorAt] = new Tile * [SECTOR_SIZE * SECTOR_SIZE];
+	}
+
+	// segment the map into sectors to help reduce collision checking time
+	for (int y = 0; y < dimensions.y; y++)
+	{
+		for (int x = 0; x < dimensions.x; x++)
+		{
+			sectors[int(std::floor(y/SECTOR_SIZE) * sectorDimsX + std::floor(x / SECTOR_SIZE))][int(std::floor(y % SECTOR_SIZE) * SECTOR_SIZE + std::floor(x % SECTOR_SIZE))] = tiles[1][x][y];
+		}
+	}
 }
