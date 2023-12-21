@@ -113,6 +113,25 @@ void InputManager::PressChar(WPARAM wParam)
 
 }
 
+void InputManager::FocusLost()
+{
+	for (int i = 0; i < (int)KEYS::KEY_MAX; i++)
+	{
+		if (keys[i])
+		{
+			ReleaseKey(keyOptions[i]);
+		}
+	}
+
+	for (int i = 0; i < (int)MOUSE_KEYS::MOUSE_KEY_MAX; i++)
+	{
+		if (mouseKeys[i])
+		{
+			ReleaseMouseKey((MOUSE_KEYS)i);
+		}
+	}
+}
+
 
 DelegateHandle* InputManager::AnyKeyPressedCallback_Attach(std::function<void(char)> func, void* userObj)
 {

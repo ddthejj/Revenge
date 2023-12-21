@@ -122,6 +122,11 @@ LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, 
 	case WM_SIZE:
 		Manager::ResizeWindow(hWnd);
 		break;
+		// Window has lost focus
+	case WM_KILLFOCUS:
+		Manager::FocusLost();
+		break;
+
 
 	//	// Window is moved
 	//case WM_MOVE:

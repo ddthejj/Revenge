@@ -53,6 +53,8 @@ public:
 	static void PressChar(WPARAM wParam);
 	// repeat a key when it's held down
 	static void RepeatKey() { previousCharPressed = '\0'; }
+	// on focus lost to our window
+	static void FocusLost();
 
 #pragma endregion
 
