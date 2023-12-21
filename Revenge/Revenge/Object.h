@@ -28,9 +28,9 @@ public:
 	// deactivate the object
 	virtual void Deactivate() { active = false; frozen = false; UnbindCallbacks(); }
 	// freeze the object
-	virtual void Freeze() { frozen = true; UnbindCallbacks(); }
+	virtual void Freeze() { frozen = true; }
 	// unfreeze the object
-	virtual void Unfreeze() { frozen = false; BindCallbacks(); }
+	virtual void Unfreeze() { frozen = false; }
 
 	virtual void Draw(SpriteBatch* spriteBatch) = 0;
 	virtual void Update(float delta_time) = 0;
