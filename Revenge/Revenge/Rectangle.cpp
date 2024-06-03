@@ -53,29 +53,12 @@ void MyRectangle::MoveY(float offset) { y += offset; }
 
 bool MyRectangle::Intersects(const MyRectangle &that) const
 {
-	if (Top() <= that.Bottom() && Top() >= that.Top())
-	{
-		if (Left() <= that.Right() && Left() >= that.Left())
-		{
-			return true;
-		}
-		else if (Right() <= that.Right() && Right() >= that.Left())
-		{
-			return true;
-		}
-	}
-	else if (Bottom() <= that.Bottom() && Bottom() >= that.Top())
-	{
-		if (Left() <= that.Right() && Left() >= that.Left())
-		{
-			return true;
-		}
-		else if (Right() <= that.Right() && Right() >= that.Left())
-		{
-			return true;
-		}
-	}
-	return false;
+	if (Left() > that.Right() || that.Left() > Right())
+		return false;
+	if (Top() > that.Bottom() || that.Top() > Bottom())
+		return false;
+
+	return true;
 }
 
 bool MyRectangle::Contains(const Point<float>& that) const
@@ -83,6 +66,16 @@ bool MyRectangle::Contains(const Point<float>& that) const
 	if (that.x >= Left() && that.x <= Right())
 	{
 		if (that.y >= Top() && that.y <= Bottom())
+			return true;
+	}
+	return false;
+}
+
+bool MyRectangle::Contains(const MyRectangle& that) const
+{
+	if (that.Left() >= Left() && that.Right() <= Right())
+	{
+		if (that.Top() >= Top() && that.Bottom() <= Bottom())
 			return true;
 	}
 	return false;

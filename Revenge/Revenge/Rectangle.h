@@ -50,6 +50,7 @@ public:
 
 	bool Intersects(const MyRectangle &that) const;
 	bool Contains(const Point<float>& that) const;
+	bool Contains(const MyRectangle& that) const;
 
 #pragma endregion
 

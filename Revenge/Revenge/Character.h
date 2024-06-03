@@ -22,15 +22,15 @@ protected:
 	std::string firstname = "DEFAULT";	// the name of the character
 	std::string lastname = "DEFAULT";	// the name of the character
 	int ratio = 0;						// ratio of the character
-	float mvmntSpeed = 3.f;				// how quickly the character moves across the map
+	float mvmntSpeed = 2.f;				// how quickly the character moves across the map
 	int startingLevel = 1;				// level the character starts at
 	int currentLevel = 1;				// level the character is at the moment
 	int attack = 0, defense = 0, mind = 0, spirit = 0, energy = 0;		// the character's base stats
 	MAGIC_TYPE magicType[2] = { MAGIC_TYPE::NONE, MAGIC_TYPE::NONE };	// the character's magic types
 	std::vector<Ability*> abilities;									// the character's abilities
 
-	bool moving[(int)DIRECTION::MAX];		// if the character is moving in each direction
-	DIRECTION wayFacing = DIRECTION::DOWN;	// way the character is looking
+	Point<float> velocity = { 0.f, 0.f };	// character overworld movement velocity
+	DIRECTION wayFacing = DIRECTION::DOWN;	// way the character is looking for animation
 	float animTimer = 0;					// timer for overworld animation
 
 #pragma endregion
@@ -88,10 +88,14 @@ public:
 	const Ability* Ability(int index) const { return abilities.size() > index ? abilities[index] : nullptr; }
 
 
-	// move the player based on input
+	// move the character based on velocity
 	void Move();
-	// check if you're going to collide into walls
-	void TestCollision(bool* up, bool* down, bool* left, bool* right, const Room* currentRoom);
+	// check if current velocity will take you inside collision
+	void TestCollision();
+	// animate the character based on movement
+	void AnimateMovement();
+	// check if character is moving
+	bool IsMoving() { return velocity.Magnitude() != 0.f; }
 														
 #pragma endregion
 
@@ -150,7 +154,7 @@ public:
 
 	MOVE_MODE movementMode = MOVE_MODE::NONE;
 	float moveRadius = 0.f;
-	int moveTimer = 0.f, moveDelay = 5000.f;
+	float moveTimer = 0.f, moveDelay = 5000.f;
 	Point<float> startLocation;
 	Point<float> moveToLocation;
 

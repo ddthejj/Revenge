@@ -136,6 +136,11 @@ void Manager::ResizeWindow(HWND hWnd)
 	GetClientRect(hWnd, &rc);
 }
 
+void Manager::FocusLost()
+{
+	InputManager::FocusLost();
+}
+
 int Manager::GetScreenWidth()
 {
 	if (spriteBatch)

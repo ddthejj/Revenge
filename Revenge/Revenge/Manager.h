@@ -91,6 +91,8 @@ public:
 	static void ReleaseMouseKey(MOUSE_KEYS key);
 	// Update the window size and position when the window is moved / resized
 	static void ResizeWindow(HWND hwnd);
+	// Focus is lost
+	static void FocusLost();
 
 #pragma endregion
 

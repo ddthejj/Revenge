@@ -16,7 +16,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	// Target framerate
 	const float FPS = 60.f;
 	// Seed randomness
-	std::srand(std::time(nullptr));
+	std::srand((unsigned int)std::time(nullptr));
 
 #ifdef _DEBUG
 	// Sets debug flag to have Windows dump memory leaks (not 100% reliable, trust Visual Leak Detector more with this)
@@ -79,9 +79,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 			{
 				lastUpdate = clock();
 
-				char msgbuf[16];
-				sprintf_s(msgbuf, "%d\n", ts);
-				OutputDebugStringA(msgbuf);
+				//char msgbuf[16];
+				//sprintf_s(msgbuf, "%d\n", ts);
+				//OutputDebugStringA(msgbuf);
 
 				Manager::Update((float)ts);
 				Manager::Draw();
@@ -122,6 +122,11 @@ LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, 
 	case WM_SIZE:
 		Manager::ResizeWindow(hWnd);
 		break;
+		// Window has lost focus
+	case WM_KILLFOCUS:
+		Manager::FocusLost();
+		break;
+
 
 	//	// Window is moved
 	//case WM_MOVE:
