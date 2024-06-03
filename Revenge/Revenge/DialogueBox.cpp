@@ -43,6 +43,7 @@ void DialogueBox::Draw(SpriteBatch* spriteBatch)
 
 void DialogueBox::Update(float delta_time)
 {
+	// scroll text
 	if (charAt < text[textAt].length())
 	{
 		// text is currently scrolling
@@ -66,8 +67,18 @@ void DialogueBox::Update(float delta_time)
 			{
 				// next word it too long, add a new line and skip the space character
 				currentText += '\n';
+				numLines++;
 				currentLine = "";
 				charAt++;
+
+				// make sure text doesn't overrun the box
+				if (numLines == 5)
+				{
+					std::string nextText(&text[textAt].c_str()[charAt]);
+					auto it = text.begin() + textAt + 1;
+					text.insert(it, nextText);
+					charAt = text[textAt].length();
+				}
 			}
 		}
 

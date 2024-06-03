@@ -17,7 +17,7 @@ private:
     Character* speaker = nullptr;
     std::vector<std::string> text;
     std::string currentText, currentLine;
-    int charAt = 0, textAt = 0;
+    int charAt = 0, textAt = 0, numLines = 0;
     
     UISprite* arrow = nullptr;
     int arrowTimer = 0;
