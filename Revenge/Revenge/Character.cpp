@@ -60,14 +60,14 @@ void Character::ReadData(const char* filepath)
 	abilities = characterReader.GetAbilities();
 }
 
-void Character::Move()
+void Character::Move(float delta_time)
 {
 	if (!IsMoving())
 		return;
 
 	TestCollision();
 
-	AnimateMovement();
+	AnimateMovement(delta_time);
 }
 
 void Character::TestCollision()
@@ -132,9 +132,57 @@ void Character::TestCollision()
 	rectangle->SetLocation(futureRectangle.Location());
 }
 
-void Character::AnimateMovement()
+void Character::AnimateMovement(float delta_time)
 {
+	if (velocity.Magnitude() > 0.f)
+	{
+		DIRECTION prevWayFacing = wayFacing;
 
+		if (std::abs(velocity.x) > std::abs(velocity.y))
+		{
+			if (velocity.x < 0)
+			{
+				wayFacing = DIRECTION::LEFT;
+			}
+			else
+			{
+				wayFacing = DIRECTION::RIGHT;
+			}
+		}
+		else
+		{
+			if (velocity.y < 0)
+			{
+				wayFacing = DIRECTION::UP;
+			}
+			else
+			{
+				wayFacing = DIRECTION::DOWN;
+			}
+		}
+
+		if (prevWayFacing != wayFacing)
+		{
+			// changed direction
+			animTimer = 0.f;
+		}
+
+		sourceRectangle->SetLocation(Point<float>((int)(animTimer / (animTimerMax / 4.f)) * sourceRectangle->Width(), (int)wayFacing * sourceRectangle->Height()));
+		//OutputDebugStringA((std::to_string((int)(animTimer / (animTimerMax / 4.f)) * sourceRectangle->Width()) + "\n").c_str());
+		OutputDebugStringA((std::to_string(animTimer) + '\n').c_str());
+
+		animTimer += delta_time;
+
+		if (animTimer >= animTimerMax)
+		{
+			animTimer = 0.f;
+		}
+	}
+	else
+	{
+		// stopped
+		animTimer = 0.f;
+	}
 }
 
 #pragma endregion
@@ -152,7 +200,7 @@ Player::~Player()
 
 void Player::Update(float delta_time)
 {
-	Move();
+	Move(delta_time);
 }
 
 void Player::UpPressedCallback()
@@ -397,7 +445,7 @@ void NonPlayer::Update(float delta_time)
 		}
 	}
 
-	Move();
+	Move(delta_time);
 }
 
 #pragma endregion

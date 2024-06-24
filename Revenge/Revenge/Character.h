@@ -31,7 +31,8 @@ protected:
 
 	Point<float> velocity = { 0.f, 0.f };	// character overworld movement velocity
 	DIRECTION wayFacing = DIRECTION::DOWN;	// way the character is looking for animation
-	float animTimer = 0;					// timer for overworld animation
+	float animTimer = 0.f;					// timer for overworld animation
+	float animTimerMax = 1.f;
 
 #pragma endregion
 
@@ -89,11 +90,11 @@ public:
 
 
 	// move the character based on velocity
-	void Move();
+	void Move(float delta_time);
 	// check if current velocity will take you inside collision
 	void TestCollision();
 	// animate the character based on movement
-	void AnimateMovement();
+	void AnimateMovement(float delta_time);
 	// check if character is moving
 	bool IsMoving() { return velocity.Magnitude() != 0.f; }
 														

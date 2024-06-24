@@ -83,7 +83,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 				//sprintf_s(msgbuf, "%d\n", ts);
 				//OutputDebugStringA(msgbuf);
 
-				Manager::Update((float)ts);
+				Manager::Update((float)ts / CLOCKS_PER_SEC);
 				Manager::Draw();
 
 			}
