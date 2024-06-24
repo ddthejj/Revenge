@@ -40,9 +40,9 @@ public:
 #pragma region Methods
 
 protected:
-	Character(float x, float y, float height, float width, const Texture* _texture, float _layer);
+	Character(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer);
 public:
-	Character(float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath);
+	Character(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath);
 	~Character();
 	virtual void Draw(SpriteBatch* spriteBatch);
 
@@ -108,7 +108,7 @@ public:
 
 #pragma region Methods
 
-	Player(float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath);
+	Player(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath);
 	~Player();
 
 	// update the player
@@ -160,7 +160,7 @@ public:
 
 #pragma region Methods
 
-	NonPlayer(float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath);
+	NonPlayer(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath);
 	~NonPlayer();
 
 	// read character data from file

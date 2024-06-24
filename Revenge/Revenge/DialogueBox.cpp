@@ -5,10 +5,10 @@
 #include "InputManager.h"
 #include "MenuManager.h"
 
-DialogueBox::DialogueBox(float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, float _layer, float _opacity, ANCHOR_POINT _anchor)
-	: BorderedBox(_x, _y, _width, _height, _texture, _layer, _opacity, _anchor)
+DialogueBox::DialogueBox(std::string _debugName, float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, float _layer, float _opacity, ANCHOR_POINT _anchor)
+	: BorderedBox(_debugName, _x, _y, _width, _height, _texture, _layer, _opacity, _anchor)
 {
-	arrow = new UISprite(15, 15, 7, 7, 0, 0, 15, 15, _arrowTexture, _layer + .01f, _opacity, ANCHOR_POINT::ANCHOR_BOTTOM_RIGHT);
+	arrow = new UISprite("dialogArrow", 15, 15, 7, 7, 0, 0, 15, 15, _arrowTexture, _layer + .01f, _opacity, ANCHOR_POINT::ANCHOR_BOTTOM_RIGHT);
 	arrow->SetOpacity(0.f);
 }
 
@@ -77,7 +77,7 @@ void DialogueBox::Update(float delta_time)
 					std::string nextText(&text[textAt].c_str()[charAt]);
 					auto it = text.begin() + textAt + 1;
 					text.insert(it, nextText);
-					charAt = text[textAt].length();
+					charAt = (int)(text[textAt].length());
 				}
 			}
 		}

@@ -16,6 +16,8 @@ public:
 
 	// returns number of successfully loaded sounds
 	static bool LoadSounds(const char* filepath);
+	// unloads currently loaded sound bank
+	static bool UnloadSounds();
 	// plays a sound
 	static void Play(int index);
 };

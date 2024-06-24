@@ -11,7 +11,7 @@ class Map : public Object
 	//static bool fadingIn = false, fadingOut = false;
 
 public:
-	Map(const char* filepath, unsigned int _roomCount);
+	Map(std::string _debugName, const char* filepath, unsigned int _roomCount);
 	~Map();
 
 	virtual void Activate();

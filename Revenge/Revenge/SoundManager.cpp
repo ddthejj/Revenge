@@ -21,6 +21,11 @@ bool SoundManager::LoadSounds(const char* filepath)
 	return audioPlayer->LoadWAVs(filepath);
 }
 
+bool SoundManager::UnloadSounds()
+{
+	return audioPlayer->UnloadWAVs();
+}
+
 void SoundManager::Play(int index)
 {
 	audioPlayer->PlayWAV(index);

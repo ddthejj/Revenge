@@ -20,7 +20,7 @@ ProtoTile::ProtoTile(ProtoTile* that) : ProtoTile(that->texture, that->height, t
 
 #pragma region Tile
 
-Tile::Tile(const ProtoTile* prototype, float _x, float _y, float _layer) : Sprite(_x, _y, prototype->height, prototype->width, prototype->texture, _layer)
+Tile::Tile(std::string _debugName, const ProtoTile* prototype, float _x, float _y, float _layer) : Sprite(_debugName, _x, _y, prototype->height, prototype->width, prototype->texture, _layer)
 {	
 	collidable = prototype->collidable;
 }
@@ -40,7 +40,7 @@ void Tile::Update(float delta_time)
 
 #pragma region Door
 
-Door::Door(const ProtoTile* prototype, float _x, float _y, float _layer, int _destination, float _destX, float _destY) : Tile(prototype, _x, _y, _layer)
+Door::Door(std::string _debugName, const ProtoTile* prototype, float _x, float _y, float _layer, int _destination, float _destX, float _destY) : Tile(_debugName, prototype, _x, _y, _layer)
 {
 	destination = _destination;
 	destX = _destX; destY = _destY;
@@ -64,7 +64,7 @@ void Door::Update(float delta_time)
 
 #pragma region Interactable
 
-Interactable::Interactable(const ProtoTile* prototype, float _x, float _y, float _layer, std::vector<std::string> _lines) : Tile(prototype, _x, _y, _layer)
+Interactable::Interactable(std::string _debugName, const ProtoTile* prototype, float _x, float _y, float _layer, std::vector<std::string> _lines) : Tile(_debugName, prototype, _x, _y, _layer)
 {
 	lines = _lines;
 }

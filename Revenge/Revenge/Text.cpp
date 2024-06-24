@@ -4,7 +4,7 @@
 #include "SpriteBatch.h"
 #include "Manager.h"
 
-Text::Text(float x, float y, float width, float height, std::string _text, float _layer, float _opacity, ANCHOR_POINT _anchor)
+Text::Text(std::string _debugName, float x, float y, float width, float height, std::string _text, float _layer, float _opacity, ANCHOR_POINT _anchor) : Object(_debugName)
 {
 	rectangle = new MyRectangle(x, y, width, height);
 	text = _text;
@@ -13,8 +13,8 @@ Text::Text(float x, float y, float width, float height, std::string _text, float
 	anchor = _anchor;
 }
 
-Text::Text(float x, float y, float width, float height, const char* _text, float _layer, float _opacity, ANCHOR_POINT _anchor) :
-	Text(x, y, width, height, std::string(_text), _layer, _opacity, _anchor)
+Text::Text(std::string _debugName, float x, float y, float width, float height, const char* _text, float _layer, float _opacity, ANCHOR_POINT _anchor) :
+	Text(_debugName, x, y, width, height, std::string(_text), _layer, _opacity, _anchor)
 {
 
 }

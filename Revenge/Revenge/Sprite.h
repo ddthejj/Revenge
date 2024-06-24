@@ -26,9 +26,9 @@ public:
 #pragma region Methods
 
 	// create a sprite without a source rectangle
-	Sprite(float x, float y, float width, float height, const Texture* _texture, float _layer, float _opacity = 1.f);
+	Sprite(std::string _debugName, float x, float y, float width, float height, const Texture* _texture, float _layer, float _opacity = 1.f);
 	// create a sprite with a source rectangle
-	Sprite(float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, const Texture* _texture, float _layer, float _opacity = 1.f);
+	Sprite(std::string _debugName, float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, const Texture* _texture, float _layer, float _opacity = 1.f);
 	~Sprite();
 
 	// set the main rectangle
@@ -79,9 +79,9 @@ protected:
 public: 
 
 	// create a sprite without a source rectangle
-	UISprite(float x, float y, float width, float height, const Texture* _texture, float _layer, float _opacity = 1.f, ANCHOR_POINT _anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
+	UISprite(std::string _debugName, float x, float y, float width, float height, const Texture* _texture, float _layer, float _opacity = 1.f, ANCHOR_POINT _anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
 	// create a sprite with a source rectangle
-	UISprite(float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, const Texture* _texture, float _layer, float _opacity = 1.f, ANCHOR_POINT _anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
+	UISprite(std::string _debugName, float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, const Texture* _texture, float _layer, float _opacity = 1.f, ANCHOR_POINT _anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
 	
 	virtual void Deactivate();
 	// draw the sprite as UI

@@ -55,7 +55,7 @@ void MenuManager::LoadTitleMenus()
 	for (int i = 0; i < (int)TITLE_MENUS::MENU_MAX; i++)
 		menuList[i] = nullptr;
 
-	menuList[(int)TITLE_MENUS::MENU_TITLE] = new MenuBox(0, 0, 300, 300, nullptr, Manager::GetTexture((int)TEXTURES_TITLE::TEX_TITLE_ARROW), (int)TITLE_MENUS::MENU_TITLE, "../Assets/Menus/Menu_Title_Base.txt");
+	menuList[(int)TITLE_MENUS::MENU_TITLE] = new MenuBox(std::string("TitleMenuMENU_TITLE"), 0, 0, 300, 300, nullptr, Manager::GetTexture((int)TEXTURES_TITLE::TEX_TITLE_ARROW), (int)TITLE_MENUS::MENU_TITLE, "../Assets/Menus/Menu_Title_Base.txt");
 }
 
 void MenuManager::LoadOverworldMenus()
@@ -68,11 +68,11 @@ void MenuManager::LoadOverworldMenus()
 	for (int i = 0; i < (int)OVERWORLD_MENUS::MENU_MAX; i++)
 		menuList[i] = nullptr;
 
-	menuList[(int)OVERWORLD_MENUS::MENU_BASE] = new MenuBox(50, 50, 150, 200, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_BASE, "../Assets/Menus/Menu_Base.txt");
-	menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER] = new MenuBox(50, 50, 10, 10, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_CHARACTER);
-	menuList[(int)OVERWORLD_MENUS::MENU_INVENTORY] = new MenuBox(50, 50, 10, 10, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_INVENTORY);
-	menuList[(int)OVERWORLD_MENUS::MENU_OPTIONS] = new MenuBox(50, 50, 10, 10, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_OPTIONS);
-	menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER_STATS] = new MenuBox(50, 50, 10, 10, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_CHARACTER_STATS);
+	menuList[(int)OVERWORLD_MENUS::MENU_BASE] = new MenuBox(std::string("OverworldMenuMENU_BASE"), 50, 50, 150, 200, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_BASE, "../Assets/Menus/Menu_Base.txt");
+	menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER] = new MenuBox(std::string("OverworldMenuMENU_CHARACTER") , 50, 50, 10, 10, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_CHARACTER);
+	menuList[(int)OVERWORLD_MENUS::MENU_INVENTORY] = new MenuBox(std::string("OverworldMenuMENU_INVENTORY"), 50, 50, 10, 10, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_INVENTORY);
+	menuList[(int)OVERWORLD_MENUS::MENU_OPTIONS] = new MenuBox(std::string("OverworldMenuMENU_OPTIONS"), 50, 50, 10, 10, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_OPTIONS);
+	menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER_STATS] = new MenuBox(std::string("OverworldMenuMENU_CHARACTER_STATS"), 50, 50, 10, 10, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_CHARACTER_STATS);
 }
 
 void MenuManager::UnloadMenus()
@@ -97,7 +97,7 @@ void MenuManager::OpenMenu(int index)
 		return;
 	}
 
-	if (!menuList || !menuList[index])
+	if (!menuList)
 		return;
 
 	if (activeMenu)
@@ -194,6 +194,7 @@ void MenuManager::OpenMenu(int index)
 #pragma endregion
 		break;
 		}
+		break;
 	}
 	case GAME_STATE::STATE_TITLE:
 	{
@@ -203,17 +204,40 @@ void MenuManager::OpenMenu(int index)
 		{
 		case TITLE_MENUS::MENU_TITLE:
 		{
-
 			break;
 		}
+		case TITLE_MENUS::MENU_NEWGAME:
+		{
+			Manager::UnloadGameState();
+			Manager::InitOverworld();
+			return;
+		}
+		case TITLE_MENUS::MENU_CONTINUE:
+		{
+			//unimplemented
+			return;
+		}
+		case TITLE_MENUS::MENU_OPTIONS:
+		{
+			//unimplemented
+			return;
+		}
 		}
 
+		break;
 #pragma endregion
 	}
 	default:
 	{
 
+		break;
 	}
+	break;
+	}
+
+	if (!menuList[index])
+	{
+		return;
 	}
 
 	menuList[index]->Open(activeMenu);
@@ -320,7 +344,7 @@ void MenuManager::StartDialogue(Character* speaker, std::vector<std::string> tex
 
 	Manager::FreezeScene();
 
-	activeDialogueBox = new DialogueBox(0, 50, WIDTH - 100, (HEIGHT / 8.f) + 25, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW));
+	activeDialogueBox = new DialogueBox("DialogBox", 0, 50, WIDTH - 100, (HEIGHT / 8.f) + 25, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW));
 	activeDialogueBox->SetText(speaker, text);
 	activeDialogueBox->Open();
 }

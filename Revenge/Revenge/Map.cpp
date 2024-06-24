@@ -3,7 +3,7 @@
 #include "Room.h"
 #include <string>
 
-Map::Map(const char * filepath, unsigned int _roomCount)
+Map::Map(std::string _debugName, const char * filepath, unsigned int _roomCount) : Object(_debugName)
 {
 	roomCount = _roomCount;
 	rooms = new Room*[roomCount];
@@ -15,7 +15,7 @@ Map::Map(const char * filepath, unsigned int _roomCount)
 		finalPath += number;
 		finalPath += ".txt";
 
-		rooms[i] = new Room(finalPath.c_str());
+		rooms[i] = new Room(std::string("Room") + std::to_string(i), finalPath.c_str());
 	}
 
 	currentRoom = rooms[0];

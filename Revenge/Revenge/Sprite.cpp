@@ -5,7 +5,7 @@
 #include "Texture.h"
 #include "Rectangle.h"
 
-Sprite::Sprite(float x, float y, float width, float height, const Texture* _texture, float _layer, float _opacity) : Sprite(x, y, width, height, 0, 0,
+Sprite::Sprite(std::string _debugName, float x, float y, float width, float height, const Texture* _texture, float _layer, float _opacity) : Sprite(_debugName, x, y, width, height, 0, 0,
 	// if the texture has a default source rectangle, use it as the sprite's source rectangle, but if it doesn't, just use the normal texture height / width 
 	_texture ? (_texture->SourceRectangle() ? _texture->SourceRectangle()->Width() : _texture->Width()) : 0, 
 	_texture ? (_texture->SourceRectangle() ? _texture->SourceRectangle()->Height() : _texture->Height()) : 0, 
@@ -14,7 +14,7 @@ Sprite::Sprite(float x, float y, float width, float height, const Texture* _text
 	// just call the constructor of Object and don't do anything special in the sprite class itself
 }
 
-Sprite::Sprite(float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, const Texture* _texture, float _layer, float _opacity)
+Sprite::Sprite(std::string _debugName, float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, const Texture* _texture, float _layer, float _opacity) : Object(_debugName)
 {
 	rectangle = new MyRectangle(x, y, width, height);
 	sourceRectangle = new MyRectangle(sX, sY, sWidth, sHeight);
@@ -116,14 +116,14 @@ void Sprite::Draw(SpriteBatch* spriteBatch)
 }
 
 
-UISprite::UISprite(float x, float y, float width, float height, const Texture* _texture, float _layer, float _opacity, ANCHOR_POINT _anchor) :
-	Sprite(x, y, width, height, _texture, _layer, _opacity)
+UISprite::UISprite(std::string _debugName, float x, float y, float width, float height, const Texture* _texture, float _layer, float _opacity, ANCHOR_POINT _anchor) :
+	Sprite(_debugName, x, y, width, height, _texture, _layer, _opacity)
 {
 	anchor = _anchor;
 }
 
-UISprite::UISprite(float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, const Texture* _texture, float _layer, float _opacity, ANCHOR_POINT _anchor) :
-	Sprite(x, y, width, height, sX, sY, sWidth, sHeight, _texture, _layer, _opacity)
+UISprite::UISprite(std::string _debugName, float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, const Texture* _texture, float _layer, float _opacity, ANCHOR_POINT _anchor) :
+	Sprite(_debugName, x, y, width, height, sX, sY, sWidth, sHeight, _texture, _layer, _opacity)
 {
 	anchor = _anchor;
 }

@@ -45,6 +45,8 @@ public:
 	static const Texture* GetTexture(const char* name);
 	// Get the game state
 	static GAME_STATE GetGameState() { return gameState; }
+	// Set the game state
+	static void ChangeGameState(GAME_STATE _gameState);
 
 #pragma endregion
 
@@ -115,10 +117,14 @@ public:
 
 	// Initialize the whole game
 	static void Init(HWND hwnd);
+	// Call initialize function based on game state
+	static void InitGameState();
 	// Initialize the title screen
 	static void InitTitle();
 	// Initialize the overworld manager
 	static void InitOverworld();
+	// Unload data specific to the current game state
+	static void UnloadGameState();
 	// Destroy the whole game
 	static void Clean();
 	// Add an object to the list of objects being updated

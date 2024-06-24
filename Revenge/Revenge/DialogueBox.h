@@ -30,7 +30,7 @@ public:
 #pragma region Methods
 
     // load a dialogue box without a file
-    DialogueBox(float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, float _layer = .8f, float _opacity = 1.f, ANCHOR_POINT _anchor = ANCHOR_POINT::ANCHOR_BOTTOM_CENTER);
+    DialogueBox(std::string _debugName, float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, float _layer = .8f, float _opacity = 1.f, ANCHOR_POINT _anchor = ANCHOR_POINT::ANCHOR_BOTTOM_CENTER);
     ~DialogueBox();
 
     // open the dialogue box

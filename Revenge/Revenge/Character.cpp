@@ -17,10 +17,10 @@
 #include <cmath>
 
 #pragma region Character
-Character::Character(float x, float y, float height, float width, const Texture* _texture, float _layer) : Sprite(x, y, height, width, 0, 0, 32, 32, _texture, _layer)
+Character::Character(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer) : Sprite(_debugName, x, y, height, width, 0, 0, 32, 32, _texture, _layer)
 {
 }
-Character::Character(float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath) : Sprite(x, y, height, width, 0, 0, 32, 32, _texture, _layer)
+Character::Character(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath) : Sprite(_debugName, x, y, height, width, 0, 0, 32, 32, _texture, _layer)
 {
 	ReadData(filepath);
 }
@@ -141,7 +141,7 @@ void Character::AnimateMovement()
 
 #pragma region Player Character
 
-Player::Player(float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath) : Character(x, y, height, width, _texture, _layer, filepath)
+Player::Player(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath) : Character(_debugName, x, y, height, width, _texture, _layer, filepath)
 {
 }
 
@@ -289,7 +289,7 @@ Point<float> Player::GetInteractPoint() const
 
 #pragma region NonPlayer Character
 
-NonPlayer::NonPlayer(float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath) : Character(x, y, height, width, _texture, _layer)
+NonPlayer::NonPlayer(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath) : Character(_debugName, x, y, height, width, _texture, _layer)
 {
 	ReadData(filepath);
 

@@ -23,7 +23,7 @@ bool OverworldManager::isRoomTransitioning = false;
 void OverworldManager::Init()
 {
 	// test player
-	currentPlayer = new Player(240, 240, 32, 32, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_PLAYER), .6f, "../Assets/CharacterData/Party/Archer.txt");
+	currentPlayer = new Player("Player", 240, 240, 32, 32, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_PLAYER), .6f, "../Assets/CharacterData/Party/Archer.txt");
 	currentPlayer->Activate();
 	// prototype tiles
 	protoTiles[(int)TILES::TILE_BROWNFLOOR] = new ProtoTile(Manager::GetTexture((int)TEXTURES_TEST::TEX_T_BROWNFLOOR), 32, 32);
@@ -31,7 +31,7 @@ void OverworldManager::Init()
 	protoTiles[(int)TILES::TILE_GREENDOOR] = new ProtoTile(Manager::GetTexture((int)TEXTURES_TEST::TEX_T_GREENDOOR), 32, 32, false, true);
 	protoTiles[(int)TILES::TILE_BLUETEXT] = new ProtoTile(Manager::GetTexture((int)TEXTURES_TEST::TEX_T_BLUETEXT), 32, 32, true, false, true);
 	// add maps
-	maps.push_back(new Map("../Assets/RoomData/TestRoom/TestRoom", 2));
+	maps.push_back(new Map(std::string("Map") + std::to_string(maps.size()), "../Assets/RoomData/TestRoom/TestRoom", 2));
 	currentMap = maps[0];
 	currentMap->Activate();
 

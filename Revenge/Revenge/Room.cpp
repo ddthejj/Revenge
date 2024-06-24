@@ -10,7 +10,7 @@
 #include <fstream>
 #include <string>
 
-Room::Room(const char* filepath)
+Room::Room(std::string _debugName, const char* filepath) : Object(_debugName)
 {
 #pragma region Read Data
 
@@ -50,7 +50,7 @@ Room::Room(const char* filepath)
 					{
 						if (doorAt < doorCount)
 						{
-							tiles[l][i][j] = new Door(prototype, (float)x, (float)y, .25f * (float)l, (int)doorData[doorAt][0], (float)doorData[doorAt][1], (float)doorData[doorAt][2]);
+							tiles[l][i][j] = new Door(std::string("Door") + std::to_string(doorAt), prototype, (float)x, (float)y, .25f * (float)l, (int)doorData[doorAt][0], (float)doorData[doorAt][1], (float)doorData[doorAt][2]);
 							doorAt++;
 						}
 						else
@@ -62,7 +62,7 @@ Room::Room(const char* filepath)
 					{
 						if (interactableAt < interactableCount)
 						{
-							Interactable* interactable = new Interactable(prototype, (float)x, (float)y, .25f * (float)l, textList[interactableAt]);
+							Interactable* interactable = new Interactable(std::string("Interactable") + std::to_string(interactableAt), prototype, (float)x, (float)y, .25f * (float)l, textList[interactableAt]);
 							interactableTiles[interactableAt] = interactable;
 							tiles[l][i][j] = interactable;
 							interactableAt++;
@@ -74,7 +74,7 @@ Room::Room(const char* filepath)
 					}
 					else
 					{
-						tiles[l][i][j] = new Tile(prototype, (float)x, (float)y, .25f * (float)l);
+						tiles[l][i][j] = new Tile(std::string("Tile") + std::to_string(l) + "," + std::to_string(i) + "," + std::to_string(j), prototype, (float)x, (float)y, .25f * (float)l);
 					}
 				}
 				else if (layers[l][i][j] == -2)
@@ -95,7 +95,7 @@ Room::Room(const char* filepath)
 	int NPCAt = 0;
 	for (auto it = NPCPaths.begin(); it != NPCPaths.end(); ++it, ++NPCAt)
 	{
-		NPCs[NPCAt] = new NonPlayer(it->second.x, it->second.y, 32, 32, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_PLAYER), .6f, it->first.c_str());
+		NPCs[NPCAt] = new NonPlayer(std::string("NPC") + std::to_string(NPCAt), it->second.x, it->second.y, 32, 32, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_PLAYER), .6f, it->first.c_str());
 	}
 
 #pragma endregion

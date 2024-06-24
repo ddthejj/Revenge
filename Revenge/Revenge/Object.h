@@ -11,8 +11,12 @@ protected:
 
 #pragma region Properties
 
-	bool frozen = false;	// whether or not the object is frozen
-	bool active = false;	// whether or not the object is active
+	// whether or not the object is frozen
+	bool frozen = false;	
+	// whether or not the object is active
+	bool active = false;	
+
+	std::string debugName; 
 
 #pragma endregion
 
@@ -20,7 +24,7 @@ public:
 
 #pragma region Methods
 
-	Object() {}
+	Object(std::string _debugName) { debugName = _debugName; }
 	~Object() { if (active) Deactivate(); }
 
 	// activate the object

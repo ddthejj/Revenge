@@ -68,6 +68,12 @@ bool TextureManager::LoadTextures(const wchar_t* filepath, SpriteBatch* spriteBa
 	return true;
 }
 
+bool TextureManager::UnloadTextures()
+{
+	Clean();
+	return true;
+}
+
 const Texture* TextureManager::GetTexture(unsigned int index)
 {
 	if (texNames.size() > index)
@@ -90,7 +96,7 @@ void TextureManager::Clean()
 	{
 		delete textures[i];
 	}
-	delete[] textures;
+	SafeDelete(textures);
 
 	texNames.clear();
 }

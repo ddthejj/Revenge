@@ -15,7 +15,7 @@
 #include "TextureManager.h"
 #include "SoundManager.h"
 
-GAME_STATE Manager::gameState = GAME_STATE::STATE_OVERWORLD;
+GAME_STATE Manager::gameState = GAME_STATE::STATE_TITLE;
 SpriteBatch* Manager::spriteBatch = nullptr;
 std::vector<Object*> Manager::UpdateList;
 std::vector<Object*> Manager::DrawList;
@@ -39,6 +39,11 @@ const Texture* Manager::GetTexture(int index)
 const Texture* Manager::GetTexture(const char* name)
 {
 	return TextureManager::GetTexture(name);
+}
+
+void Manager::ChangeGameState(GAME_STATE _gameState)
+{
+
 }
 
 bool Manager::IsKeyDown(KEYS index)
@@ -169,24 +174,28 @@ void Manager::Init(HWND hwnd)
 	// init managers that will be used no matter what
 	InputManager::Init();
 	SoundManager::Init(hwnd);
+	MenuManager::Init();
 	// spritebatch
 	spriteBatch = new SpriteBatch(hwnd);
 
-	if (gameState == GAME_STATE::STATE_OVERWORLD)
-	{
-		// create the overworld
-		InitOverworld();
-	}
-	else if (gameState == GAME_STATE::STATE_TITLE)
-	{
-		// create the title menu
-		InitTitle();
-	}
+	InitGameState();
 
 	// create the rectangle used for fading the screen in and out
-	fadeRectangle = new Sprite(0, 0, WIDTH, HEIGHT, GetTexture("BLACK"), 1.f, 0.f);
+	//fadeRectangle = new Sprite("fadeRectangle", 0, 0, WIDTH, HEIGHT, GetTexture("BLACK"), 1.f, 0.f);
 
+}
 
+void Manager::InitGameState()
+{
+	switch (gameState)
+	{
+	case GAME_STATE::STATE_TITLE:
+		InitTitle();
+		break;
+	case GAME_STATE::STATE_OVERWORLD:
+		InitOverworld();
+		break;
+	}
 }
 
 void Manager::InitTitle()
@@ -199,10 +208,12 @@ void Manager::InitTitle()
 
 	// init managers for title
 	TitleManager::Init();
-	MenuManager::Init();
 
 	// ensure game state is correct
 	gameState = GAME_STATE::STATE_TITLE;
+
+	SafeDelete(fadeRectangle);
+	fadeRectangle = new Sprite("fadeRectangle", 0, 0, WIDTH, HEIGHT, GetTexture("BLACK"), 1.f, 0.f);
 }
 
 void Manager::InitOverworld()
@@ -214,27 +225,47 @@ void Manager::InitOverworld()
 	// load the overworld
 	OverworldManager::Init();
 
-	MenuManager::Init();
-
 	gameState = GAME_STATE::STATE_OVERWORLD;
+
+	SafeDelete(fadeRectangle);
+	fadeRectangle = new Sprite("fadeRectangle", 0, 0, WIDTH, HEIGHT, GetTexture("BLACK"), 1.f, 0.f);
 }
 
-void Manager::Clean()
+void Manager::UnloadGameState()
 {
-	if (gameState == GAME_STATE::STATE_OVERWORLD)
+	switch (gameState)
+	{
+	case GAME_STATE::STATE_OVERWORLD:
 	{
 		// menu
 		MenuManager::Clean();
 		// overworld 
 		OverworldManager::Clean();
+		break;
 	}
-	else if (gameState == GAME_STATE::STATE_TITLE)
+	case GAME_STATE::STATE_TITLE:
 	{
 		// menu
 		MenuManager::Clean();
 		// title
 		TitleManager::Clean();
+		break;
 	}
+	}
+
+	TextureManager::UnloadTextures();
+	SoundManager::UnloadSounds();
+
+	// draw list (probably unesseccary)
+	DrawList.clear();
+	// update list (probably unesseccary)
+	UpdateList.clear();
+}
+
+void Manager::Clean()
+{
+	UnloadGameState();
+
 	// textures
 	TextureManager::Clean();
 	// input

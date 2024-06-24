@@ -7,11 +7,11 @@
 #include "FileReader.h"
 #include "InputManager.h"
 
-MenuBox::MenuBox(float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, int _menuValue, float _layer, float _opacity, ANCHOR_POINT _anchor)
-	: BorderedBox(_x, _y, _width, _height, _texture, _layer, _opacity, _anchor)
+MenuBox::MenuBox(std::string _debugName, float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, int _menuValue, float _layer, float _opacity, ANCHOR_POINT _anchor)
+	: BorderedBox(_debugName, _x, _y, _width, _height, _texture, _layer, _opacity, _anchor)
 {
 	optionAt = new Point<int>();
-	arrow = new UISprite(0, 0, 7, 7, 0, 0, 15, 15, _arrowTexture, _layer + .1f, _opacity, _anchor);
+	arrow = new UISprite("menuArrow", 0, 0, 7, 7, 0, 0, 15, 15, _arrowTexture, _layer + .1f, _opacity, _anchor);
 	menuValue = _menuValue;
 	// options need to be set later
 	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::HCENTER)
@@ -33,8 +33,8 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, const Texture*
 	}
 }
 
-MenuBox::MenuBox(float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, int _menuValue, const char* filename)
-	: BorderedBox(_x, _y, _width, _height, _texture, .8f, 1.f, ANCHOR_POINT::ANCHOR_TOP_LEFT)
+MenuBox::MenuBox(std::string _debugName, float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, int _menuValue, const char* filename)
+	: BorderedBox(_debugName, _x, _y, _width, _height, _texture, .8f, 1.f, ANCHOR_POINT::ANCHOR_TOP_LEFT)
 {
 	menuValue = _menuValue;
 
@@ -75,7 +75,7 @@ MenuBox::MenuBox(float _x, float _y, float _width, float _height, const Texture*
 	delete[] optionData;
 
 	optionAt = new Point<int>(); \
-		arrow = new UISprite(0, 0, 7, 7, 0, 0, 15, 15, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), layer + .1f, opacity, anchor);
+		arrow = new UISprite("menuArrow", 0, 0, 7, 7, 0, 0, 15, 15, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), layer + .1f, opacity, anchor);
 	// options need to be set later
 	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::HCENTER)
 	{

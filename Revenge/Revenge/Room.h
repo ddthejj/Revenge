@@ -21,7 +21,7 @@ class Room : public Object
 	Tile*** sectors;
 
 public:
-	Room(const char* filepath);
+	Room(std::string _debugName, const char* filepath);
 	~Room();
 
 	void Activate();

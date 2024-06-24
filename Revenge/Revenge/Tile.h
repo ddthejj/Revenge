@@ -24,7 +24,7 @@ class Tile : public Sprite
 	bool collidable;
 
 public:
-	Tile(const ProtoTile* prototype, float _x, float _y, float _layer);
+	Tile(std::string _debugName, const ProtoTile* prototype, float _x, float _y, float _layer);
 	virtual ~Tile();
 
 	bool Collidable() const { return collidable; }
@@ -39,7 +39,7 @@ class Door : public Tile
 	float destX = 0, destY = 0;
 
 public:
-	Door(const ProtoTile* prototype, float _x, float _y, float _layer, int _destination, float _destX, float _destY);
+	Door(std::string _debugName, const ProtoTile* prototype, float _x, float _y, float _layer, int _destination, float _destX, float _destY);
 	virtual ~Door();
 
 	int Destination() const { return destination; }
@@ -54,7 +54,7 @@ class Interactable : public Tile
 	std::vector<std::string> lines;
 
 public:
-	Interactable(const ProtoTile* prototype, float _x, float _y, float _layer, std::vector<std::string> _lines);
+	Interactable(std::string _debugName, const ProtoTile* prototype, float _x, float _y, float _layer, std::vector<std::string> _lines);
 	virtual ~Interactable();
 
 	virtual void Interact() const;
