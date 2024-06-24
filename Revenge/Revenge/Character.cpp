@@ -168,8 +168,6 @@ void Character::AnimateMovement(float delta_time)
 		}
 
 		sourceRectangle->SetLocation(Point<float>((int)(animTimer / (animTimerMax / 4.f)) * sourceRectangle->Width(), (int)wayFacing * sourceRectangle->Height()));
-		//OutputDebugStringA((std::to_string((int)(animTimer / (animTimerMax / 4.f)) * sourceRectangle->Width()) + "\n").c_str());
-		OutputDebugStringA((std::to_string(animTimer) + '\n').c_str());
 
 		animTimer += delta_time;
 
@@ -182,6 +180,7 @@ void Character::AnimateMovement(float delta_time)
 	{
 		// stopped
 		animTimer = 0.f;
+		sourceRectangle->SetLocation(Point<float>((int)(animTimer / (animTimerMax / 4.f)) * sourceRectangle->Width(), (int)wayFacing * sourceRectangle->Height()));
 	}
 }
 
