@@ -296,14 +296,14 @@ void MenuBox::Deactivate()
 void MenuBox::Freeze()
 {
 	Sprite::Freeze();
-	//UnbindCallbacks();
+	UnbindCallbacks();
 	ResetArrow();
 }
 
 void MenuBox::Unfreeze()
 {
 	Sprite::Unfreeze();
-	//BindCallbacks();
+	BindCallbacks();
 }
 
 

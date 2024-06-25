@@ -69,7 +69,7 @@ void MenuManager::LoadOverworldMenus()
 		menuList[i] = nullptr;
 
 	menuList[(int)OVERWORLD_MENUS::MENU_BASE] = new MenuBox(std::string("OverworldMenuMENU_BASE"), 50, 50, 150, 200, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_BASE, "../Assets/Menus/Menu_Base.txt");
-	menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER] = new MenuBox(std::string("OverworldMenuMENU_CHARACTER") , 50, 50, 10, 10, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_CHARACTER);
+	menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER] = new MenuBox(std::string("OverworldMenuMENU_CHARACTER"), 50, 50, 10, 10, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_CHARACTER);
 	menuList[(int)OVERWORLD_MENUS::MENU_INVENTORY] = new MenuBox(std::string("OverworldMenuMENU_INVENTORY"), 50, 50, 10, 10, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_INVENTORY);
 	menuList[(int)OVERWORLD_MENUS::MENU_OPTIONS] = new MenuBox(std::string("OverworldMenuMENU_OPTIONS"), 50, 50, 10, 10, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_OPTIONS);
 	menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER_STATS] = new MenuBox(std::string("OverworldMenuMENU_CHARACTER_STATS"), 50, 50, 10, 10, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_CHARACTER_STATS);
@@ -86,6 +86,10 @@ void MenuManager::UnloadMenus()
 		}
 		SafeDelete(menuList);
 	}
+
+	activeMenu = nullptr;
+	menuTex = nullptr;
+	activeDialogueBox = nullptr;
 }
 
 
@@ -274,7 +278,10 @@ void MenuManager::SetMenuOpacity(float _opacity)
 {
 	for (int i = 0; i < GetMenuCount(); i++)
 	{
-		menuList[i]->SetOpacity(_opacity);
+		if (menuList[i])
+		{
+			menuList[i]->SetOpacity(_opacity);
+		}
 	}
 }
 

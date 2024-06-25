@@ -160,7 +160,7 @@ void TitleManager::Update(float delta_time)
 	case TITLE_STATE::TITLE_COMPANY_LOGO:
 	{
 		// the amount to change the fade of the logo by
-		float fadeAmount = (delta_time / 1000.f) / SPLASH_TIME;
+		float fadeAmount = (delta_time) / SPLASH_TIME;
 
 		// if the splash screen is fading in
 		if (timer < SPLASH_TIME)
@@ -188,7 +188,7 @@ void TitleManager::Update(float delta_time)
 		if (timer < SPLASH_TIME / 2.f)
 		{
 			// the amount to change the fade of the title by
-			float fadeAmount = (delta_time / 1000.f) / (SPLASH_TIME / 2.f);
+			float fadeAmount = (delta_time) / (SPLASH_TIME / 2.f);
 			title->IncreaseOpacity(fadeAmount);
 		}
 		// pause for effect
@@ -205,7 +205,7 @@ void TitleManager::Update(float delta_time)
 			if (titleBackground->Opacity() != 1.f)
 			{
 				// the amount to change the fade of the title by
-				float fadeAmount = (delta_time / 1000.f) / (SPLASH_TIME);
+				float fadeAmount = (delta_time) / (SPLASH_TIME);
 				titleBackground->IncreaseOpacity(fadeAmount);
 			}
 		}
@@ -271,5 +271,5 @@ void TitleManager::Update(float delta_time)
 	}
 	}
 
-	timer += (delta_time / 1000.f);
+	timer += (delta_time);
 }

@@ -114,6 +114,10 @@ public:
 
 	// update the player
 	void Update(float delta_time);
+	// freeze the object
+	virtual void Freeze();
+	// unfreeze the object
+	virtual void Unfreeze();
 
 #pragma endregion
 

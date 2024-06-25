@@ -209,6 +209,21 @@ void Player::Update(float delta_time)
 	Move(delta_time);
 }
 
+void Player::Freeze() 
+{
+	Character::Freeze();
+	// unbind menu callback to prevent us from opening the menu again when we press the same button to close the menu
+	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_MENU, std::bind(&Player::OnMenuCallback, this), this);
+
+}
+
+void Player::Unfreeze()
+{
+	Character::Unfreeze();
+	// rebing menu callback
+	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_MENU, std::bind(&Player::OnMenuCallback, this), this);
+}
+
 void Player::UpPressedCallback()
 {
 	velocity += Point<float>(0.f, -mvmntSpeed);
