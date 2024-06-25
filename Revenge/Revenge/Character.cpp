@@ -63,7 +63,14 @@ void Character::ReadData(const char* filepath)
 void Character::Move(float delta_time)
 {
 	if (!IsMoving())
+	{
+		if (animTimer > 0.f)
+		{
+			// resets animation state
+			AnimateMovement(delta_time);
+		}
 		return;
+	}
 
 	TestCollision();
 
