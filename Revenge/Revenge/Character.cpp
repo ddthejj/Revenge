@@ -79,6 +79,7 @@ void Character::Move(float delta_time)
 
 void Character::TestCollision()
 {
+	collided = false;
 	const Room* currentRoom = OverworldManager::GetCurrentRoom();
 
 	if (!currentRoom)
@@ -89,6 +90,7 @@ void Character::TestCollision()
 	futureRectangle.SetLocation(Point<float>(futureRectangle.Location().x + velocity.x, futureRectangle.Location().y));
 
 	std::vector<Tile*> collidedTiles = currentRoom->TestCollision(futureRectangle);
+	collided = collidedTiles.size();
 
 	for (int i = 0; i < collidedTiles.size(); i++)
 	{
@@ -395,6 +397,11 @@ void NonPlayer::ReadData(const char* filepath)
 
 void NonPlayer::Update(float delta_time)
 {
+	Move(delta_time);
+}
+
+void NonPlayer::Move(float delta_time)
+{
 	switch (movementMode)
 	{
 	case (MOVE_MODE::NONE):
@@ -412,7 +419,7 @@ void NonPlayer::Update(float delta_time)
 				//random point within radius
 
 				float r = moveRadius * std::sqrt((float)std::rand() / RAND_MAX);
-				float theta = (float)(std::rand() / RAND_MAX) * 2 * (float)std::_Pi;
+				float theta = ((float)std::rand() / RAND_MAX) * 2 * (float)std::_Pi;
 				float x = startLocation.x + r * std::cos(theta);
 				float y = startLocation.y + r * std::sin(theta);
 
@@ -431,7 +438,7 @@ void NonPlayer::Update(float delta_time)
 		}
 
 		break;
-	case (MOVE_MODE::ATTACK):
+	case (MOVE_MODE::FOLLOW):
 
 		break;
 	}
@@ -439,34 +446,22 @@ void NonPlayer::Update(float delta_time)
 
 	if (moveToLocation != GetPos())
 	{
-		if (moveToLocation.x > GetPos().x)
-		{
-			velocity.x = mvmntSpeed;
-		}
-		else if (moveToLocation.x < GetPos().x)
-		{
-			velocity.x = -mvmntSpeed;
-		}
-		else
-		{
-			velocity.x = 0;
-		}
+		velocity = moveToLocation - GetPos();
+		velocity.Normalize();
+		velocity *= mvmntSpeed;
 
-		if (moveToLocation.y > GetPos().y)
-		{
-			velocity.y = mvmntSpeed;
-		}
-		else if (moveToLocation.y < GetPos().y)
-		{
-			velocity.y = -mvmntSpeed;
-		}
-		else
-		{
-			velocity.y = 0;
-		}
+		OutputDebugStringA((std::to_string(velocity.x) + ", " + std::to_string(velocity.y) + '\n').c_str());
 	}
 
-	Move(delta_time);
+	Point<float> prevPos = GetPos();
+
+	Character::Move(delta_time);
+
+	// if we collide
+	if (collided)
+	{
+		moveToLocation = GetPos();
+	}
 }
 
 #pragma endregion

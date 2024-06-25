@@ -33,6 +33,7 @@ protected:
 	DIRECTION wayFacing = DIRECTION::DOWN;	// way the character is looking for animation
 	float animTimer = 0.f;					// timer for overworld animation
 	float animTimerMax = 1.f;
+	bool collided = false;
 
 #pragma endregion
 
@@ -90,7 +91,7 @@ public:
 
 
 	// move the character based on velocity
-	void Move(float delta_time);
+	virtual void Move(float delta_time);
 	// check if current velocity will take you inside collision
 	void TestCollision();
 	// animate the character based on movement
@@ -159,7 +160,7 @@ public:
 
 	MOVE_MODE movementMode = MOVE_MODE::NONE;
 	float moveRadius = 0.f;
-	float moveTimer = 0.f, moveDelay = 5000.f;
+	float moveTimer = 0.f, moveDelay = 5.f;
 	Point<float> startLocation;
 	Point<float> moveToLocation;
 
@@ -172,6 +173,8 @@ public:
 	virtual void ReadData(const char* filepath) override;
 	// update the NPC
 	void Update(float delta_time);
+	// move the character based on movement mode
+	void Move(float delta_time) override;
 
 #pragma endregion
 };

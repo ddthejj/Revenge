@@ -34,8 +34,10 @@ struct Point
 	Point<T> operator *(const float a) const { return Point<T>(x * a, y * a); }
 	Point<T>& operator +=(const Point<T>& a) { x += a.x; y += a.y; return *this; }
 	Point<T>& operator -=(const Point<T>& a) { x -= a.x; y -= a.y; return *this; }
+	Point<T>& operator *=(const float a) { x *= a; y *= a; return *this; }
 	bool Equals(const Point a, const T threshold) { return ((*this - a).Magnitude() <= threshold); }
 	T Magnitude() { return std::abs(x) + std::abs(y); }
+	void Normalize() { T _magnitude = Magnitude();  x = x / _magnitude; y = y / _magnitude; }
 };
 
 template <class T> void SafeDelete(T*& p)

@@ -152,7 +152,7 @@ enum class MOVE_MODE
 {
 	NONE,
 	RANDOM_RADIUS,
-	ATTACK
+	FOLLOW
 };
 
 #pragma endregion
