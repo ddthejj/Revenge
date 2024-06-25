@@ -284,9 +284,9 @@ int Renderer::LoadContent(const wchar_t* filePath, float height, float width)
 	unsigned int index = (int)(elements->bitmaps.size());
 	elements->bitmaps.push_back(nullptr);
 	elements->filenames.push_back(filePath);
-	CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
 
-	HRESULT hr = CoCreateInstance(
+	hr = CoCreateInstance(
 		CLSID_WICImagingFactory,
 		NULL,
 		CLSCTX_INPROC_SERVER,

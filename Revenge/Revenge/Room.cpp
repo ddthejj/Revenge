@@ -154,7 +154,7 @@ Room::~Room()
 
 	if (sectors)
 	{
-		int sectorCount = std::ceil(dimensions.x / SECTOR_SIZE) * std::ceil(dimensions.y / SECTOR_SIZE);
+		int sectorCount = (int)std::ceil(dimensions.x / SECTOR_SIZE) * (int)std::ceil(dimensions.y / SECTOR_SIZE);
 		for (int i = 0; i < sectorCount; i++)
 		{
 			delete[] sectors[i];
@@ -283,15 +283,15 @@ std::vector<Tile*> const Room::TestCollision(MyRectangle collisionRectangle) con
 
 std::vector<int> const Room::GetSectors(MyRectangle collisionRectangle) const
 {
-	int sectorDimsX = std::ceil(dimensions.x / SECTOR_SIZE);
-	int sectorDimsY = std::ceil(dimensions.y / SECTOR_SIZE);
+	int sectorDimsX = (int)std::ceil(dimensions.x / SECTOR_SIZE);
+	int sectorDimsY = (int)std::ceil(dimensions.y / SECTOR_SIZE);
 	int sectorNum = sectorDimsX * sectorDimsY;
 
 	std::vector<int> outSectors;
 
 	for (int i = 0; i < sectorNum; i++)
 	{
-		MyRectangle sectorRectangle(i % sectorDimsX * SECTOR_SIZE * TILE_WIDTH, std::floor(i / sectorDimsY) * SECTOR_SIZE * TILE_HEIGHT, SECTOR_SIZE * TILE_WIDTH, SECTOR_SIZE * TILE_HEIGHT);
+		MyRectangle sectorRectangle(i % sectorDimsX * SECTOR_SIZE * TILE_WIDTH, (float)std::floor(i / sectorDimsY) * SECTOR_SIZE * TILE_HEIGHT, SECTOR_SIZE * TILE_WIDTH, SECTOR_SIZE * TILE_HEIGHT);
 
 		if (outSectors.size() == 0 && sectorRectangle.Contains(collisionRectangle))
 		{
@@ -309,8 +309,8 @@ std::vector<int> const Room::GetSectors(MyRectangle collisionRectangle) const
 
 void Room::CreateSectors()
 {
-	int sectorDimsX = std::ceil(dimensions.x / SECTOR_SIZE);
-	int sectorDimsY = std::ceil(dimensions.y / SECTOR_SIZE);
+	int sectorDimsX = (int)std::ceil(dimensions.x / SECTOR_SIZE);
+	int sectorDimsY = (int)std::ceil(dimensions.y / SECTOR_SIZE);
 
 	sectors = new Tile * *[sectorDimsX * sectorDimsY];
 
