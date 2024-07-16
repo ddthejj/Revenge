@@ -261,11 +261,11 @@ int Room::GetInteractableCount() const
 	return interactableCount;
 }
 
-std::vector<Tile*> const Room::TestCollision(MyRectangle collisionRectangle) const
+std::vector<Sprite*> const Room::TestCollision(Sprite* collider, MyRectangle collisionRectangle) const
 {
 	std::vector<int> collidedSectors = GetSectors(collisionRectangle);
 	int sectorTileNum = SECTOR_SIZE * SECTOR_SIZE;
-	std::vector<Tile*> collidedTiles;
+	std::vector<Sprite*> collidedSprites;
 
 	for (int i = 0; i < collidedSectors.size(); i++)
 	{
@@ -273,12 +273,33 @@ std::vector<Tile*> const Room::TestCollision(MyRectangle collisionRectangle) con
 		{
 			if (sectors[collidedSectors[i]][j] && sectors[collidedSectors[i]][j]->Collidable() && sectors[collidedSectors[i]][j]->GetRectangle()->Intersects(collisionRectangle))
 			{
-				collidedTiles.push_back(sectors[collidedSectors[i]][j]);
+				collidedSprites.push_back(sectors[collidedSectors[i]][j]);
 			}
 		}
 	}
 
-	return collidedTiles;
+	for (int i = 0; i < npcCount; i++)
+	{
+		if (NPCs[i]->GetRectangle()->Intersects(collisionRectangle))
+		{
+			if (collider != NPCs[i])
+			{
+				collidedSprites.push_back(NPCs[i]);
+			}
+		}
+	}
+
+
+	const Player* currentPlayer = OverworldManager::GetCurrentPlayer();
+	if (currentPlayer->GetRectangle()->Intersects(collisionRectangle))
+	{
+		if (collider != currentPlayer)
+		{
+			collidedSprites.push_back((Sprite*)currentPlayer);
+		}
+	}
+
+	return collidedSprites;
 }
 
 std::vector<int> const Room::GetSectors(MyRectangle collisionRectangle) const
@@ -324,7 +345,7 @@ void Room::CreateSectors()
 	{
 		for (int x = 0; x < dimensions.x; x++)
 		{
-			sectors[int(std::floor(y/SECTOR_SIZE) * sectorDimsX + std::floor(x / SECTOR_SIZE))][int(std::floor(y % SECTOR_SIZE) * SECTOR_SIZE + std::floor(x % SECTOR_SIZE))] = tiles[1][x][y];
+			sectors[int(std::floor(y / SECTOR_SIZE) * sectorDimsX + std::floor(x / SECTOR_SIZE))][int(std::floor(y % SECTOR_SIZE) * SECTOR_SIZE + std::floor(x % SECTOR_SIZE))] = tiles[1][x][y];
 		}
 	}
 }

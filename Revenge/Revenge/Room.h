@@ -4,6 +4,7 @@
 #include <vector>
 
 class Tile;
+class Sprite;
 class Interactable;
 class NonPlayer;
 
@@ -38,7 +39,7 @@ public:
 	NonPlayer** const GetNPCs() const { return NPCs; }
 	int GetNPCCount() const { return npcCount; }
 
-	std::vector<Tile*> const TestCollision(MyRectangle collisionRectangle) const;
+	std::vector<Sprite*> const TestCollision(Sprite* collider, MyRectangle collisionRectangle) const;
 
 private:
 

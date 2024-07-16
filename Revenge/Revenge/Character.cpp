@@ -89,25 +89,25 @@ void Character::TestCollision()
 	MyRectangle futureRectangle(*rectangle);
 	futureRectangle.SetLocation(Point<float>(futureRectangle.Location().x + velocity.x, futureRectangle.Location().y));
 
-	std::vector<Tile*> collidedTiles = currentRoom->TestCollision(futureRectangle);
-	collided = collidedTiles.size();
+	std::vector<Sprite*> collidedSprites = currentRoom->TestCollision(this, futureRectangle);
+	collided = collidedSprites.size();
 
-	for (int i = 0; i < collidedTiles.size(); i++)
+	for (int i = 0; i < collidedSprites.size(); i++)
 	{
-		Tile* collidedTile = collidedTiles[i];
+		Sprite* collidedSprite = collidedSprites[i];
 
 		if (velocity.x > 0) // moving right
 		{
-			if (futureRectangle.Right() - collidedTile->GetRectangle()->Left() <= velocity.x)
+			if (futureRectangle.Right() - collidedSprite->GetRectangle()->Left() <= velocity.x)
 			{
-				futureRectangle.SetX(collidedTile->GetRectangle()->Left() - 1 - futureRectangle.Width());
+				futureRectangle.SetX(collidedSprite->GetRectangle()->Left() - 1 - futureRectangle.Width());
 			}
 		}
 		else if (velocity.x < 0) // moving left
 		{
-			if (futureRectangle.Left() - collidedTile->GetRectangle()->Right() >= velocity.x)
+			if (futureRectangle.Left() - collidedSprite->GetRectangle()->Right() >= velocity.x)
 			{
-				futureRectangle.SetX(collidedTile->GetRectangle()->Right() + 1);
+				futureRectangle.SetX(collidedSprite->GetRectangle()->Right() + 1);
 			}
 		}
 	}
@@ -116,24 +116,24 @@ void Character::TestCollision()
 
 	// vertical movement second
 	futureRectangle.SetLocation(Point<float>(futureRectangle.Location().x, futureRectangle.Location().y + velocity.y));
-	collidedTiles = currentRoom->TestCollision(futureRectangle);
+	collidedSprites = currentRoom->TestCollision(this, futureRectangle);
 
-	for (int i = 0; i < collidedTiles.size(); i++)
+	for (int i = 0; i < collidedSprites.size(); i++)
 	{
-		Tile* collidedTile = collidedTiles[i];
+		Sprite* collidedSprite = collidedSprites[i];
 
 		if (velocity.y < 0) // moving up
 		{
-			if (futureRectangle.Top() - collidedTile->GetRectangle()->Bottom() >= velocity.y)
+			if (futureRectangle.Top() - collidedSprite->GetRectangle()->Bottom() >= velocity.y)
 			{
-				futureRectangle.SetY(collidedTile->GetRectangle()->Bottom() + 1);
+				futureRectangle.SetY(collidedSprite->GetRectangle()->Bottom() + 1);
 			}
 		}
 		else if (velocity.y > 0) // moving down
 		{
-			if (futureRectangle.Bottom() - collidedTile->GetRectangle()->Top() <= velocity.y)
+			if (futureRectangle.Bottom() - collidedSprite->GetRectangle()->Top() <= velocity.y)
 			{
-				futureRectangle.SetY(collidedTile->GetRectangle()->Top() - 1 - futureRectangle.Height());
+				futureRectangle.SetY(collidedSprite->GetRectangle()->Top() - 1 - futureRectangle.Height());
 			}
 		}
 	}
