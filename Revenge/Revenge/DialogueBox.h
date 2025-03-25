@@ -1,7 +1,7 @@
 #pragma once
 #include "BorderedBox.h"
 
-#include <vector>
+
 #include <string>
 
 class Character;
@@ -21,6 +21,9 @@ private:
     
     UISprite* arrow = nullptr;
     int arrowTimer = 0;
+
+    // probably should move this to a manager
+    int scrollSpeed = 3;
  
 
 #pragma endregion
@@ -45,6 +48,12 @@ public:
 #pragma endregion
 
 private:
+
+#pragma region Methods
+
+    void ScrollText(int speed);
+
+#pragma endregion
 
 #pragma region Callbacks
 

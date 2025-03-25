@@ -14,6 +14,7 @@
 #include "TitleManager.h"
 #include "TextureManager.h"
 #include "SoundManager.h"
+#include "ComponentManager.h"
 
 GAME_STATE Manager::gameState = GAME_STATE::STATE_OVERWORLD;
 SpriteBatch* Manager::spriteBatch = nullptr;
@@ -175,6 +176,7 @@ void Manager::Init(HWND hwnd)
 	InputManager::Init();
 	SoundManager::Init(hwnd);
 	MenuManager::Init();
+	ComponentManager::Init();
 	// spritebatch
 	spriteBatch = new SpriteBatch(hwnd);
 

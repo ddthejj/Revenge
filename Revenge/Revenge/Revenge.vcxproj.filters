@@ -29,6 +29,9 @@
     <Filter Include="Battle">
       <UniqueIdentifier>{e1b07ff2-8d67-49f9-a2b0-e7a18f13474a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components">
+      <UniqueIdentifier>{12824f87-ab94-490f-aa5b-ed664c68c8d7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SpriteBatch.cpp">
@@ -124,6 +127,15 @@
     <ClCompile Include="Enemy.cpp">
       <Filter>Base Classes</Filter>
     </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="InteractionComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Texture.h">
@@ -215,6 +227,15 @@
     </ClInclude>
     <ClInclude Include="Enemy.h">
       <Filter>Base Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="InteractionComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentManager.h">
+      <Filter>Managers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

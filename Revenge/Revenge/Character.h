@@ -1,6 +1,6 @@
 #pragma once
 #include "Sprite.h"
-#include <vector>
+
 class Room;
 class Ability;
 
@@ -158,11 +158,15 @@ class NonPlayer : public Character
 {
 public:
 
+#pragma region Properties
+
 	MOVE_MODE movementMode = MOVE_MODE::NONE;
 	float moveRadius = 0.f;
 	float moveTimer = 0.f, moveDelay = 5.f;
 	Point<float> startLocation;
 	Point<float> moveToLocation;
+
+#pragma endregion
 
 #pragma region Methods
 

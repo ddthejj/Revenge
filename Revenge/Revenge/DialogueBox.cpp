@@ -43,53 +43,72 @@ void DialogueBox::Draw(SpriteBatch* spriteBatch)
 
 void DialogueBox::Update(float delta_time)
 {
+	ScrollText(scrollSpeed);
+}
+
+void DialogueBox::SetText(Character* _speaker, std::vector<std::string> _text)
+{
+	speaker = _speaker;
+	text = _text;
+}
+
+void DialogueBox::ScrollText(int speed)
+{
 	// scroll text
 	if (charAt < text[textAt].length())
 	{
 		// text is currently scrolling
 
 		// ensure next word won't be cut off by the end of the box
-		if (text[textAt][charAt] == ' ')
+
+		for (int i = 0; i < speed; i++)
 		{
-			std::string futureLine = currentLine;
-			int futureAt = charAt + 1;
-			
-			// fill out futureLine with the next word
-			while (text[textAt][futureAt] != ' ' && futureAt < text[textAt].length())
+			if (text[textAt][charAt] == ' ')
 			{
-				futureLine += (text[textAt][futureAt]);
-				futureAt++;
-			}
+				std::string futureLine = currentLine;
+				int futureAt = charAt + 1;
 
-			Point<float> lineSize = Manager::MeasureString(futureLine);
-
-			if (lineSize.x > (rectangle->Width() - 50.f))
-			{
-				// next word it too long, add a new line and skip the space character
-				currentText += '\n';
-				numLines++;
-				currentLine = "";
-				charAt++;
-
-				// make sure text doesn't overrun the box
-				if (numLines == 5)
+				// fill out futureLine with the next word
+				while (text[textAt][futureAt] != ' ' && futureAt < text[textAt].length())
 				{
-					std::string nextText(&text[textAt].c_str()[charAt]);
-					auto it = text.begin() + textAt + 1;
-					text.insert(it, nextText);
-					charAt = (int)(text[textAt].length());
+					futureLine += (text[textAt][futureAt]);
+					futureAt++;
+				}
+
+				Point<float> lineSize = Manager::MeasureString(futureLine);
+
+				if (lineSize.x > (rectangle->Width() - 50.f))
+				{
+					// next word it too long, add a new line and skip the space character
+					currentText += '\n';
+					numLines++;
+					currentLine = "";
+					charAt++;
+
+					// make sure text doesn't overrun the box
+					if (numLines == 5)
+					{
+						std::string nextText(&text[textAt].c_str()[charAt]);
+						auto it = text.begin() + textAt + 1;
+						text.insert(it, nextText);
+						charAt = (int)(text[textAt].length());
+						break;
+					}
 				}
 			}
+
+			// scroll text
+			currentText.push_back(text[textAt][charAt]);
+			currentLine.push_back(text[textAt][charAt]);
+
+			charAt++;
+
+			if (charAt >= text[textAt].length())
+			{
+				arrow->SetOpacity(opacity);
+				break;
+			}
 		}
-
-		// scroll text
-		currentText.push_back(text[textAt][charAt]);
-		currentLine.push_back(text[textAt][charAt]);
-
-		charAt++;
-
-		if (charAt >= text[textAt].length())
-			arrow->SetOpacity(opacity);
 	}
 	else
 	{
@@ -107,12 +126,6 @@ void DialogueBox::Update(float delta_time)
 			arrowTimer = 0;
 		}
 	}
-}
-
-void DialogueBox::SetText(Character* _speaker, std::vector<std::string> _text)
-{
-	speaker = _speaker;
-	text = _text;
 }
 
 void DialogueBox::BindCallbacks()
@@ -149,7 +162,6 @@ void DialogueBox::InteractPressed()
 	else
 	{
 		// skip the text scrolling
-		currentText = text[textAt];
-		charAt = (int)text[textAt].length();
+  		ScrollText(999);
 	}
 }

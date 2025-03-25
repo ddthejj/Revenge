@@ -8,6 +8,7 @@
 #endif
 #include "Math.h"
 #include "EnumParser.h"
+#include <vector>
 
 #if defined(_DEBUG) || defined(DEBUG)
 #define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)

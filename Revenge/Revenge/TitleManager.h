@@ -2,7 +2,7 @@
 
 #define SPLASH_TIME 2.f
 
-#include <vector>
+
 
 class Sprite;
 class UISprite;

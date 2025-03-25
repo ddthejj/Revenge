@@ -2,7 +2,7 @@
 #include "defines.h"
 
 #include <Windows.h>
-#include <vector>
+
 #include <string>
 
 class SpriteBatch;

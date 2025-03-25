@@ -5,7 +5,7 @@
 #include <d2d1.h>
 #include <dwrite_3.h>
 #include <wincodec.h>
-#include <vector>
+
 #include <algorithm>
 #include <string>
 #include <stringapiset.h>
