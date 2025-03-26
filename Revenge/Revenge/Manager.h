@@ -50,47 +50,8 @@ public:
 
 #pragma endregion
 
-#pragma region InputManager Access
-	
-	// Check if a key is down this frame
-	static bool IsKeyDown(KEYS index);
-	// Check if a key was down last frame
-	static bool IsPreviousKeyDown(KEYS index);
-	// Check if a key was just pressed this frame
-	static bool IsKeyPressed(KEYS index);
-	// Check if a mouse button is down this frame
-	static bool IsMouseKeyDown(MOUSE_KEYS index);
-	// Check if a mouse button was down last frame
-	static bool IsPreviousMouseKeyDown(MOUSE_KEYS index);
-	// Check if a mouse button was just pressed this frame
-	static bool IsMouseKeyPressed(MOUSE_KEYS index);
-	// Check what char was pressed this frame
-	static char CharPressed();
-	// Get the x value of the mouse position
-	static float GetMouseX();
-	// Get the y value of the mouse position
-	static float GetMouseY();
-	// Get the position of the mouse
-	static Point<float> GetMousePosition();
-
-#pragma endregion
-
 #pragma region Access from Main
 
-	// Update the mouse position
-	static void MoveMouse(HWND hwnd, LPARAM lParam);
-	// Update the keystates when a key is pressed
-	static void PressKey(WPARAM wParam);
-	// Update the keystates when a key is released
-	static void ReleaseKey(WPARAM wParam);
-	// Update which character was pressed
-	static void PressChar(WPARAM wParam);
-	// Repeat a key when it's held down
-	static void RepeatKey();
-	// Update the mouse keystates when a button is pressed
-	static void PressMouseKey(MOUSE_KEYS key);
-	// Update the mouse keystates when a button is released
-	static void ReleaseMouseKey(MOUSE_KEYS key);
 	// Update the window size and position when the window is moved / resized
 	static void ResizeWindow(HWND hwnd);
 	// Focus is lost
@@ -104,12 +65,6 @@ public:
 	static int GetScreenWidth();
 	//Returns the width of the game window
 	static int GetScreenHeight();
-
-#pragma endregion
-
-#pragma region SoundManager Access
-
-	static void PlayWAV(int index);
 
 #pragma endregion
 

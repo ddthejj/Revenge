@@ -46,18 +46,19 @@ MenuBox::MenuBox(std::string _debugName, float _x, float _y, float _width, float
 	optionsWidth = optionsDims.x;
 	optionsHeight = optionsDims.y;
 
-	options = new MenuOption * *[optionsDims.x];
+	options = std::vector<std::vector<MenuOption*>>();
 	for (int i = 0; i < optionsWidth; i++)
 	{
-		options[i] = new MenuOption * [optionsDims.y];
+		options.push_back(std::vector<MenuOption*>());
 		for (int j = 0; j < optionsHeight; j++)
-			options[i][j] = nullptr;
+		{
+			options[i].push_back(nullptr);
+		}
 	}
 
-	MenuReader::OptionData* optionData = nullptr;
-	int optionCount = reader.GetOptions(&optionData);
+	std::vector<MenuReader::OptionData> optionData = reader.GetOptions();
 
-	for (int i = 0; i < optionCount; i++)
+	for (int i = 0; i < optionData.size(); i++)
 	{
 		MenuOption* option = new MenuOption;
 		option->SetText(optionData[i].text);
@@ -71,8 +72,6 @@ MenuBox::MenuBox(std::string _debugName, float _x, float _y, float _width, float
 	anchor = reader.GetAnchor();
 
 	reader.Close();
-
-	delete[] optionData;
 
 	optionAt = new Point<int>(); \
 		arrow = new UISprite("menuArrow", 0, 0, 7, 7, 0, 0, 15, 15, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), layer + .1f, opacity, anchor);
@@ -105,14 +104,12 @@ MenuBox::~MenuBox()
 		for (int j = 0; j < optionsHeight; j++)
 		{
 			if (options[i][j])
-				delete options[i][j];
+				SafeDelete(options[i][j]);
 		}
-		delete[] options[i];
 	}
-	delete[] options;
 
-	delete optionAt;
-	delete arrow;
+	SafeDelete(optionAt);
+	SafeDelete(arrow);
 }
 
 
@@ -136,36 +133,37 @@ void MenuBox::Open(MenuBox* _previousMenu)
 			if (options[x][y])
 			{
 				optionAt->x = x; optionAt->y = y;
-				goto FOUNDOPTION; // pog goto
+				UpdateArrowLocation();
+				return;
 			}
 		}
 	}
-FOUNDOPTION:
+
 	UpdateArrowLocation();
 }
 
-void MenuBox::SetOptions(std::string* texts, int* option, Point<float>* positions, Point<int>* layout, ANCHOR_POINT* anchors, int sizeX, int sizeY)
+void MenuBox::SetOptions(std::vector<std::string> texts, std::vector<int> option, std::vector<Point<float>> positions, std::vector<Point<int>> layout, std::vector<ANCHOR_POINT> anchors, int sizeX, int sizeY)
 {
-	for (int i = 0; i < optionsWidth; i++)
+	for (int i = 0; i < options.size(); i++)
 	{
-		for (int j = 0; j < optionsHeight; j++)
+		for (int j = 0; j < options[i].size(); j++)
 		{
 			if (options[i][j])
-				delete options[i][j];
+				SafeDelete(options[i][j]);
 		}
-		delete[] options[i];
 	}
-	delete[] options;
 
 	optionsWidth = sizeX;
 	optionsHeight = sizeY;
 
-	options = new MenuOption * *[optionsWidth];
+	options = std::vector<std::vector<MenuOption*>>();
 	for (int i = 0; i < optionsWidth; i++)
 	{
-		options[i] = new MenuOption * [optionsHeight];
+		options.push_back(std::vector<MenuOption*>());
 		for (int j = 0; j < optionsHeight; j++)
-			options[i][j] = nullptr;
+		{
+			options[i].push_back(nullptr);
+		}
 	}
 
 	for (int i = 0; i < optionsWidth * optionsHeight; i++)
@@ -271,7 +269,7 @@ void MenuBox::Draw(SpriteBatch* spriteBatch)
 			MenuOption* option = options[i][j];
 			if (option)
 			{
-				MyRectangle textRectangle = MyRectangle(option->x + textOffset.x, option->y + textOffset.y, option->GetDimenstions().x, option->GetDimenstions().y);//Manager::MeasureString(option->text).x, 20);
+				MyRectangle textRectangle = MyRectangle(option->x + textOffset.x, option->y + textOffset.y, option->GetDimenstions().x, option->GetDimenstions().y);
 				spriteBatch->WriteTextInSprite(option->GetText().c_str(), &textRectangle, this, layer + .1f, opacity, option->anchor);
 			}
 		}

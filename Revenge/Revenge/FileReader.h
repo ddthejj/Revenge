@@ -43,7 +43,7 @@ public:
 	// return the dimensions of the options within the menu
 	Point<int> GetDimensions() const;
 	// returns the options within the menu
-	int GetOptions(MenuReader::OptionData** optionsList) const;
+	std::vector<MenuReader::OptionData> GetOptions() const;
 	// returns the anchor point of the menu
 	ANCHOR_POINT GetAnchor() const;
 };
@@ -63,7 +63,7 @@ class SaveReader : public FileReader
 public:
 
 	// returns the 8 ull flags in an array
-	int GetFlags(unsigned long long** flags) const;
+	std::vector<unsigned long long> GetFlags() const;
 };
 
 class SaveWriter

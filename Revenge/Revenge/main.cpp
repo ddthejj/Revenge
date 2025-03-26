@@ -1,6 +1,7 @@
 #pragma once
 #include "defines.h"
 #include "Manager.h"
+#include "InputManager.h"
 #include <time.h>
 #include <random>
 #include <ctime>
@@ -146,43 +147,44 @@ LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, 
 		//Mouse movement is detected
 	case WM_MOUSEMOVE:
 		if (hWnd == GetForegroundWindow())
-			Manager::MoveMouse(hWnd, lParam);
+			// not implemented 
+			//InputManager::MoveMouse(hWnd, lParam);
 		break;
 
 		// Left mouse button clicked
 	case WM_LBUTTONDOWN:
 		if (hWnd == GetForegroundWindow())
-			Manager::PressMouseKey(MOUSE_KEYS::MOUSE_KEY_LEFT);
+			InputManager::PressMouseKey(MOUSE_KEYS::MOUSE_KEY_LEFT);
 		break;
 
 		// Left mouse button released
 	case WM_LBUTTONUP:
 		if (hWnd == GetForegroundWindow())
-			Manager::ReleaseMouseKey(MOUSE_KEYS::MOUSE_KEY_LEFT);
+			InputManager::ReleaseMouseKey(MOUSE_KEYS::MOUSE_KEY_LEFT);
 		break;
 
 		// Right mouse button clicked
 	case WM_RBUTTONDOWN:
 		if (hWnd == GetForegroundWindow())
-			Manager::PressMouseKey(MOUSE_KEYS::MOUSE_KEY_RIGHT);
+			InputManager::PressMouseKey(MOUSE_KEYS::MOUSE_KEY_RIGHT);
 		break;
 
 		// Right mouse button released
 	case WM_RBUTTONUP:
 		if (hWnd == GetForegroundWindow())
-			Manager::ReleaseMouseKey(MOUSE_KEYS::MOUSE_KEY_RIGHT);
+			InputManager::ReleaseMouseKey(MOUSE_KEYS::MOUSE_KEY_RIGHT);
 		break;
 
 		// Middle mouse button clicked
 	case WM_MBUTTONDOWN:
 		if (hWnd == GetForegroundWindow())
-			Manager::PressMouseKey(MOUSE_KEYS::MOUSE_KEY_MIDDLE);
+			InputManager::PressMouseKey(MOUSE_KEYS::MOUSE_KEY_MIDDLE);
 		break;
 
 		// Middle mouse button released
 	case WM_MBUTTONUP:
 		if (hWnd == GetForegroundWindow())
-			Manager::ReleaseMouseKey(MOUSE_KEYS::MOUSE_KEY_MIDDLE);
+			InputManager::ReleaseMouseKey(MOUSE_KEYS::MOUSE_KEY_MIDDLE);
 		break;
 
 #pragma endregion
@@ -210,11 +212,11 @@ LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, 
 		default:
 			// the 31st bit of this lParam is whether or not the key was pressed the previous frame
 			if (!(lParam & (1 << 30)))
-				Manager::PressKey(wParam);
+				InputManager::PressKey(wParam);
 			else
 				// every 15 frames, repeat the key that was held down (the first 16 bytes are the repeat count)
 				if (lParam & 15U)
-					Manager::RepeatKey();
+					InputManager::RepeatKey();
 			break;
 		}
 
@@ -229,7 +231,7 @@ LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, 
 		case 0:
 
 		default:
-			Manager::ReleaseKey(wParam);
+			InputManager::ReleaseKey(wParam);
 			break;
 		}
 		break;
@@ -251,7 +253,7 @@ LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, 
 
 		// If key is pressed, send what character that represents
 	case WM_CHAR:
-		Manager::PressChar(wParam);
+		InputManager::PressChar(wParam);
 		break;		
 
 #pragma endregion

@@ -69,27 +69,28 @@ Point<int> MenuReader::GetDimensions() const
 	return Point<int>(atoi(dims[0].c_str()), atoi(dims[1].c_str()));
 }
 
-int MenuReader::GetOptions(MenuReader::OptionData** optionsList) const
+std::vector<MenuReader::OptionData> MenuReader::GetOptions() const
 {
 	// get the number of options
 	int optionCount = atoi(lines[2].c_str());
-	*optionsList = new OptionData[optionCount];
+	std::vector<MenuReader::OptionData> optionsList = std::vector<MenuReader::OptionData>();
 
 	for (int i = 0; i < optionCount; i++)
 	{
 		int lineAt = i + 3;
 
 		std::vector<std::string> optionData = ParseLine(lines[lineAt], ',');
-
-		(*optionsList)[i].text = optionData[0];
-		(*optionsList)[i].returnValue = atoi(optionData[1].c_str());
-		(*optionsList)[i].position.x = atoi(optionData[2].c_str());
-		(*optionsList)[i].position.y = atoi(optionData[3].c_str());
-		(*optionsList)[i].matrixLocation.x = atoi(optionData[4].c_str());
-		(*optionsList)[i].matrixLocation.y = atoi(optionData[5].c_str());
+		OptionData data;
+		data.text = optionData[0];
+		data.returnValue = atoi(optionData[1].c_str());
+		data.position.x = atoi(optionData[2].c_str());
+		data.position.y = atoi(optionData[3].c_str());
+		data.matrixLocation.x = atoi(optionData[4].c_str());
+		data.matrixLocation.y = atoi(optionData[5].c_str());
+		optionsList.push_back(data);
 	}
 
-	return optionCount;
+	return optionsList;
 }
 
 ANCHOR_POINT MenuReader::GetAnchor() const
@@ -98,17 +99,17 @@ ANCHOR_POINT MenuReader::GetAnchor() const
 	return EnumParser::ParseAnchorPoint(lines[1]);
 }
 
-int SaveReader::GetFlags(unsigned long long** flags) const
+std::vector<unsigned long long> SaveReader::GetFlags() const
 {
-	(*flags) = new unsigned long long[8];
+	std::vector<unsigned long long> flags;
 
 	for (int i = 0; i < 8; i++)
 	{
 		char* end;
-		(*flags)[i] = strtoull(lines[i].c_str(), &end, 10);
+		flags.push_back(strtoull(lines[i].c_str(), &end, 10));
 	}
 
-	return 8;
+	return flags;
 }
 
 bool SaveWriter::WriteSave(const char* filepath)

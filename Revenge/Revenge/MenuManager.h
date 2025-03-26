@@ -34,7 +34,7 @@ enum class TITLE_MENUS
 
 class MenuManager
 {
-	static MenuBox** menuList;									// the list of loaded menus
+	static std::vector<MenuBox*> menuList;									// the list of loaded menus
 	static MenuBox* activeMenu;									// the currently active menu
 	static const Texture* menuTex;								// the texture of all menus
 	static DialogueBox* activeDialogueBox;						// the dialogue box to use during dialogue

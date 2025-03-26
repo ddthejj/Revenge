@@ -98,8 +98,7 @@ void SaveManager::OpenSave(int save)
 
 	saveReader.Open(savePath.c_str());
 
-	unsigned long long* values;
-	saveReader.GetFlags(&values);
+	std::vector<unsigned long long> values = saveReader.GetFlags();
 
 	mainQuestProgress = values[0];
 	mainQuestDecisions = values[1];
@@ -109,8 +108,6 @@ void SaveManager::OpenSave(int save)
 	conversationChoices = values[5];
 	defeatedEnemies = values[6];
 	misc = values[7];
-	
-	delete[] values;
 }
 
 void SaveManager::Save()

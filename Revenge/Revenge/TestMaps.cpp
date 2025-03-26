@@ -18,9 +18,9 @@ void TestMap0::CreateRooms()
 {
 	roomCount = 2;
 
-	rooms = new Room * [roomCount];
-	rooms[0] = new TestRoom0();
-	rooms[1] = new TestRoom1();
+	rooms = std::vector<Room*>();
+	rooms.push_back(new TestRoom0());
+	rooms.push_back(new TestRoom1());
 
 	currentRoom = rooms[0];
 }

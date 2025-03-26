@@ -5,9 +5,9 @@ class Room;
 class Map : public Object
 {
 protected:
-	Room** rooms;
-	Room* currentRoom;
-	unsigned int roomCount;
+	std::vector<Room*> rooms;
+	Room* currentRoom = nullptr;
+	unsigned int roomCount = 0;
 
 public:
 

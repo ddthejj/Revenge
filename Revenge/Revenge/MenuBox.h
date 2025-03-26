@@ -1,6 +1,7 @@
 #pragma once
 #include "BorderedBox.h"
 #include <string>
+#include <vector>
 
 
 template <typename T>
@@ -40,7 +41,7 @@ protected:
 
 #pragma region Properties
 		
-	MenuOption*** options = nullptr;				// list of options the menu has (options can be nullptr)
+	std::vector<std::vector<MenuOption*>> options;	// list of options the menu has (options can be nullptr)
 	int optionsWidth = 0, optionsHeight = 0;		// dimensions of the options array
 	Point<int>* optionAt = nullptr;					// which option is currently selected
 	UISprite* arrow = nullptr;						// the sprite for the arrow 
@@ -75,7 +76,7 @@ public:
 	// create a menu with _previousMenu as its previousMenu
 	void Open(MenuBox* _previousMenu);
 	// set the options of a menu to passed in values
-	void SetOptions(std::string* texts, int* option, Point<float>* positions, Point<int>* layout, ANCHOR_POINT* anchors, int sizeX, int sizeY);
+	void SetOptions(std::vector<std::string> texts, std::vector<int> option, std::vector<Point<float>> positions, std::vector<Point<int>> layout, std::vector<ANCHOR_POINT> anchors, int sizeX, int sizeY);
 	// resize the menu box
 	void Resize(float x, float y, float width, float height);
 	// move the menu box

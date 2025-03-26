@@ -1,6 +1,6 @@
 #include "defines.h"
 #include "MenuManager.h"
-#include "Manager.h"
+#include "TextureManager.h"
 #include "MenuBox.h"
 #include "SpriteBatch.h"
 #include "Texture.h"
@@ -8,8 +8,9 @@
 #include "Character.h"
 #include "InputManager.h"
 #include "DialogueBox.h"
+#include "SoundManager.h"
 
-MenuBox** MenuManager::menuList = nullptr;
+std::vector<MenuBox*> MenuManager::menuList = std::vector<MenuBox*>();
 MenuBox* MenuManager::activeMenu = nullptr;
 const Texture* MenuManager::menuTex = nullptr;
 DialogueBox* MenuManager::activeDialogueBox = nullptr;
@@ -32,14 +33,12 @@ void MenuManager::Clean()
 		break;
 	}
 
-	if (menuList)
+	for (int i = 0; i < menuList.size(); i++)
 	{
-		for (int i = 0; i < menuCount; i++)
+		if (menuList[i])
 		{
-			if (menuList[i])
-				SafeDelete(menuList[i]);
+			SafeDelete(menuList[i]);
 		}
-		SafeDelete(menuList);
 	}
 
 	SafeDelete(activeDialogueBox);
@@ -50,41 +49,38 @@ void MenuManager::LoadTitleMenus()
 {
 	UnloadMenus();
 
-	menuList = new MenuBox * [(int)TITLE_MENUS::MENU_MAX];
-
 	for (int i = 0; i < (int)TITLE_MENUS::MENU_MAX; i++)
-		menuList[i] = nullptr;
+	{
+		menuList.push_back(nullptr);
+	}
 
-	menuList[(int)TITLE_MENUS::MENU_TITLE] = new MenuBox(std::string("TitleMenuMENU_TITLE"), 0, 0, 300, 300, nullptr, Manager::GetTexture((int)TEXTURES_TITLE::TEX_TITLE_ARROW), (int)TITLE_MENUS::MENU_TITLE, "../Assets/Menus/Menu_Title_Base.txt");
+	menuList[(int)TITLE_MENUS::MENU_TITLE] = new MenuBox(std::string("TitleMenuMENU_TITLE"), 0, 0, 300, 300, nullptr, TextureManager::GetTexture((int)TEXTURES_TITLE::TEX_TITLE_ARROW), (int)TITLE_MENUS::MENU_TITLE, "../Assets/Menus/Menu_Title_Base.txt");
 }
 
 void MenuManager::LoadOverworldMenus()
 {
 	UnloadMenus();
 
-	menuList = new MenuBox * [(int)OVERWORLD_MENUS::MENU_MAX];
-	menuTex = Manager::GetTexture((int)TEXTURES_TEST::TEX_T_MENU);
+	menuTex = TextureManager::GetTexture((int)TEXTURES_TEST::TEX_T_MENU);
 
 	for (int i = 0; i < (int)OVERWORLD_MENUS::MENU_MAX; i++)
-		menuList[i] = nullptr;
+	{
+		menuList.push_back(nullptr);
+	}
 
-	menuList[(int)OVERWORLD_MENUS::MENU_BASE] = new MenuBox(std::string("OverworldMenuMENU_BASE"), 50, 50, 150, 200, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_BASE, "../Assets/Menus/Menu_Base.txt");
-	menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER] = new MenuBox(std::string("OverworldMenuMENU_CHARACTER"), 50, 50, 10, 10, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_CHARACTER);
-	menuList[(int)OVERWORLD_MENUS::MENU_INVENTORY] = new MenuBox(std::string("OverworldMenuMENU_INVENTORY"), 50, 50, 10, 10, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_INVENTORY);
-	menuList[(int)OVERWORLD_MENUS::MENU_OPTIONS] = new MenuBox(std::string("OverworldMenuMENU_OPTIONS"), 50, 50, 10, 10, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_OPTIONS);
-	menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER_STATS] = new MenuBox(std::string("OverworldMenuMENU_CHARACTER_STATS"), 50, 50, 10, 10, menuTex, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_CHARACTER_STATS);
+	menuList[(int)OVERWORLD_MENUS::MENU_BASE] = new MenuBox(std::string("OverworldMenuMENU_BASE"), 50, 50, 150, 200, menuTex, TextureManager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_BASE, "../Assets/Menus/Menu_Base.txt");
+	menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER] = new MenuBox(std::string("OverworldMenuMENU_CHARACTER"), 50, 50, 10, 10, menuTex, TextureManager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_CHARACTER);
+	menuList[(int)OVERWORLD_MENUS::MENU_INVENTORY] = new MenuBox(std::string("OverworldMenuMENU_INVENTORY"), 50, 50, 10, 10, menuTex, TextureManager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_INVENTORY);
+	menuList[(int)OVERWORLD_MENUS::MENU_OPTIONS] = new MenuBox(std::string("OverworldMenuMENU_OPTIONS"), 50, 50, 10, 10, menuTex, TextureManager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_OPTIONS);
+	menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER_STATS] = new MenuBox(std::string("OverworldMenuMENU_CHARACTER_STATS"), 50, 50, 10, 10, menuTex, TextureManager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), (int)OVERWORLD_MENUS::MENU_CHARACTER_STATS);
 }
 
 void MenuManager::UnloadMenus()
 {
-	if (menuList)
+	for (int i = 0; i < menuList.size(); i++)
 	{
-		for (int i = 0; i < (int)OVERWORLD_MENUS::MENU_MAX; i++)
-		{
-			if (menuList[i])
-				SafeDelete(menuList[i]);
-		}
-		SafeDelete(menuList);
+		if (menuList[i])
+			SafeDelete(menuList[i]);
 	}
 
 	activeMenu = nullptr;
@@ -101,11 +97,15 @@ void MenuManager::OpenMenu(int index)
 		return;
 	}
 
-	if (!menuList)
+	if (menuList.size() == 0)
+	{
 		return;
+	}
 
 	if (activeMenu)
+	{
 		activeMenu->Freeze();
+	}
 
 	switch (Manager::GetGameState())
 	{
@@ -134,35 +134,29 @@ void MenuManager::OpenMenu(int index)
 					return;
 				}
 				// setup values for each party member plus a back button
-				std::string* texts = new std::string[party.size() + 1];
-				int* options = new int[party.size() + 1];
-				Point<float>* positions = new Point<float>[party.size() + 1];
-				Point<int>* layouts = new Point<int>[party.size() + 1];
-				ANCHOR_POINT* anchors = new ANCHOR_POINT[party.size() + 1];
+				std::vector<std::string> texts;
+				std::vector<int> options;
+				std::vector<Point<float>> positions;
+				std::vector<Point<int>> layouts;
+				std::vector<ANCHOR_POINT> anchors;
 				// party members
 				for (int i = 0; i < (int)party.size(); i++)
 				{
-					texts[i] = party[i]->FirstName();
-					options[i] = i;
-					positions[i] = Point<float>(40.f, 30.f * (float)(i + 1));
-					layouts[i] = Point<int>(0, i);
-					anchors[i] = ANCHOR_POINT::ANCHOR_TOP_LEFT;
+					texts.push_back(party[i]->FirstName());
+					options.push_back(i);
+					positions.push_back(Point<float>(40.f, 30.f * (float)(i + 1)));
+					layouts.push_back(Point<int>(0, i));
+					anchors.push_back(ANCHOR_POINT::ANCHOR_TOP_LEFT);
 				}
 				// back button
-				texts[party.size()] = "Back";
-				options[party.size()] = -1;
-				positions[party.size()] = Point<float>(40.f, 30.f * (float)(party.size() + 1));
-				layouts[party.size()] = Point<int>(0, (int)party.size());
-				anchors[party.size()] = ANCHOR_POINT::ANCHOR_TOP_LEFT;
+				texts.push_back("Back");
+				options.push_back(-1);
+				positions.push_back(Point<float>(40.f, 30.f * (float)(party.size() + 1)));
+				layouts.push_back(Point<int>(0, (int)party.size()));
+				anchors.push_back(ANCHOR_POINT::ANCHOR_TOP_LEFT);
 				// setup menu
 				menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER]->SetOptions(texts, options, positions, layouts, anchors, 1, (int)party.size() + 1);
 				menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER]->SetRectangle(MyRectangle(Point<float>(activeMenu->GetRectangle()->Right(), activeMenu->GetRectangle()->Top()), 150, 150));
-				// clean
-				delete[] texts;
-				delete[] options;
-				delete[] positions;
-				delete[] layouts;
-				delete[] anchors;
 				break;
 			}
 			case OVERWORLD_MENUS::MENU_INVENTORY:
@@ -184,13 +178,13 @@ void MenuManager::OpenMenu(int index)
 			Character* member = Manager::GetParty()[index];
 
 			// back button
-			std::string text = "Back";
-			int option = -1;
-			Point<float> location(40, 40);
-			Point<int> layout(0, 0);
-			ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_BOTTOM_RIGHT;
+			std::vector<std::string> text = { "Back" };
+			std::vector<int> option = { -1 };
+			std::vector<Point<float>> location = { Point<float>(40.f, 40.f) };
+			std::vector<Point<int>> layout = { Point<int>(0, 0) };
+			std::vector<ANCHOR_POINT> anchor = { ANCHOR_POINT::ANCHOR_BOTTOM_RIGHT };
 			// setup menu
-			menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER_STATS]->SetOptions(&text, &option, &location, &layout, &anchor, 1, 1);
+			menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER_STATS]->SetOptions(text, option, location, layout, anchor, 1, 1);
 			menuList[(int)OVERWORLD_MENUS::MENU_CHARACTER_STATS]->SetRectangle(MyRectangle(Point<float>(activeMenu->GetRectangle()->Right(), activeMenu->GetRectangle()->Top()), 400, 400));
 			index = (int)OVERWORLD_MENUS::MENU_CHARACTER_STATS;
 			break;
@@ -310,7 +304,7 @@ void MenuManager::Update(float delta_time)
 
 void MenuManager::PlayHoverSound()
 {
-	Manager::PlayWAV(0);
+	SoundManager::Play(0);
 }
 
 void MenuManager::OptionSelected(int option)

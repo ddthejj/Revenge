@@ -15,7 +15,6 @@ Map::~Map()
 	{
 		delete rooms[i];
 	}
-	delete rooms;
 }
 
 void Map::Activate()
