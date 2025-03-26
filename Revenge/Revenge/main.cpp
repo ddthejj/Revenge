@@ -1,10 +1,16 @@
 #pragma once
 #include "defines.h"
-//#include "vld.h"
 #include "Manager.h"
 #include <time.h>
 #include <random>
 #include <ctime>
+
+#ifdef _DEBUG
+// memory leak
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#endif
 
 
 int CALLBACK WinMain(_In_ HINSTANCE hInstance,_In_opt_ HINSTANCE hPrevInstance,_In_ LPSTR lpCmdLine,_In_ int nShowCmd);

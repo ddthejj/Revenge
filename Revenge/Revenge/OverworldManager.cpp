@@ -5,9 +5,10 @@
 #include "SaveManager.h"
 
 #include "Map.h"
+#include "TestMaps.h"
 #include "Room.h"
 #include "Tile.h"
-#include "Character.h"
+#include "PlayerCharacters.h"
 
 ProtoTile* OverworldManager::protoTiles[(int)TILES::TILE_MAX];
 std::vector<Map*> OverworldManager::maps;
@@ -23,7 +24,7 @@ bool OverworldManager::isRoomTransitioning = false;
 void OverworldManager::Init()
 {
 	// test player
-	currentPlayer = new Player("Player", 240, 240, 32, 32, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_PLAYER), .6f, "../Assets/CharacterData/Party/Archer.txt");
+	currentPlayer = new PC_Archer("Player", 240, 240, 32, 32, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_PLAYER), .6f);
 	currentPlayer->Activate();
 	// prototype tiles
 	protoTiles[(int)TILES::TILE_BROWNFLOOR] = new ProtoTile(Manager::GetTexture((int)TEXTURES_TEST::TEX_T_BROWNFLOOR), 32, 32);
@@ -31,7 +32,7 @@ void OverworldManager::Init()
 	protoTiles[(int)TILES::TILE_GREENDOOR] = new ProtoTile(Manager::GetTexture((int)TEXTURES_TEST::TEX_T_GREENDOOR), 32, 32, false, true);
 	protoTiles[(int)TILES::TILE_BLUETEXT] = new ProtoTile(Manager::GetTexture((int)TEXTURES_TEST::TEX_T_BLUETEXT), 32, 32, true, false, true);
 	// add maps
-	maps.push_back(new Map(std::string("Map") + std::to_string(maps.size()), "../Assets/RoomData/TestRoom/TestRoom", 2));
+	maps.push_back(new TestMap0());
 	currentMap = maps[0];
 	currentMap->Activate();
 
@@ -169,7 +170,7 @@ void OverworldManager::Update(float delta_time)
 
 void OverworldManager::OnInteract(Point<float> interactPoint)
 {
-	Interactable** const tiles = currentMap->CurrentRoom()->GetInteractables();
+	std::vector<Interactable*> const tiles = currentMap->CurrentRoom()->GetInteractables();
 
 	for (int i = 0; i < currentMap->CurrentRoom()->GetInteractableCount(); i++)
 	{

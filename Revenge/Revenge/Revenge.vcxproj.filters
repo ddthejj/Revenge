@@ -1,241 +1,268 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Resource Files">
+    <Filter Include="Content">
+      <UniqueIdentifier>{d6bfbdc2-b1bf-442b-90af-bf5bc5ea1afc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{c6d6d782-4d3c-4a35-bc26-1a2fa3758641}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Utilities">
+      <UniqueIdentifier>{edc34036-fe98-41d8-8b5d-e1cf52b56d67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Sounds">
+      <UniqueIdentifier>{f09d1e29-1872-4622-a9e6-5b2a57b676bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Rendering">
+    <Filter Include="Source\Rendering">
       <UniqueIdentifier>{3e607b33-9d6a-414b-9390-86310654c477}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Mapping">
-      <UniqueIdentifier>{50c16e10-75e0-4d8f-a59c-01efa2af13e1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Managers">
-      <UniqueIdentifier>{fcf34dec-9333-4723-82f5-94bc8765fcc4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Sounds">
-      <UniqueIdentifier>{f09d1e29-1872-4622-a9e6-5b2a57b676bc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Menus">
+    <Filter Include="Source\Menus">
       <UniqueIdentifier>{928614e2-2fe9-4647-ab75-aeca0976fd84}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utilities">
-      <UniqueIdentifier>{edc34036-fe98-41d8-8b5d-e1cf52b56d67}</UniqueIdentifier>
+    <Filter Include="Source\Mapping">
+      <UniqueIdentifier>{50c16e10-75e0-4d8f-a59c-01efa2af13e1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Base Classes">
-      <UniqueIdentifier>{ff3f6ee2-b1b9-47ff-bd22-e6ebd54455e3}</UniqueIdentifier>
+    <Filter Include="Source\Managers">
+      <UniqueIdentifier>{fcf34dec-9333-4723-82f5-94bc8765fcc4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Battle">
+    <Filter Include="Source\Components">
+      <UniqueIdentifier>{12824f87-ab94-490f-aa5b-ed664c68c8d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Battle">
       <UniqueIdentifier>{e1b07ff2-8d67-49f9-a2b0-e7a18f13474a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Components">
-      <UniqueIdentifier>{12824f87-ab94-490f-aa5b-ed664c68c8d7}</UniqueIdentifier>
+    <Filter Include="Source\Base Classes">
+      <UniqueIdentifier>{ff3f6ee2-b1b9-47ff-bd22-e6ebd54455e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Content\Maps">
+      <UniqueIdentifier>{1e320deb-75e9-403a-ae18-ae4ceb8b28ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Content\Characters">
+      <UniqueIdentifier>{67df24f8-c122-4f60-b222-2612967e5fe1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Content\Test">
+      <UniqueIdentifier>{26a49294-50ee-43c9-bc5f-115cae57af68}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SpriteBatch.cpp">
-      <Filter>Rendering</Filter>
+      <Filter>Source\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="direct2D.cpp">
-      <Filter>Rendering</Filter>
+      <Filter>Source\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="Renderer.h">
-      <Filter>Rendering</Filter>
+      <Filter>Source\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="Tile.cpp">
-      <Filter>Mapping</Filter>
+      <Filter>Source\Mapping</Filter>
     </ClCompile>
     <ClCompile Include="Room.cpp">
-      <Filter>Mapping</Filter>
+      <Filter>Source\Mapping</Filter>
     </ClCompile>
     <ClCompile Include="Map.cpp">
-      <Filter>Mapping</Filter>
+      <Filter>Source\Mapping</Filter>
     </ClCompile>
     <ClCompile Include="Character.cpp">
-      <Filter>Base Classes</Filter>
+      <Filter>Source\Base Classes</Filter>
     </ClCompile>
     <ClCompile Include="Rectangle.cpp">
-      <Filter>Base Classes</Filter>
+      <Filter>Source\Base Classes</Filter>
     </ClCompile>
     <ClCompile Include="Sprite.cpp">
-      <Filter>Base Classes</Filter>
+      <Filter>Source\Base Classes</Filter>
     </ClCompile>
     <ClCompile Include="Manager.cpp">
-      <Filter>Managers</Filter>
+      <Filter>Source\Managers</Filter>
     </ClCompile>
     <ClCompile Include="MenuManager.cpp">
-      <Filter>Managers</Filter>
+      <Filter>Source\Managers</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>Utilities</Filter>
+      <Filter>Source\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
-      <Filter>Managers</Filter>
+      <Filter>Source\Managers</Filter>
     </ClCompile>
     <ClCompile Include="OverworldManager.cpp">
-      <Filter>Managers</Filter>
+      <Filter>Source\Managers</Filter>
     </ClCompile>
     <ClCompile Include="Texture.cpp">
-      <Filter>Rendering</Filter>
+      <Filter>Source\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="TitleManager.cpp">
-      <Filter>Managers</Filter>
+      <Filter>Source\Managers</Filter>
     </ClCompile>
     <ClCompile Include="TextureManager.cpp">
-      <Filter>Managers</Filter>
+      <Filter>Source\Managers</Filter>
     </ClCompile>
     <ClCompile Include="FileReader.cpp">
-      <Filter>Utilities</Filter>
+      <Filter>Source\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="directSound.cpp">
-      <Filter>Sounds</Filter>
+      <Filter>Source\Sounds</Filter>
     </ClCompile>
     <ClCompile Include="Math.cpp">
-      <Filter>Utilities</Filter>
+      <Filter>Source\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="SoundManager.cpp">
-      <Filter>Managers</Filter>
+      <Filter>Source\Managers</Filter>
     </ClCompile>
     <ClCompile Include="EnumParser.cpp">
-      <Filter>Utilities</Filter>
+      <Filter>Source\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="DialogueBox.cpp">
-      <Filter>Menus</Filter>
+      <Filter>Source\Menus</Filter>
     </ClCompile>
     <ClCompile Include="BorderedBox.cpp">
-      <Filter>Menus</Filter>
+      <Filter>Source\Menus</Filter>
     </ClCompile>
     <ClCompile Include="MenuBox.cpp">
-      <Filter>Menus</Filter>
+      <Filter>Source\Menus</Filter>
     </ClCompile>
     <ClCompile Include="Text.cpp">
-      <Filter>Menus</Filter>
+      <Filter>Source\Menus</Filter>
     </ClCompile>
     <ClCompile Include="SaveManager.cpp">
-      <Filter>Managers</Filter>
+      <Filter>Source\Managers</Filter>
     </ClCompile>
     <ClCompile Include="ItemManager.cpp">
-      <Filter>Managers</Filter>
+      <Filter>Source\Managers</Filter>
     </ClCompile>
     <ClCompile Include="Item.cpp">
-      <Filter>Base Classes</Filter>
+      <Filter>Source\Base Classes</Filter>
     </ClCompile>
     <ClCompile Include="Ability.cpp">
-      <Filter>Battle</Filter>
+      <Filter>Source\Battle</Filter>
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
-      <Filter>Base Classes</Filter>
+      <Filter>Source\Base Classes</Filter>
     </ClCompile>
     <ClCompile Include="Component.cpp">
-      <Filter>Components</Filter>
+      <Filter>Source\Components</Filter>
     </ClCompile>
     <ClCompile Include="InteractionComponent.cpp">
-      <Filter>Components</Filter>
+      <Filter>Source\Components</Filter>
     </ClCompile>
     <ClCompile Include="ComponentManager.cpp">
-      <Filter>Managers</Filter>
+      <Filter>Source\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="TestMaps.cpp">
+      <Filter>Content\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerCharacters.cpp">
+      <Filter>Content\Characters</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Texture.h">
-      <Filter>Rendering</Filter>
+      <Filter>Source\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="SpriteBatch.h">
-      <Filter>Rendering</Filter>
+      <Filter>Source\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Map.h">
-      <Filter>Mapping</Filter>
+      <Filter>Source\Mapping</Filter>
     </ClInclude>
     <ClInclude Include="Tile.h">
-      <Filter>Mapping</Filter>
+      <Filter>Source\Mapping</Filter>
     </ClInclude>
     <ClInclude Include="Room.h">
-      <Filter>Mapping</Filter>
+      <Filter>Source\Mapping</Filter>
     </ClInclude>
     <ClInclude Include="Sprite.h">
-      <Filter>Base Classes</Filter>
+      <Filter>Source\Base Classes</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
-      <Filter>Base Classes</Filter>
+      <Filter>Source\Base Classes</Filter>
     </ClInclude>
     <ClInclude Include="Character.h">
-      <Filter>Base Classes</Filter>
+      <Filter>Source\Base Classes</Filter>
     </ClInclude>
     <ClInclude Include="Rectangle.h">
-      <Filter>Base Classes</Filter>
+      <Filter>Source\Base Classes</Filter>
     </ClInclude>
     <ClInclude Include="Manager.h">
-      <Filter>Managers</Filter>
+      <Filter>Source\Managers</Filter>
     </ClInclude>
     <ClInclude Include="MenuManager.h">
-      <Filter>Managers</Filter>
+      <Filter>Source\Managers</Filter>
     </ClInclude>
     <ClInclude Include="defines.h">
-      <Filter>Utilities</Filter>
+      <Filter>Source\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="InputManager.h">
-      <Filter>Managers</Filter>
+      <Filter>Source\Managers</Filter>
     </ClInclude>
     <ClInclude Include="OverworldManager.h">
-      <Filter>Managers</Filter>
+      <Filter>Source\Managers</Filter>
     </ClInclude>
     <ClInclude Include="TitleManager.h">
-      <Filter>Managers</Filter>
+      <Filter>Source\Managers</Filter>
     </ClInclude>
     <ClInclude Include="TextureManager.h">
-      <Filter>Managers</Filter>
+      <Filter>Source\Managers</Filter>
     </ClInclude>
     <ClInclude Include="Math.h">
-      <Filter>Utilities</Filter>
+      <Filter>Source\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="FileReader.h">
-      <Filter>Utilities</Filter>
+      <Filter>Source\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="AudioPlayer.h">
-      <Filter>Sounds</Filter>
+      <Filter>Source\Sounds</Filter>
     </ClInclude>
     <ClInclude Include="EnumParser.h">
-      <Filter>Utilities</Filter>
+      <Filter>Source\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="SoundManager.h">
-      <Filter>Managers</Filter>
+      <Filter>Source\Managers</Filter>
     </ClInclude>
     <ClInclude Include="DialogueBox.h">
-      <Filter>Menus</Filter>
+      <Filter>Source\Menus</Filter>
     </ClInclude>
     <ClInclude Include="BorderedBox.h">
-      <Filter>Menus</Filter>
+      <Filter>Source\Menus</Filter>
     </ClInclude>
     <ClInclude Include="MenuBox.h">
-      <Filter>Menus</Filter>
+      <Filter>Source\Menus</Filter>
     </ClInclude>
     <ClInclude Include="Text.h">
-      <Filter>Menus</Filter>
+      <Filter>Source\Menus</Filter>
     </ClInclude>
     <ClInclude Include="SaveManager.h">
-      <Filter>Managers</Filter>
+      <Filter>Source\Managers</Filter>
     </ClInclude>
     <ClInclude Include="ItemManager.h">
-      <Filter>Managers</Filter>
+      <Filter>Source\Managers</Filter>
     </ClInclude>
     <ClInclude Include="Item.h">
-      <Filter>Base Classes</Filter>
+      <Filter>Source\Base Classes</Filter>
     </ClInclude>
     <ClInclude Include="Ability.h">
-      <Filter>Battle</Filter>
+      <Filter>Source\Battle</Filter>
     </ClInclude>
     <ClInclude Include="Enemy.h">
-      <Filter>Base Classes</Filter>
+      <Filter>Source\Base Classes</Filter>
     </ClInclude>
     <ClInclude Include="Component.h">
-      <Filter>Components</Filter>
+      <Filter>Source\Components</Filter>
     </ClInclude>
     <ClInclude Include="InteractionComponent.h">
-      <Filter>Components</Filter>
+      <Filter>Source\Components</Filter>
     </ClInclude>
     <ClInclude Include="ComponentManager.h">
-      <Filter>Managers</Filter>
+      <Filter>Source\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="TestMaps.h">
+      <Filter>Content\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerCharacters.h">
+      <Filter>Content\Characters</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

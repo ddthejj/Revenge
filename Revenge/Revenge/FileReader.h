@@ -20,47 +20,6 @@ public:
 	std::vector<std::string> ParseLine(std::string line, char delim) const;
 };
 
-class RoomReader : public FileReader
-{
-
-	// layout:
-
-	// dimensions
-		// 3 layers of tile data
-	// door count
-		// door send locations
-	// interactable count
-		// line count
-		// lines
-	// npc count
-		// npc locations
-
-public:
-
-	// return the dimensions of the room in tiles
-	Point<int> GetDimensions() const;
-	// return the tile layers (in ints) of the room
-	Point<int> GetLayers(int**** layers) const;
-	// return the number of doors in the room
-	int GetDoorCount() const;
-	// return the data of each door in the room
-	int GetDoorData(int*** doorData) const;
-	// return the number of interactable tiles in the room
-	int GetTextCount() const;
-	// return the list of text for interactable tiles in the room
-	int GetTextList(std::vector<std::vector<std::string>>& textList) const;
-	// return the number of NPCs in a room
-	int GetNPCCount() const;
-	// return the NPC data of the room
-	int GetNPCList(std::map<std::string, Point<float>>& NPCList) const;
-
-private:
-
-	int GetDoorCountLine() const;
-	int GetTextCountLine() const;
-	int GetNPCCountLine() const;
-};
-
 class MenuReader : public FileReader
 {
 
@@ -117,48 +76,4 @@ class SaveWriter
 public:
 
 	bool WriteSave(const char* filepath);
-};
-
-class CharacterReader : public FileReader
-{
-
-	// layout:
-
-	// First Name
-	// Last Name
-	// Starting Level
-	// Ratio (Chaos Half)
-	// base stats: attack, defense, mind, spirit, energy, map movement speed
-	// magic types
-	// base attacks
-
-public:
-
-	std::string GetFirstName();
-	std::string GetLastName();
-	int GetStartingLevel();
-	int GetRatio();
-	std::vector<int> GetStats();
-	virtual MAGIC_TYPE GetPrimaryMagic();
-	virtual MAGIC_TYPE GetSecondaryMagic();
-	std::vector<Ability*> GetAbilities();
-};
-
-class NPCReader : public CharacterReader
-{
-	// layout:
-
-	// First Name
-	// Last Name
-	// Starting Level
-	// Ratio (Chaos Half)
-	// base stats: attack, defense, mind, spirit, energy, map movement speed
-	// magic types
-	// base attacks
-	// movement mode
-	
-public: 
-
-	MOVE_MODE GetMovementMode();
-	float GetMovementRadius();
 };

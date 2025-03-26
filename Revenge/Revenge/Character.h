@@ -41,15 +41,11 @@ public:
 
 #pragma region Methods
 
-protected:
-	Character(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer);
 public:
-	Character(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath);
+	Character(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer);
 	~Character();
 	virtual void Draw(SpriteBatch* spriteBatch);
 
-	// read character data from a file
-	virtual void ReadData(const char* filepath);
 	// returns the first name of the character
 	std::string FirstName() const { return firstname; }
 	// returns the last name of the character
@@ -98,6 +94,10 @@ public:
 	void AnimateMovement(float delta_time);
 	// check if character is moving
 	bool IsMoving() { return velocity.Magnitude() != 0.f; }
+
+protected:
+
+	virtual void CreateCharacterData() = 0;
 														
 #pragma endregion
 
@@ -110,7 +110,7 @@ public:
 
 #pragma region Methods
 
-	Player(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath);
+	Player(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer);
 	~Player();
 
 	// update the player
@@ -170,11 +170,9 @@ public:
 
 #pragma region Methods
 
-	NonPlayer(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath);
+	NonPlayer(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer);
 	~NonPlayer();
 
-	// read character data from file
-	virtual void ReadData(const char* filepath) override;
 	// update the NPC
 	void Update(float delta_time);
 	// move the character based on movement mode

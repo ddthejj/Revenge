@@ -17,12 +17,10 @@
 #include <cmath>
 
 #pragma region Character
+
 Character::Character(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer) : Sprite(_debugName, x, y, height, width, 0, 0, 32, 32, _texture, _layer)
 {
-}
-Character::Character(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath) : Sprite(_debugName, x, y, height, width, 0, 0, 32, 32, _texture, _layer)
-{
-	ReadData(filepath);
+
 }
 
 Character::~Character()
@@ -38,26 +36,6 @@ Character::~Character()
 void Character::Draw(SpriteBatch* spriteBatch)
 {
 	spriteBatch->Draw(texture, rectangle, sourceRectangle, 1.0f, layer);
-}
-
-void Character::ReadData(const char* filepath)
-{
-	CharacterReader characterReader;
-	characterReader.Open(filepath);
-
-	firstname = characterReader.GetFirstName();
-	lastname = characterReader.GetLastName();
-	ratio = characterReader.GetRatio();
-	startingLevel = characterReader.GetStartingLevel();
-	std::vector<int> stats = characterReader.GetStats();
-	attack = stats[0];
-	defense = stats[1];
-	mind = stats[2];
-	spirit = stats[3];
-	energy = stats[4];
-	magicType[0] = characterReader.GetPrimaryMagic();
-	magicType[1] = characterReader.GetSecondaryMagic();
-	abilities = characterReader.GetAbilities();
 }
 
 void Character::Move(float delta_time)
@@ -193,11 +171,31 @@ void Character::AnimateMovement(float delta_time)
 	}
 }
 
+// example for CreateCharacterData override
+/*
+void Character::CreateCharacterData()
+{
+	firstname = "Archer";
+	lastname = "Alwestow";
+	ratio = 67;
+	startingLevel = 1;
+	std::vector<int> stats = { 1,1,1,1,1 };
+	attack = stats[0];
+	defense = stats[1];
+	mind = stats[2];
+	spirit = stats[3];
+	energy = stats[4];
+	magicType[0] = MAGIC_TYPE::FIRE;
+	magicType[1] = MAGIC_TYPE::MAGNET;
+	abilities = {};
+}
+*/
+
 #pragma endregion
 
 #pragma region Player Character
 
-Player::Player(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath) : Character(_debugName, x, y, height, width, _texture, _layer, filepath)
+Player::Player(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer) : Character(_debugName, x, y, height, width, _texture, _layer)
 {
 }
 
@@ -360,10 +358,8 @@ Point<float> Player::GetInteractPoint() const
 
 #pragma region NonPlayer Character
 
-NonPlayer::NonPlayer(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer, const char* filepath) : Character(_debugName, x, y, height, width, _texture, _layer)
+NonPlayer::NonPlayer(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer) : Character(_debugName, x, y, height, width, _texture, _layer)
 {
-	ReadData(filepath);
-
 	startLocation = Point<float>(x, y);
 	moveToLocation = startLocation;
 }
@@ -371,28 +367,6 @@ NonPlayer::NonPlayer(std::string _debugName, float x, float y, float height, flo
 NonPlayer::~NonPlayer()
 {
 	if (active) Deactivate();
-}
-
-void NonPlayer::ReadData(const char* filepath)
-{
-	NPCReader npcReader;
-	npcReader.Open(filepath);
-
-	firstname = npcReader.GetFirstName();
-	lastname = npcReader.GetLastName();
-	ratio = npcReader.GetRatio();
-	startingLevel = npcReader.GetStartingLevel();
-	std::vector<int> stats = npcReader.GetStats();
-	attack = stats[0];
-	defense = stats[1];
-	mind = stats[2];
-	spirit = stats[3];
-	energy = stats[4];
-	magicType[0] = npcReader.GetPrimaryMagic();
-	magicType[1] = npcReader.GetSecondaryMagic();
-	abilities = npcReader.GetAbilities();
-	movementMode = npcReader.GetMovementMode();
-	moveRadius = npcReader.GetMovementRadius();
 }
 
 void NonPlayer::Update(float delta_time)

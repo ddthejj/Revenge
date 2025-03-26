@@ -4,14 +4,14 @@
 class Room;
 class Map : public Object
 {
+protected:
 	Room** rooms;
 	Room* currentRoom;
 	unsigned int roomCount;
 
-	//static bool fadingIn = false, fadingOut = false;
-
 public:
-	Map(std::string _debugName, const char* filepath, unsigned int _roomCount);
+
+	Map(std::string _debugName);
 	~Map();
 
 	virtual void Activate();
@@ -21,8 +21,13 @@ public:
 	virtual void Update(float delta_time) {}
 	virtual void Draw(SpriteBatch* spriteBatch) {}
 
+
 	const Room* CurrentRoom() const { return currentRoom; }
 	const Room* GetRoom(unsigned int index) const;
 	void SetRoom(unsigned int index);
+
+protected:
+
+	virtual void CreateRooms() = 0;
 };
 
