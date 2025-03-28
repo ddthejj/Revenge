@@ -1,5 +1,0 @@
-4
-Menu_Base
-Menu_Character
-Menu_Inventory
-Menu_Options

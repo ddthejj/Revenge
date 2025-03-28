@@ -293,7 +293,7 @@ void Player::OnInteractCallback()
 
 void Player::OnMenuCallback()
 {
-	MenuManager::OpenMenu((int)OVERWORLD_MENUS::MENU_BASE);
+	MenuManager::OpenOverworldMenu();
 	Manager::FreezeScene();
 }
 

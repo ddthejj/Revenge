@@ -31,14 +31,14 @@ private:
 	static float fadeOpacity;					// What the current opacity of the fade is
 	static Sprite* fadeRectangle;				// The rectangle that covers the screen when fading
 
+	static bool quit;							// updated for main to end the loop gracefully
+
 #pragma endregion
 
 public:
 
 #pragma region GameManager Access
 
-	// Get the party list
-	static const std::vector<Character*> GetParty();
 	// Get a texture with index
 	static const Texture* GetTexture(int index);
 	// Get a texture with string
@@ -47,6 +47,8 @@ public:
 	static GAME_STATE GetGameState() { return gameState; }
 	// Set the game state
 	static void ChangeGameState(GAME_STATE _gameState);
+	// Quit the game
+	static void Quit();
 
 #pragma endregion
 
@@ -56,6 +58,9 @@ public:
 	static void ResizeWindow(HWND hwnd);
 	// Focus is lost
 	static void FocusLost();
+	// Check if we have quit the game
+	static bool ShouldEnd() { return quit; }
+
 
 #pragma endregion
 

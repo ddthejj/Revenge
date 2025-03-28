@@ -2,6 +2,7 @@
 #include "BorderedBox.h"
 #include <string>
 #include <vector>
+#include <functional>
 
 
 template <typename T>
@@ -18,26 +19,26 @@ protected:
 
 	struct MenuOption
 	{
-		int option = 0;
+		std::string text = "DEFAULT";
 		float x = 0.f, y = 0.f;
 		ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT;
+		std::function<void(MenuOption*)> onPressedFunc;
 
-	private:
-
-		std::string text = "DEFAULT";
 		Point<float> dimensions;
 
 	public:
 
 		MenuOption() = default;
-		MenuOption(std::string _text, int _option, float _x, float _y, ANCHOR_POINT _anchor);
+		MenuOption(std::string _text, float _x, float _y, ANCHOR_POINT _anchor, std::function<void(MenuOption*)> _onPressedFunc);
 		
 		Point<float> GetDimenstions() const { return dimensions; };
 		void SetText(std::string _text);
 		std::string GetText() const { return text; }
+		void OnPressed() { (onPressedFunc)(this); }
 	};
 
 #pragma endregion
+
 
 #pragma region Properties
 		
@@ -48,7 +49,6 @@ protected:
 	int arrowTimer = 0;								// the timer to blink the arrow
 	MenuBox* previousMenu = nullptr;				// pointer to the previous menu (if nullptr, no previous menu)
 	Point<float> textOffset;						// initial offset of the text
-	unsigned int menuValue;							// value of the menu (used in menu manager)
 
 #pragma endregion
 	
@@ -63,27 +63,24 @@ protected:
 
 #pragma endregion
 
+private:
+
+	virtual void OnClose() = 0;
+
 public:
 
 #pragma region Methods
 
 	// load a menu without a file
-	MenuBox(std::string _debugName, float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, int _menuValue, float _layer = .8f, float _opacity = 1.f, ANCHOR_POINT _anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
-	// load a menu from a file
-	MenuBox(std::string _debugName, float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, int _menuValue, const char* filename);
+	MenuBox(std::string _debugName, float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, float _layer = .8f, float _opacity = 1.f, ANCHOR_POINT _anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
 	~MenuBox();
 
 	// create a menu with _previousMenu as its previousMenu
 	void Open(MenuBox* _previousMenu);
-	// set the options of a menu to passed in values
-	void SetOptions(std::vector<std::string> texts, std::vector<int> option, std::vector<Point<float>> positions, std::vector<Point<int>> layout, std::vector<ANCHOR_POINT> anchors, int sizeX, int sizeY);
 	// resize the menu box
 	void Resize(float x, float y, float width, float height);
 	// move the menu box
 	void Move(float x, float y);
-
-	// returns the return value of the selected option
-	int ChooseOption();
 
 	// draw the menu box
 	virtual void Draw(SpriteBatch* spriteBatch);
@@ -99,10 +96,9 @@ public:
 	// unfreeze the menu box
 	virtual void Unfreeze();
 
+#pragma endregion
 
 private:
-
-#pragma endregion
 
 #pragma region Key Pressed Callbacks
 

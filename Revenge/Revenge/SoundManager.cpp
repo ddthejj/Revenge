@@ -12,8 +12,11 @@ void SoundManager::Init(HWND hWnd)
 
 void SoundManager::Clean()
 {
-	audioPlayer->Clean();
-	delete audioPlayer;
+	if (audioPlayer)
+	{
+		audioPlayer->Clean();
+		SafeDelete(audioPlayer);
+	}
 }
 
 bool SoundManager::LoadSounds(const char* filepath)
@@ -23,7 +26,11 @@ bool SoundManager::LoadSounds(const char* filepath)
 
 bool SoundManager::UnloadSounds()
 {
-	return audioPlayer->UnloadWAVs();
+	if (audioPlayer)
+	{
+		return audioPlayer->UnloadWAVs();
+	}
+	return false;
 }
 
 void SoundManager::Play(int index)

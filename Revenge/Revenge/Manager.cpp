@@ -16,7 +16,7 @@
 #include "SoundManager.h"
 #include "ComponentManager.h"
 
-GAME_STATE Manager::gameState = GAME_STATE::STATE_OVERWORLD;
+GAME_STATE Manager::gameState = GAME_STATE::STATE_TITLE;
 SpriteBatch* Manager::spriteBatch = nullptr;
 std::vector<Object*> Manager::UpdateList;
 std::vector<Object*> Manager::DrawList;
@@ -26,10 +26,7 @@ bool Manager::fadingOut = false;
 
 Sprite* Manager::fadeRectangle = nullptr;
 
-const std::vector<Character*> Manager::GetParty()
-{
-	return OverworldManager::GetCurrentParty();
-}
+bool Manager::quit = false;
 
 const Texture* Manager::GetTexture(int index)
 {
@@ -44,6 +41,12 @@ const Texture* Manager::GetTexture(const char* name)
 void Manager::ChangeGameState(GAME_STATE _gameState)
 {
 
+}
+
+void Manager::Quit()
+{
+	Clean();
+	quit = true;
 }
 
 void Manager::ResizeWindow(HWND hWnd)
@@ -117,7 +120,6 @@ void Manager::InitTitle()
 void Manager::InitOverworld()
 {
 	TextureManager::LoadTextures(L"../Assets/TestTextures/TestTexture_List.txt", spriteBatch);
-	MenuManager::LoadOverworldMenus();
 	OverworldManager::Init();
 
 	gameState = GAME_STATE::STATE_OVERWORLD;

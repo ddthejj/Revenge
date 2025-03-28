@@ -62,14 +62,14 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 
 	ShowWindow(hWnd, nShowCmd);
 
-	MSG msg;
+	MSG msg = MSG();
 
 	Manager::Init(hWnd);
 
 	clock_t lastUpdate = clock();
 
 	//Game Loop
-	while (true)
+	while (!Manager::ShouldEnd())
 	{
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{

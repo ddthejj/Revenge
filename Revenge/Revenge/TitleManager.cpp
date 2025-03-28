@@ -148,8 +148,7 @@ void TitleManager::FinishMenuFade()
 
 void TitleManager::CreateTitleMenu()
 {
-	MenuManager::LoadTitleMenus();
-	MenuManager::OpenMenu((int)TITLE_MENUS::MENU_TITLE);
+	MenuManager::OpenTitleMenu();
 }
 
 void TitleManager::Update(float delta_time)

@@ -1,8 +1,0 @@
-1,5
-ANCHOR_TOP_LEFT
-5
-Character,1,40,30,0,0
-Inventory,2,40,60,0,1
-Magic,3,40,90,0,2
-Options,4,40,120,0,3
-Cancel,-1,40,150,0,4

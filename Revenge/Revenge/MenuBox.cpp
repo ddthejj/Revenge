@@ -6,13 +6,13 @@
 #include "MenuManager.h"
 #include "FileReader.h"
 #include "InputManager.h"
+#include "SoundManager.h"
 
-MenuBox::MenuBox(std::string _debugName, float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, int _menuValue, float _layer, float _opacity, ANCHOR_POINT _anchor)
+MenuBox::MenuBox(std::string _debugName, float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, float _layer, float _opacity, ANCHOR_POINT _anchor)
 	: BorderedBox(_debugName, _x, _y, _width, _height, _texture, _layer, _opacity, _anchor)
 {
 	optionAt = new Point<int>();
 	arrow = new UISprite("menuArrow", 0, 0, 7, 7, 0, 0, 15, 15, _arrowTexture, _layer + .1f, _opacity, _anchor);
-	menuValue = _menuValue;
 	// options need to be set later
 	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::HCENTER)
 	{
@@ -26,68 +26,6 @@ MenuBox::MenuBox(std::string _debugName, float _x, float _y, float _width, float
 	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::VCENTER)
 	{
 		textOffset.y = -rectangle->Height() / 2.f;
-	}
-	else if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::BOTTOM)
-	{
-		//textOffset.y = rectangle->Height() / 2.f;
-	}
-}
-
-MenuBox::MenuBox(std::string _debugName, float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, int _menuValue, const char* filename)
-	: BorderedBox(_debugName, _x, _y, _width, _height, _texture, .8f, 1.f, ANCHOR_POINT::ANCHOR_TOP_LEFT)
-{
-	menuValue = _menuValue;
-
-	// use the MenuReader class to read the menu data from a file
-	MenuReader reader;
-	reader.Open(filename);
-
-	Point<int> optionsDims = reader.GetDimensions();
-	optionsWidth = optionsDims.x;
-	optionsHeight = optionsDims.y;
-
-	options = std::vector<std::vector<MenuOption*>>();
-	for (int i = 0; i < optionsWidth; i++)
-	{
-		options.push_back(std::vector<MenuOption*>());
-		for (int j = 0; j < optionsHeight; j++)
-		{
-			options[i].push_back(nullptr);
-		}
-	}
-
-	std::vector<MenuReader::OptionData> optionData = reader.GetOptions();
-
-	for (int i = 0; i < optionData.size(); i++)
-	{
-		MenuOption* option = new MenuOption;
-		option->SetText(optionData[i].text);
-		option->option = optionData[i].returnValue;
-		option->x = (float)optionData[i].position.x;
-		option->y = (float)optionData[i].position.y;
-
-		options[optionData[i].matrixLocation.x][optionData[i].matrixLocation.y] = option;
-	}
-
-	anchor = reader.GetAnchor();
-
-	reader.Close();
-
-	optionAt = new Point<int>(); \
-		arrow = new UISprite("menuArrow", 0, 0, 7, 7, 0, 0, 15, 15, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW), layer + .1f, opacity, anchor);
-	// options need to be set later
-	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::HCENTER)
-	{
-		//textOffset.x = -rectangle->Width() / 2.f;
-	}
-	else if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::RIGHT)
-	{
-		//textOffset.x = rectangle->Width() / 2.f;
-	}
-
-	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::VCENTER)
-	{
-		//textOffset.y = -rectangle->Height() / 2.f;
 	}
 	else if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::BOTTOM)
 	{
@@ -116,8 +54,10 @@ MenuBox::~MenuBox()
 void MenuBox::Open(MenuBox* _previousMenu)
 {
 	previousMenu = _previousMenu;
-
+	
+	MenuManager::ActiveMenuCreated(this);
 	Activate();
+
 
 	optionAt->x = 0; optionAt->y = 0;
 	if (options[optionAt->x][optionAt->y])
@@ -140,36 +80,6 @@ void MenuBox::Open(MenuBox* _previousMenu)
 	}
 
 	UpdateArrowLocation();
-}
-
-void MenuBox::SetOptions(std::vector<std::string> texts, std::vector<int> option, std::vector<Point<float>> positions, std::vector<Point<int>> layout, std::vector<ANCHOR_POINT> anchors, int sizeX, int sizeY)
-{
-	for (int i = 0; i < options.size(); i++)
-	{
-		for (int j = 0; j < options[i].size(); j++)
-		{
-			if (options[i][j])
-				SafeDelete(options[i][j]);
-		}
-	}
-
-	optionsWidth = sizeX;
-	optionsHeight = sizeY;
-
-	options = std::vector<std::vector<MenuOption*>>();
-	for (int i = 0; i < optionsWidth; i++)
-	{
-		options.push_back(std::vector<MenuOption*>());
-		for (int j = 0; j < optionsHeight; j++)
-		{
-			options[i].push_back(nullptr);
-		}
-	}
-
-	for (int i = 0; i < optionsWidth * optionsHeight; i++)
-	{
-		options[layout[i].x][layout[i].y] = new MenuOption(texts[i], option[i], positions[i].x, positions[i].y, anchors[i]);
-	}
 }
 
 void MenuBox::Resize(float x, float y, float width, float height)
@@ -195,24 +105,27 @@ void MenuBox::SetOpacity(float _opacity)
 
 void MenuBox::UpdateArrowLocation()
 {
-	int offsetX = (unsigned char)options[optionAt->x][optionAt->y]->anchor & (unsigned char)ANCHOR_POINT::RIGHT ? 12 : -12, offsetY = 0;
-	float fontSize = options[optionAt->x][optionAt->y]->GetDimenstions().y; 
-	offsetY += (int)(fontSize * ((unsigned char)options[optionAt->x][optionAt->y]->anchor & (unsigned char)ANCHOR_POINT::RIGHT ? .6f : .2f));
+	ANCHOR_POINT optionAnchor = options[optionAt->x][optionAt->y]->anchor;
+	Point<float> optionDimensions = options[optionAt->x][optionAt->y]->GetDimenstions();
 
+	int offsetX = (unsigned char)optionAnchor & (unsigned char)ANCHOR_POINT::RIGHT ? 12 : -12, offsetY = 0;
+	float fontSize = optionDimensions.y;
+	offsetY += (int)(fontSize * ((unsigned char)optionAnchor & (unsigned char)ANCHOR_POINT::RIGHT ? .6f : .2f));
 	Point<float> drawLocation = Point<float>(options[optionAt->x][optionAt->y]->x + offsetX, options[optionAt->x][optionAt->y]->y + offsetY);
 
 	// adjust the horizontal location of the arrow based on the anchor point of the option
-	if ((unsigned char)options[optionAt->x][optionAt->y]->anchor & (unsigned char)ANCHOR_POINT::HCENTER)
+	if ((unsigned char)optionAnchor & (unsigned char)ANCHOR_POINT::HCENTER)
 	{
-		drawLocation.x += options[optionAt->x][optionAt->y]->GetDimenstions().x / 2.f;
+		drawLocation.x -= optionDimensions.x / 2.f;
+		drawLocation.y -= optionDimensions.y / 2.5f;
 	}
-	else if ((unsigned char)options[optionAt->x][optionAt->y]->anchor & (unsigned char)ANCHOR_POINT::RIGHT)
+	else if ((unsigned char)optionAnchor & (unsigned char)ANCHOR_POINT::RIGHT)
 	{
-		drawLocation.x += options[optionAt->x][optionAt->y]->GetDimenstions().x;
+		drawLocation.x += optionDimensions.x;
 	}
 
 	arrow->SetPos(drawLocation);
-	arrow->SetAnchorPoint(options[optionAt->x][optionAt->y]->anchor);
+	arrow->SetAnchorPoint(optionAnchor);
 }
 
 void MenuBox::ResetArrow()
@@ -220,13 +133,6 @@ void MenuBox::ResetArrow()
 	arrow->SetSourcePos(Point<float>(0, 0));
 	arrowTimer = 0;
 }
-
-
-int MenuBox::ChooseOption()
-{
-	return options[optionAt->x][optionAt->y]->option;
-}
-
 
 void MenuBox::Update(float delta_time)
 {
@@ -341,7 +247,7 @@ void MenuBox::UpPressed()
 
 	UpdateArrowLocation();
 	ResetArrow();
-	MenuManager::PlayHoverSound();
+	SoundManager::Play(0);
 }
 void MenuBox::DownPressed()
 {
@@ -358,7 +264,7 @@ void MenuBox::DownPressed()
 
 	UpdateArrowLocation();
 	ResetArrow();
-	MenuManager::PlayHoverSound();
+	SoundManager::Play(0);
 }
 void MenuBox::LeftPressed()
 {
@@ -375,7 +281,7 @@ void MenuBox::LeftPressed()
 
 	UpdateArrowLocation();
 	ResetArrow();
-	MenuManager::PlayHoverSound();
+	SoundManager::Play(0);
 }
 void MenuBox::RightPressed()
 {
@@ -392,12 +298,13 @@ void MenuBox::RightPressed()
 
 	UpdateArrowLocation();
 	ResetArrow();
-	MenuManager::PlayHoverSound();
+	SoundManager::Play(0);
 }
 
 void MenuBox::InteractPressed()
 {
-	MenuManager::OptionSelected(ChooseOption());
+	//MenuManager::OptionSelected(ChooseOption());
+	options[optionAt->x][optionAt->y]->OnPressed();
 }
 
 void MenuBox::MenuPressed()
@@ -406,13 +313,13 @@ void MenuBox::MenuPressed()
 	Manager::UnfreezeScene();
 }
 
-MenuBox::MenuOption::MenuOption(std::string _text, int _option, float _x, float _y, ANCHOR_POINT _anchor)
+MenuBox::MenuOption::MenuOption(std::string _text, float _x, float _y, ANCHOR_POINT _anchor, std::function<void(MenuOption*)> _onPressedFunc)
 {
 	text = std::string(_text);
-	option = _option;
 	x = _x; y = _y;
 	anchor = _anchor;
 	dimensions = Manager::MeasureString(_text);
+	onPressedFunc = _onPressedFunc;
 }
 
 void MenuBox::MenuOption::SetText(std::string _text)

@@ -47,6 +47,9 @@
     <Filter Include="Content\Test">
       <UniqueIdentifier>{26a49294-50ee-43c9-bc5f-115cae57af68}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Content\Menus">
+      <UniqueIdentifier>{7b8c2840-4599-4839-9cec-ee5c51ff7bae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SpriteBatch.cpp">
@@ -157,6 +160,9 @@
     <ClCompile Include="PlayerCharacters.cpp">
       <Filter>Content\Characters</Filter>
     </ClCompile>
+    <ClCompile Include="PauseMenu.cpp">
+      <Filter>Content\Menus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Texture.h">
@@ -263,6 +269,9 @@
     </ClInclude>
     <ClInclude Include="PlayerCharacters.h">
       <Filter>Content\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="PauseMenu.h">
+      <Filter>Content\Menus</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
