@@ -26,12 +26,12 @@ class InputManager
 	static char previousCharPressed;								// which character was pressed last frame
 
 	// Callback functions that will trigger once a key is pressed or released
-	static std::map<void*, std::function<void (char)>> anyKeyPressedCallback;									// standard callback for any key being pressed
-	static std::map<void*, std::function<void (char)>> anyKeyReleasedCallback;									// standard callback for any key being released
-	static std::map<void*, std::function<void()>> keyPressedCallbacks[(int)KEYS::KEY_MAX];						// keyboard key pressed callbacks
-	static std::map<void*, std::function<void()>> keyReleasedCallbacks[(int)KEYS::KEY_MAX];						// keyboard key released callbacks
-	static std::map<void*, std::function<void()>> mouseKeyPressedCallbacks[(int)MOUSE_KEYS::MOUSE_KEY_MAX];		// mouse button pressed callbacks
-	static std::map<void*, std::function<void()>> mouseKeyReleasedCallbacks[(int)MOUSE_KEYS::MOUSE_KEY_MAX];	// mouse button released callbacks
+	static std::map<void*, std::function<bool (char)>> anyKeyPressedCallback;									// standard callback for any key being pressed
+	static std::map<void*, std::function<bool(char)>> anyKeyReleasedCallback;									// standard callback for any key being released
+	static std::map<void*, std::function<bool()>> keyPressedCallbacks[(int)KEYS::KEY_MAX];						// keyboard key pressed callbacks
+	static std::map<void*, std::function<bool()>> keyReleasedCallbacks[(int)KEYS::KEY_MAX];						// keyboard key released callbacks
+	static std::map<void*, std::function<bool()>> mouseKeyPressedCallbacks[(int)MOUSE_KEYS::MOUSE_KEY_MAX];		// mouse button pressed callbacks
+	static std::map<void*, std::function<bool()>> mouseKeyReleasedCallbacks[(int)MOUSE_KEYS::MOUSE_KEY_MAX];	// mouse button released callbacks
 
 #pragma endregion
 
@@ -116,29 +116,29 @@ public:
 #pragma region Access Callbacks
 
 	// Attach to the "any key pressed" callback
-	static DelegateHandle* AnyKeyPressedCallback_Attach(std::function<void(char)> func, void* userObj);
+	static DelegateHandle* AnyKeyPressedCallback_Attach(std::function<bool(char)> func, void* userObj);
 	// Removed from the "any key pressed" callback
-	static bool AnyKeyPressedCallback_Remove(std::function<void(char)> func, void* userObj);
+	static bool AnyKeyPressedCallback_Remove(std::function<bool(char)> func, void* userObj);
 	// Attach to the "key pressed" callback
-	static DelegateHandle* KeyPressedCallbacks_Attach(KEYS whichKey, std::function<void()> func, void* userObj);
+	static DelegateHandle* KeyPressedCallbacks_Attach(KEYS whichKey, std::function<bool()> func, void* userObj);
 	// Remove from the "key pressed" callback
-	static bool KeyPressedCallbacks_Remove(KEYS whichKey, std::function<void()> func, void* userObj);
+	static bool KeyPressedCallbacks_Remove(KEYS whichKey, std::function<bool()> func, void* userObj);
 	// Attach to the "mouse key pressed" callback
-	static DelegateHandle* MouseKeyPressedCallbacks_Attach(MOUSE_KEYS whichKey, std::function<void()> func, void* userObj);
+	static DelegateHandle* MouseKeyPressedCallbacks_Attach(MOUSE_KEYS whichKey, std::function<bool()> func, void* userObj);
 	// Remove from the "mouse key pressed" callback
-	static bool MouseKeyPressedCallbacks_Remove(MOUSE_KEYS whichKey, std::function<void()> func, void* userObj);
+	static bool MouseKeyPressedCallbacks_Remove(MOUSE_KEYS whichKey, std::function<bool()> func, void* userObj);
 	// Attach to the "any key released" callback
-	static DelegateHandle* AnyKeyReleasedCallback_Attach(std::function<void(char)> func, void* userObj);
+	static DelegateHandle* AnyKeyReleasedCallback_Attach(std::function<bool(char)> func, void* userObj);
 	// Removed from the "any key released" callback
-	static bool AnyKeyReleasedCallback_Remove(std::function<void(char)> func, void* userObj);
+	static bool AnyKeyReleasedCallback_Remove(std::function<bool(char)> func, void* userObj);
 	// Attach to the "key released" callback
-	static DelegateHandle* KeyReleasedCallbacks_Attach(KEYS whichKey, std::function<void()> func, void* userObj);
+	static DelegateHandle* KeyReleasedCallbacks_Attach(KEYS whichKey, std::function<bool()> func, void* userObj);
 	// Remove from the "key released" callback
-	static bool KeyReleasedCallbacks_Remove(KEYS whichKey, std::function<void()> func, void* userObj);
+	static bool KeyReleasedCallbacks_Remove(KEYS whichKey, std::function<bool()> func, void* userObj);
 	// Attach to the "mouse key released" callback
-	static DelegateHandle* MouseKeyReleasedCallbacks_Attach(MOUSE_KEYS whichKey, std::function<void()> func, void* userObj);
+	static DelegateHandle* MouseKeyReleasedCallbacks_Attach(MOUSE_KEYS whichKey, std::function<bool()> func, void* userObj);
 	// Remove from the "mouse key released" callback
-	static bool MouseKeyReleasedCallbacks_Remove(MOUSE_KEYS whichKey, std::function<void()> func, void* userObj);
+	static bool MouseKeyReleasedCallbacks_Remove(MOUSE_KEYS whichKey, std::function<bool()> func, void* userObj);
 
 #pragma endregion
 

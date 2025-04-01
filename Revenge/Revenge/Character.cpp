@@ -227,50 +227,58 @@ void Player::Unfreeze()
 	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_MENU, std::bind(&Player::OnMenuCallback, this), this);
 }
 
-void Player::UpPressedCallback()
+bool Player::UpPressedCallback()
 {
 	velocity += Point<float>(0.f, -mvmntSpeed);
+	return false;
 }
 
-void Player::DownPressedCallback()
+bool Player::DownPressedCallback()
 {
 	velocity += Point<float>(0.f, mvmntSpeed);
+	return false;
 }
 
-void Player::LeftPressedCallback()
+bool Player::LeftPressedCallback()
 {
 	velocity += Point<float>(-mvmntSpeed, 0.f);
+	return false;
 }
 
-void Player::RightPressedCallback()
+bool Player::RightPressedCallback()
 {
 	velocity += Point<float>(mvmntSpeed, 0.f);
+	return false;
 }
 
-void Player::UpReleasedCallback()
+bool Player::UpReleasedCallback()
 {
 	velocity -= Point<float>(0.f, -mvmntSpeed);
+	return false;
 }
 
-void Player::DownReleasedCallback()
+bool Player::DownReleasedCallback()
 {
 	velocity -= Point<float>(0.f, mvmntSpeed);
+	return false;
 }
 
-void Player::LeftReleasedCallback()
+bool Player::LeftReleasedCallback()
 {
 	velocity -= Point<float>(-mvmntSpeed, 0.f);
+	return false;
 }
 
-void Player::RightReleasedCallback()
+bool Player::RightReleasedCallback()
 {
 	velocity -= Point<float>(mvmntSpeed, 0.f);
+	return false;
 }
 
-void Player::OnInteractCallback()
+bool Player::OnInteractCallback()
 {
 	if (frozen || !active)
-		return;
+		return false;
 
 
 	Point<float> interactPoint;
@@ -291,13 +299,14 @@ void Player::OnInteractCallback()
 		break;
 	}
 
-	OverworldManager::OnInteract(interactPoint);
+	return OverworldManager::OnInteract(interactPoint);
 }
 
-void Player::OnMenuCallback()
+bool Player::OnMenuCallback()
 {
 	MenuManager::OpenOverworldMenu();
 	Manager::FreezeScene();
+	return true;
 }
 
 void Player::BindCallbacks()

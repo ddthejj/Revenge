@@ -36,9 +36,9 @@ public:
 	// deactivate the object
 	virtual void Deactivate();
 	// freeze the object
-	virtual void Freeze() { frozen = true; }
+	virtual void Freeze();
 	// unfreeze the object
-	virtual void Unfreeze() { frozen = false; }
+	virtual void Unfreeze();
 
 	virtual void Draw(SpriteBatch* spriteBatch) = 0;
 	virtual void Update(float delta_time) = 0;

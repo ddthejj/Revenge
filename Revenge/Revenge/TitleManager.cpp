@@ -19,7 +19,7 @@ float TitleManager::timer = 0.0f;
 
 std::vector<Text*> TitleManager::textList = std::vector<Text*>();
 
-void TitleManager::AnyKeyPressed(char key)
+bool TitleManager::AnyKeyPressed(char key)
 {
 	switch (titleState)
 	{
@@ -51,6 +51,8 @@ void TitleManager::AnyKeyPressed(char key)
 		break;
 	}
 	}
+
+	return true;
 }
 
 void TitleManager::Init()

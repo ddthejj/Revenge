@@ -233,7 +233,7 @@ void MenuBox::UnbindCallbacks()
 	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_MENU, std::bind(&MenuBox::MenuPressed, this), this);
 }
 
-void MenuBox::UpPressed()
+bool MenuBox::UpPressed()
 {
 	MenuOption* whichOption = options[optionAt->x][optionAt->y];
 
@@ -249,8 +249,9 @@ void MenuBox::UpPressed()
 	UpdateArrowLocation();
 	ResetArrow();
 	SoundManager::Play(0);
+	return false;
 }
-void MenuBox::DownPressed()
+bool MenuBox::DownPressed()
 {
 	MenuOption* whichOption = options[optionAt->x][optionAt->y];
 
@@ -266,8 +267,9 @@ void MenuBox::DownPressed()
 	UpdateArrowLocation();
 	ResetArrow();
 	SoundManager::Play(0);
+	return false;
 }
-void MenuBox::LeftPressed()
+bool MenuBox::LeftPressed()
 {
 	MenuOption* whichOption = options[optionAt->x][optionAt->y];
 
@@ -283,8 +285,9 @@ void MenuBox::LeftPressed()
 	UpdateArrowLocation();
 	ResetArrow();
 	SoundManager::Play(0);
+	return false;
 }
-void MenuBox::RightPressed()
+bool MenuBox::RightPressed()
 {
 	MenuOption* whichOption = options[optionAt->x][optionAt->y];
 
@@ -300,18 +303,20 @@ void MenuBox::RightPressed()
 	UpdateArrowLocation();
 	ResetArrow();
 	SoundManager::Play(0);
+	return false;
 }
 
-void MenuBox::InteractPressed()
+bool MenuBox::InteractPressed()
 {
-	//MenuManager::OptionSelected(ChooseOption());
 	options[optionAt->x][optionAt->y]->OnPressed();
+	return true;
 }
 
-void MenuBox::MenuPressed()
+bool MenuBox::MenuPressed()
 {
 	MenuManager::CloseAllMenus();
 	Manager::UnfreezeScene();
+	return true;
 }
 
 MenuBox::MenuOption::MenuOption(std::string _text, float _x, float _y, ANCHOR_POINT _anchor, std::function<void(MenuOption*)> _onPressedFunc)

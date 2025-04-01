@@ -11,12 +11,12 @@ bool InputManager::previousMouseKeys[(int)MOUSE_KEYS::MOUSE_KEY_MAX];
 float InputManager::mouseX = 0.f, InputManager::mouseY = 0.f;
 char InputManager::charPressed = '\0', InputManager::previousCharPressed = '\0';
 
-std::map<void*, std::function<void(char)>> InputManager::anyKeyPressedCallback = std::map<void*, std::function<void(char)>>();
-std::map<void*, std::function<void(char)>> InputManager::anyKeyReleasedCallback = std::map<void*, std::function<void(char)>>();
-std::map<void*, std::function<void()>> InputManager::keyPressedCallbacks[(int)KEYS::KEY_MAX];
-std::map<void*, std::function<void()>> InputManager::keyReleasedCallbacks[(int)KEYS::KEY_MAX];
-std::map<void*, std::function<void()>> InputManager::mouseKeyPressedCallbacks[(int)MOUSE_KEYS::MOUSE_KEY_MAX];
-std::map<void*, std::function<void()>> InputManager::mouseKeyReleasedCallbacks[(int)MOUSE_KEYS::MOUSE_KEY_MAX];
+std::map<void*, std::function<bool(char)>> InputManager::anyKeyPressedCallback = std::map<void*, std::function<bool(char)>>();
+std::map<void*, std::function<bool(char)>> InputManager::anyKeyReleasedCallback = std::map<void*, std::function<bool(char)>>();
+std::map<void*, std::function<bool()>> InputManager::keyPressedCallbacks[(int)KEYS::KEY_MAX];
+std::map<void*, std::function<bool()>> InputManager::keyReleasedCallbacks[(int)KEYS::KEY_MAX];
+std::map<void*, std::function<bool()>> InputManager::mouseKeyPressedCallbacks[(int)MOUSE_KEYS::MOUSE_KEY_MAX];
+std::map<void*, std::function<bool()>> InputManager::mouseKeyReleasedCallbacks[(int)MOUSE_KEYS::MOUSE_KEY_MAX];
 
 
 template<typename T, typename... U>
@@ -45,12 +45,16 @@ void InputManager::PressKey(WPARAM wParam)
 	{
 		if (wParam == keyOptions[key])
 		{
-			std::map<void*, std::function<void()>> callback = keyPressedCallbacks[key];
+			std::map<void*, std::function<bool()>> callback = keyPressedCallbacks[key];
 
 			keys[key] = true;
 			for (auto it = callback.begin(); it != callback.end(); it++)
 			{
-				it->second();
+				// callback functions return true to consume input
+				if (it->second())
+				{
+					break;
+				}
 			}
 			break;
 		}
@@ -63,12 +67,16 @@ void InputManager::ReleaseKey(WPARAM wParam)
 	{
 		if (wParam == keyOptions[key])
 		{
-			std::map<void*, std::function<void()>> callback = keyReleasedCallbacks[key];
+			std::map<void*, std::function<bool()>> callback = keyReleasedCallbacks[key];
 
 			keys[key] = false;
 			for (auto it = callback.begin(); it != callback.end(); it++)
 			{
-				it->second();
+				// callback functions return true to consume input
+				if (it->second())
+				{
+					return;
+				}
 			}
 			break;
 		}
@@ -83,7 +91,7 @@ void InputManager::MoveMouse(HWND hwnd, LPARAM lParam)
 
 void InputManager::PressMouseKey(MOUSE_KEYS key)
 {
-	std::map<void*, std::function<void()>> callback = mouseKeyPressedCallbacks[(int)key];
+	std::map<void*, std::function<bool()>> callback = mouseKeyPressedCallbacks[(int)key];
 
 	mouseKeys[(int)key] = true;
 	for (auto it = callback.begin(); it != callback.end(); it++)
@@ -94,7 +102,7 @@ void InputManager::PressMouseKey(MOUSE_KEYS key)
 
 void InputManager::ReleaseMouseKey(MOUSE_KEYS key)
 {
-	std::map<void*, std::function<void()>> callback = mouseKeyReleasedCallbacks[(int)key];
+	std::map<void*, std::function<bool()>> callback = mouseKeyReleasedCallbacks[(int)key];
 
 	mouseKeys[(int)key] = false;
 	for (auto it = callback.begin(); it != callback.end(); it++)
@@ -133,62 +141,62 @@ void InputManager::FocusLost()
 }
 
 
-DelegateHandle* InputManager::AnyKeyPressedCallback_Attach(std::function<void(char)> func, void* userObj)
+DelegateHandle* InputManager::AnyKeyPressedCallback_Attach(std::function<bool(char)> func, void* userObj)
 {
 	return AddFunctionToCallbackList(&anyKeyPressedCallback, func, userObj);
 }
 
-bool InputManager::AnyKeyPressedCallback_Remove(std::function<void(char)> func, void* userObj)
+bool InputManager::AnyKeyPressedCallback_Remove(std::function<bool(char)> func, void* userObj)
 {
 	return RemoveFunctionFromCallbackList(&anyKeyPressedCallback, func, userObj);
 }
 
-DelegateHandle* InputManager::KeyPressedCallbacks_Attach(KEYS whichKey, std::function<void()> func, void* userObj)
+DelegateHandle* InputManager::KeyPressedCallbacks_Attach(KEYS whichKey, std::function<bool()> func, void* userObj)
 {
 	return AddFunctionToCallbackList(&keyPressedCallbacks[(int)whichKey], func, userObj);
 }
 
-bool InputManager::KeyPressedCallbacks_Remove(KEYS whichKey, std::function<void()> func, void* userObj)
+bool InputManager::KeyPressedCallbacks_Remove(KEYS whichKey, std::function<bool()> func, void* userObj)
 {
 	return RemoveFunctionFromCallbackList(&keyPressedCallbacks[(int)whichKey], func, userObj);
 }
 
-DelegateHandle* InputManager::MouseKeyPressedCallbacks_Attach(MOUSE_KEYS whichKey, std::function<void()> func, void* userObj)
+DelegateHandle* InputManager::MouseKeyPressedCallbacks_Attach(MOUSE_KEYS whichKey, std::function<bool()> func, void* userObj)
 {
 	return AddFunctionToCallbackList(&mouseKeyPressedCallbacks[(int)whichKey], func, userObj);
 }
 
-bool InputManager::MouseKeyPressedCallbacks_Remove(MOUSE_KEYS whichKey, std::function<void()> func, void* userObj)
+bool InputManager::MouseKeyPressedCallbacks_Remove(MOUSE_KEYS whichKey, std::function<bool()> func, void* userObj)
 {
 	return RemoveFunctionFromCallbackList(&mouseKeyPressedCallbacks[(int)whichKey], func, userObj);
 }
 
-DelegateHandle* InputManager::AnyKeyReleasedCallback_Attach(std::function<void(char)> func, void* userObj)
+DelegateHandle* InputManager::AnyKeyReleasedCallback_Attach(std::function<bool(char)> func, void* userObj)
 {
 	return AddFunctionToCallbackList(&anyKeyReleasedCallback, func, userObj);
 }
 
-bool InputManager::AnyKeyReleasedCallback_Remove(std::function<void(char)> func, void* userObj)
+bool InputManager::AnyKeyReleasedCallback_Remove(std::function<bool(char)> func, void* userObj)
 {
 	return RemoveFunctionFromCallbackList(&anyKeyReleasedCallback, func, userObj);
 }
 
-DelegateHandle* InputManager::KeyReleasedCallbacks_Attach(KEYS whichKey, std::function<void()> func, void* userObj)
+DelegateHandle* InputManager::KeyReleasedCallbacks_Attach(KEYS whichKey, std::function<bool()> func, void* userObj)
 {
 	return AddFunctionToCallbackList(&keyReleasedCallbacks[(int)whichKey], func, userObj);
 }
 
-bool InputManager::KeyReleasedCallbacks_Remove(KEYS whichKey, std::function<void()> func, void* userObj)
+bool InputManager::KeyReleasedCallbacks_Remove(KEYS whichKey, std::function<bool()> func, void* userObj)
 {
 	return RemoveFunctionFromCallbackList(&keyReleasedCallbacks[(int)whichKey], func, userObj);
 }
 
-DelegateHandle* InputManager::MouseKeyReleasedCallbacks_Attach(MOUSE_KEYS whichKey, std::function<void()> func, void* userObj)
+DelegateHandle* InputManager::MouseKeyReleasedCallbacks_Attach(MOUSE_KEYS whichKey, std::function<bool()> func, void* userObj)
 {
 	return AddFunctionToCallbackList(&mouseKeyReleasedCallbacks[(int)whichKey], func, userObj);
 }
 
-bool InputManager::MouseKeyReleasedCallbacks_Remove(MOUSE_KEYS whichKey, std::function<void()> func, void* userObj)
+bool InputManager::MouseKeyReleasedCallbacks_Remove(MOUSE_KEYS whichKey, std::function<bool()> func, void* userObj)
 {
 	return RemoveFunctionFromCallbackList(&mouseKeyReleasedCallbacks[(int)whichKey], func, userObj);
 }
@@ -208,13 +216,13 @@ void InputManager::Init()
 	// initialize callback arrays
 	for (int i = 0; i < (int)KEYS::KEY_MAX; i++)
 	{
-		keyPressedCallbacks[i] = std::map<void*, std::function<void()>>();
-		keyReleasedCallbacks[i] = std::map<void*, std::function<void()>>();
+		keyPressedCallbacks[i] = std::map<void*, std::function<bool()>>();
+		keyReleasedCallbacks[i] = std::map<void*, std::function<bool()>>();
 	}
 	for (int i = 0; i < (int)MOUSE_KEYS::MOUSE_KEY_MAX; i++)
 	{
-		mouseKeyPressedCallbacks[i] = std::map<void*, std::function<void()>>();
-		mouseKeyReleasedCallbacks[i] = std::map<void*, std::function<void()>>();
+		mouseKeyPressedCallbacks[i] = std::map<void*, std::function<bool()>>();
+		mouseKeyReleasedCallbacks[i] = std::map<void*, std::function<bool()>>();
 	}
 }
 

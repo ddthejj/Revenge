@@ -60,7 +60,7 @@ private:
     virtual void BindCallbacks();
     virtual void UnbindCallbacks();
 
-    void InteractPressed();
+    bool InteractPressed();
 
 #pragma endregion
 };

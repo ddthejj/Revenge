@@ -175,13 +175,16 @@ void OverworldManager::Update(float delta_time)
 }
 
 
-void OverworldManager::OnInteract(Point<float> interactPoint)
+bool OverworldManager::OnInteract(Point<float> interactPoint)
 {
 	if (Tile* interactedTile = currentMap->CurrentRoom()->GetTile(1, (int)std::floor(interactPoint.x / TILE_WIDTH), (int)std::floor(interactPoint.y / TILE_HEIGHT)))
 	{
 		if (InteractionComponent* tileInteracted = (InteractionComponent*)interactedTile->GetComponentOfType(ComponentType::DialogueInteraction))
 		{
 			tileInteracted->Interact();
+			return true;
 		}
 	}
+	
+	return false;
 }

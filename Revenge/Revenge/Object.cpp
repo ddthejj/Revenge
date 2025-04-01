@@ -23,12 +23,26 @@ Object::~Object()
 
 void Object::Activate()
 {
-	active = true; frozen = false; BindCallbacks();
+	active = true; 
+	frozen = false; 
+	BindCallbacks();
 }
 
 void Object::Deactivate()
 {
-	active = false; frozen = false; UnbindCallbacks();
+	active = false; 
+	frozen = false; 
+	UnbindCallbacks();
+}
+
+void Object::Freeze()
+{
+	frozen = true;
+}
+
+void Object::Unfreeze()
+{
+	frozen = false;
 }
 
 Component* Object::GetComponentOfType(ComponentType type)

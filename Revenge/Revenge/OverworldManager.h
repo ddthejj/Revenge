@@ -70,7 +70,7 @@ public:
 	// Update the overworld manager
 	static void Update(float delta_time);
 
-	static void OnInteract(Point<float> interactPoint);
+	static bool OnInteract(Point<float> interactPoint);
 
 #pragma endregion
 

@@ -129,16 +129,16 @@ protected:
 #pragma region Callback Methods
 
 	// callbacks from input manager
-	void UpPressedCallback();
-	void UpReleasedCallback();
-	void DownPressedCallback();
-	void DownReleasedCallback();
-	void LeftPressedCallback();
-	void LeftReleasedCallback();
-	void RightPressedCallback();
-	void RightReleasedCallback();
-	void OnInteractCallback();
-	void OnMenuCallback();
+	bool UpPressedCallback();
+	bool UpReleasedCallback();
+	bool DownPressedCallback();
+	bool DownReleasedCallback();
+	bool LeftPressedCallback();
+	bool LeftReleasedCallback();
+	bool RightPressedCallback();
+	bool RightReleasedCallback();
+	bool OnInteractCallback();
+	bool OnMenuCallback();
 
 	virtual void BindCallbacks();
 	virtual void UnbindCallbacks();

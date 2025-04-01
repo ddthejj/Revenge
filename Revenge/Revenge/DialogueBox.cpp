@@ -139,7 +139,7 @@ void DialogueBox::UnbindCallbacks()
 	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_INTERACT, std::bind(&DialogueBox::InteractPressed, this), this);
 }
 
-void DialogueBox::InteractPressed()
+bool DialogueBox::InteractPressed()
 {
 	// reset arrow blinking
 	arrow->SetSourcePos(Point<float>(0, 0));
@@ -165,4 +165,6 @@ void DialogueBox::InteractPressed()
 		// skip the text scrolling
   		ScrollText(999);
 	}
+
+	return true;
 }

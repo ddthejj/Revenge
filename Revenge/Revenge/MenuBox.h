@@ -105,13 +105,13 @@ private:
 	virtual void BindCallbacks();
 	virtual void UnbindCallbacks();
 
-	void UpPressed();
-	void DownPressed();
-	void LeftPressed();
-	void RightPressed();
+	bool UpPressed();
+	bool DownPressed();
+	bool LeftPressed();
+	bool RightPressed();
 
-	void InteractPressed();
-	void MenuPressed();
+	bool InteractPressed();
+	bool MenuPressed();
 
 #pragma endregion
 
