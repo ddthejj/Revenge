@@ -61,7 +61,6 @@ public:
 	// Check if we have quit the game
 	static bool ShouldEnd() { return quit; }
 
-
 #pragma endregion
 
 #pragma region SpriteBatch Access
@@ -99,7 +98,11 @@ public:
 	// Center the camera on an object
 	static void CenterCamera(float x, float y);
 	// Indicate that the player has hit a door
-	static void HitDoor(Door* hit);
+	//static void HitDoor(Door* hit);
+	// Check whether or not the player can do a room transition at the moment
+	static bool CanChangeRoom();
+	// Start the fade process for a room transition
+	static void StartRoomChange();
 	// Freeze the entire scene
 	static void FreezeScene();
 	// Unfreeze the entire scene

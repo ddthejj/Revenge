@@ -2,8 +2,10 @@
 #include "Component.h"
 #include "ComponentManager.h"
 
-Component::Component()
+Component::Component(ComponentType _type, bool _isUnique)
 {
+	type = _type;
+	isUnique = _isUnique;
 	Register();
 }
 
@@ -19,5 +21,5 @@ void Component::Register()
 
 void Component::Unregister()
 {
-	ComponentManager::UnregisterComponent(this);                                                                                                                                                                                                                                      Component();
+	ComponentManager::UnregisterComponent(this);
 }

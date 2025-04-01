@@ -2,39 +2,47 @@
 #include "ComponentManager.h"
 #include "Component.h"
 
-std::vector<Component*> ComponentManager::registeredComponents[ComponentType::Max];
+std::map<ComponentType, std::vector<Component*>> ComponentManager::registeredComponents = std::map<ComponentType, std::vector<Component*>>();
 
 
 void ComponentManager::Init()
 {
-	for (int i = 0; i < ComponentType::Max; i++)
-	{
-		registeredComponents[i] = std::vector<Component*>();
-	}
+	registeredComponents.insert(std::pair(ComponentType::Interaction, std::vector<Component*>()));
+	registeredComponents.insert(std::pair(ComponentType::Trigger, std::vector<Component*>()));
+	registeredComponents.insert(std::pair(ComponentType::DialogueInteraction, std::vector<Component*>()));
+	registeredComponents.insert(std::pair(ComponentType::DoorTrigger, std::vector<Component*>()));
 }
 
 void ComponentManager::Clean()
 {
-	for (int i = 0; i < ComponentType::Max; i++)
+	for (auto it = registeredComponents.begin(); it != registeredComponents.end(); it++)
 	{
-		registeredComponents[i].clear();
+		(*it).second.clear();
 	}
 }
 
 void ComponentManager::RegisterComponent(Component* componentToRegister)
 {
-	registeredComponents[componentToRegister->type].push_back(componentToRegister);
+	for (auto it = registeredComponents.begin(); it != registeredComponents.end(); it++)
+	{
+		if (it->first & componentToRegister->GetType())
+		{
+			it->second.push_back(componentToRegister);
+		}
+	}
 }
 
 void ComponentManager::UnregisterComponent(Component* componentToUnregister)
 {
-	std::vector<Component*> componentList = registeredComponents[componentToUnregister->type];
-
-	for (auto it = componentList.begin(); it != componentList.end(); it++)
+	for (auto it = registeredComponents.begin(); it != registeredComponents.end(); it++)
 	{
-		if (*it == componentToUnregister)
+		for (auto it2 = it->second.begin(); it2 != it->second.end(); it2++)
 		{
-			registeredComponents[componentToUnregister->type].erase(it);
+			if (*it2 == componentToUnregister)
+			{
+				it->second.erase(it2);
+				break;
+			}
 		}
 	}
 }

@@ -1,18 +1,24 @@
 #include "defines.h"
 #include "InteractionComponent.h"
+#include "MenuManager.h"
 
-void InteractionComponent::Register()
+
+InteractionComponent::InteractionComponent(ComponentType _type, bool _isUnique) : Component(_type, _isUnique)
 {
+
 }
 
-void InteractionComponent::Unregister()
+DialogueComponent::DialogueComponent(std::vector<std::string> _lines) : InteractionComponent(ComponentType::DialogueInteraction, true)
 {
+	lines = _lines;
 }
 
-void InteractionComponent::OnInteract()
+DialogueComponent::~DialogueComponent()
 {
-	if (interactFunc)
-	{
-		interactFunc();
-	}
+	lines.clear();
+}
+
+void DialogueComponent::Interact()
+{
+	MenuManager::StartDialogue(nullptr, lines);
 }

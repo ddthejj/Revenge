@@ -9,12 +9,16 @@
 #include "Room.h"
 #include "Tile.h"
 #include "PlayerCharacters.h"
+#include "InteractionComponent.h"
+#include "Rectangle.h"
+
+#include <cmath>
 
 ProtoTile* OverworldManager::protoTiles[(int)TILES::TILE_MAX];
 std::vector<Map*> OverworldManager::maps;
 
 Map* OverworldManager::currentMap = nullptr;
-Door* OverworldManager::doorHit = nullptr;
+OverworldManager::DoorData OverworldManager::doorHit(0,0,0);
 Player* OverworldManager::currentPlayer = nullptr;
 std::vector<Character*> OverworldManager::party;
 
@@ -116,10 +120,14 @@ const std::vector<Character*> OverworldManager::GetCurrentParty()
 }
 
 
-void OverworldManager::HitDoor(Door* hit)
+void OverworldManager::HitDoor(int destination, int x, int y)
 {
-	doorHit = hit;
-	isRoomTransitioning = true;
+	if (Manager::CanChangeRoom())
+	{
+		doorHit = DoorData(destination, x, y);
+		isRoomTransitioning = true;
+		Manager::StartRoomChange();
+	}
 }
 
 void OverworldManager::TransitionRoom()
@@ -137,9 +145,9 @@ void OverworldManager::TransitionRoom()
 	case FADE_STATUS::FADE_SWITCH:
 		// when fade out is done
 		currentMap->Deactivate();
-		currentMap->SetRoom(doorHit->Destination());
-		currentPlayer->GetRectangle()->SetX(doorHit->DestinationX());
-		currentPlayer->GetRectangle()->SetY(doorHit->DestinationY());
+		currentMap->SetRoom(doorHit.destination);
+		currentPlayer->GetRectangle()->SetX((float)doorHit.x);
+		currentPlayer->GetRectangle()->SetY((float)doorHit.y);
 		currentMap->Activate();
 		currentMap->Freeze();
 		break;
@@ -147,7 +155,6 @@ void OverworldManager::TransitionRoom()
 		// fading done
 		currentMap->Unfreeze();
 		currentPlayer->Unfreeze();
-		doorHit = nullptr;
 		isRoomTransitioning = false;
 		break;
 	case FADE_STATUS::FADE_OUT:
@@ -170,16 +177,11 @@ void OverworldManager::Update(float delta_time)
 
 void OverworldManager::OnInteract(Point<float> interactPoint)
 {
-	std::vector<Interactable*> const tiles = currentMap->CurrentRoom()->GetInteractables();
-
-	for (int i = 0; i < currentMap->CurrentRoom()->GetInteractableCount(); i++)
+	if (Tile* interactedTile = currentMap->CurrentRoom()->GetTile(1, (int)std::floor(interactPoint.x / TILE_WIDTH), (int)std::floor(interactPoint.y / TILE_HEIGHT)))
 	{
-		const Interactable* tile = tiles[i];
-
-		if (tile->GetRectangle()->Contains(interactPoint))
+		if (InteractionComponent* tileInteracted = (InteractionComponent*)interactedTile->GetComponentOfType(ComponentType::DialogueInteraction))
 		{
-			tile->Interact();
-			return;
+			tileInteracted->Interact();
 		}
 	}
 }

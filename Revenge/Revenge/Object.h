@@ -1,9 +1,10 @@
 #pragma once
-#include "Rectangle.h"
-#include "defines.h"
+#include <string>
+#include <vector>
 
 class SpriteBatch;
 class Component;
+enum ComponentType : int;
 
 // the base class for all gameobjects
 class Object
@@ -27,13 +28,13 @@ public:
 
 #pragma region Methods
 
-	Object(std::string _debugName) { debugName = _debugName; }
-	~Object() { if (active) Deactivate(); }
+	Object(std::string _debugName);
+	~Object();
 
 	// activate the object
-	virtual void Activate() { active = true; frozen = false; BindCallbacks(); }
+	virtual void Activate();
 	// deactivate the object
-	virtual void Deactivate() { active = false; frozen = false; UnbindCallbacks(); }
+	virtual void Deactivate();
 	// freeze the object
 	virtual void Freeze() { frozen = true; }
 	// unfreeze the object
@@ -47,9 +48,11 @@ public:
 	// returns whether or not the object is frozen
 	bool IsFrozen() const { return frozen; }
 
-
 	virtual void BindCallbacks() {}
 	virtual void UnbindCallbacks() {}
+
+	Component* GetComponentOfType(ComponentType type);
+	virtual bool AddComponent(Component* _component);
 
 #pragma endregion
 };

@@ -1,5 +1,5 @@
 #pragma once
-
+#include <map>
 
 class Component;
 enum ComponentType : int;
@@ -9,7 +9,7 @@ class ComponentManager
 
 #pragma region Properties
 
-	static std::vector<Component*> registeredComponents[];
+	static std::map<ComponentType, std::vector<Component*>> registeredComponents;
 
 #pragma endregion
 

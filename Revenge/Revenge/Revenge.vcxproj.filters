@@ -163,6 +163,12 @@
     <ClCompile Include="PauseMenu.cpp">
       <Filter>Content\Menus</Filter>
     </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Source\Base Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="TriggerComponent.cpp">
+      <Filter>Source\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Texture.h">
@@ -272,6 +278,9 @@
     </ClInclude>
     <ClInclude Include="PauseMenu.h">
       <Filter>Content\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="TriggerComponent.h">
+      <Filter>Source\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

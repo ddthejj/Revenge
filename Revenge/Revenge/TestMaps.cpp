@@ -97,8 +97,7 @@ Room::RoomData TestRoom0::CreateRoomData()
 	};
 	dimensions = Point<int>(16, 16);
 	int doorCount = 2;
-	interactableCount = 3;
-	interactableTiles = std::vector<Interactable*>();
+	dialogueCount = 3;
 	npcCount = 0;
 
 #pragma region Create NPC Data
@@ -177,8 +176,7 @@ Room::RoomData TestRoom1::CreateRoomData()
 	std::vector<std::vector<std::string>> textList = {};
 	dimensions = Point<int>(16, 16);
 	int doorCount = 2;
-	interactableCount = 0;
-	interactableTiles = std::vector<Interactable*>();
+	dialogueCount = 0;
 	npcCount = 1;
 
 #pragma region Create NPC Data

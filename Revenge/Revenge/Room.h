@@ -5,7 +5,6 @@
 
 class Tile;
 class Sprite;
-class Interactable;
 class NonPlayer;
 
 #define SECTOR_SIZE 4
@@ -16,8 +15,7 @@ protected:
 
 	std::vector<std::vector<Tile*>> tiles[3];
 	Point<int> dimensions;
-	std::vector<Interactable*> interactableTiles;
-	int interactableCount = 0;
+	int dialogueCount = 0;
 	std::vector<NonPlayer*> NPCs;
 	int npcCount = 0;
 
@@ -52,10 +50,9 @@ public:
 	void Update(float delta_time) {}
 
 
-	const Tile* GetTile(int layer, int x, int y) const;
+	Tile* GetTile(int layer, int x, int y) const;
 	Point<int> GetDimensions() const { return dimensions; }
-	std::vector<Interactable*> const GetInteractables() const { return interactableTiles; }
-	int GetInteractableCount() const { return interactableCount; }
+	int GetDialogueCount() const { return dialogueCount; }
 	std::vector<NonPlayer*> const GetNPCs() const { return NPCs; }
 	int GetNPCCount() const { return npcCount; }
 

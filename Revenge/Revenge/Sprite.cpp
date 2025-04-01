@@ -4,6 +4,7 @@
 #include "SpriteBatch.h"
 #include "Texture.h"
 #include "Rectangle.h"
+#include <algorithm>
 
 Sprite::Sprite(std::string _debugName, float x, float y, float width, float height, const Texture* _texture, float _layer, float _opacity) : Sprite(_debugName, x, y, width, height, 0, 0,
 	// if the texture has a default source rectangle, use it as the sprite's source rectangle, but if it doesn't, just use the normal texture height / width 
@@ -63,6 +64,21 @@ void Sprite::SetSourcePos(const Point<float>& location)
 	sourceRectangle->SetLocation(location);
 }
 
+void Sprite::SetOpacity(float _opacity)
+{
+	opacity = std::clamp(_opacity, 0.f, 1.f);
+}
+
+void Sprite::DecreaseOpacity(float amnt)
+{
+	opacity = std::clamp(opacity - amnt, 0.f, 1.f);
+}
+
+void Sprite::IncreaseOpacity(float amnt)
+{
+	opacity = std::clamp(opacity + amnt, 0.f, 1.f);
+}
+
 
 void Sprite::Activate()
 {
@@ -100,6 +116,28 @@ void Sprite::Unfreeze()
 	{
 		Manager::AddUpdate(this);
 		Object::Unfreeze();
+	}
+}
+
+void Sprite::PlayerCollided()
+{
+	for (auto it = onPlayerCollided.begin(); it != onPlayerCollided.end(); it++)
+	{
+		(*it)();
+	}
+}
+
+void Sprite::BindToPlayerCollided(std::function<void()> func)
+{
+	onPlayerCollided.push_back(func);
+}
+
+void Sprite::UnbindFromPlayerCollided(std::function<void()> func)
+{
+	for (auto it = onPlayerCollided.begin(); it != onPlayerCollided.end(); it++)
+	{
+		onPlayerCollided.erase(it);
+		return;
 	}
 }
 

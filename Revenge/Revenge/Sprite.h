@@ -1,10 +1,12 @@
 #pragma once
 #include "Object.h"
+#include "EnumParser.h"
+#include <map>
+#include <functional>
 
 class MyRectangle;
 class Texture;
-template<typename T>
-struct Point;
+template<typename T> struct Point;
 
 // base class for all drawable objects
 class Sprite : public Object
@@ -13,11 +15,13 @@ protected:
 
 #pragma region Properties
 
-	MyRectangle* rectangle;			// the rectangle to draw the spirte on
-	MyRectangle* sourceRectangle;	// the source rectangle for drawing the sprite (can be nullptr)
-	const Texture* texture;				// the sprite's texture
-	float layer = 0.f;				// the sprite's layer
-	float opacity = 1.f;			// the sprite's opacity
+	MyRectangle* rectangle;						// the rectangle to draw the spirte on
+	MyRectangle* sourceRectangle;				// the source rectangle for drawing the sprite (can be nullptr)
+	const Texture* texture;						// the sprite's texture
+	float layer = 0.f;							// the sprite's layer
+	float opacity = 1.f;						// the sprite's opacity
+
+	std::vector<std::function<void()>> onPlayerCollided;		// callback for when the player collides with this sprite
 
 #pragma endregion
 
@@ -40,11 +44,11 @@ public:
 	// set the source rectangle's position
 	void SetSourcePos(const Point<float>& location);
 	// set the sprite's opacity
-	virtual void SetOpacity(float _opacity) { opacity = _opacity; }
+	virtual void SetOpacity(float _opacity);
 	// decrease the sprite's opacity
-	void DecreaseOpacity(float amnt) { opacity -= amnt; if (opacity < 0) opacity = 0.f; }
+	void DecreaseOpacity(float amnt);
 	// increase the sprite's opacity
-	void IncreaseOpacity(float amnt) { opacity += amnt; if (opacity > 1) opacity = 1.f; }
+	void IncreaseOpacity(float amnt);
 
 	// return the main rectangle
 	MyRectangle* GetRectangle() const;
@@ -65,6 +69,12 @@ public:
 	virtual void Freeze();
 	// unfreeze the sprite
 	virtual void Unfreeze();
+	// called when the player collides with this sprite
+	virtual void PlayerCollided();
+
+	void BindToPlayerCollided(std::function<void()> func);
+
+	void UnbindFromPlayerCollided(std::function<void()> func);
 
 #pragma endregion
 

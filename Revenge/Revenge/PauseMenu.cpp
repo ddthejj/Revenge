@@ -6,6 +6,7 @@
 #include "Manager.h"
 #include "Character.h"
 #include "OverworldManager.h"
+#include "Rectangle.h"
 
 TitleMenu::TitleMenu() : MenuBox(
 	std::string("TitleMenuMENU_TITLE"), 

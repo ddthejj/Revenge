@@ -8,6 +8,7 @@
 #include "Text.h"
 #include "SoundManager.h"
 #include "MenuManager.h"
+#include "Rectangle.h"
 
 UISprite* TitleManager::logo = nullptr;
 UISprite* TitleManager::title = nullptr;

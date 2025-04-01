@@ -211,12 +211,20 @@ void Manager::CenterCamera(float x, float y)
 	spriteBatch->SetCamera(x, y);
 }
 
-void Manager::HitDoor(Door* hit)
+bool Manager::CanChangeRoom()
 {
 	if (fadingOut)
-		return;
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
 
-	OverworldManager::HitDoor(hit);
+void Manager::StartRoomChange()
+{
 	fadingOut = true;
 }
 

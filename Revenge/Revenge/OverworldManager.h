@@ -12,6 +12,12 @@ class Character;
 
 class OverworldManager
 {
+	struct DoorData
+	{
+		int destination, x, y;
+
+		DoorData(int _destination, int _x, int _y) { destination = _destination; x = _x; y = _y; }
+	};
 
 #pragma region Properties
 
@@ -19,7 +25,7 @@ class OverworldManager
 	static ProtoTile* protoTiles[(int)TILES::TILE_MAX];		// List of all prototype tiles 
 
 	static Map* currentMap;						// Currently loaded map
-	static Door* doorHit;						// The door that the player hit
+	static DoorData doorHit;						// The door that the player hit
 	static Player* currentPlayer;				// Current active player
 	static std::vector<Character*> party;		// List of party members
 
@@ -58,7 +64,7 @@ public:
 	static const std::vector<Character*> GetCurrentParty();
 
 	// Handle transitioning rooms when the player enters a door
-	static void HitDoor(Door* hit);
+	static void HitDoor(int destination, int x, int y);
 	// Fade the screen out, load the new room, fade the screen in
 	static void TransitionRoom();
 	// Update the overworld manager

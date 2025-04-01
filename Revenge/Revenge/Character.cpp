@@ -6,11 +6,11 @@
 #include "OverworldManager.h"
 #include "Room.h"
 #include "Tile.h"
-#include "SpriteBatch.h"
 #include "InputManager.h"
 #include "MenuManager.h"
 #include "Ability.h"
 #include "FileReader.h"
+#include "Rectangle.h"
 
 #include <random>
 #include <ctime>
@@ -68,6 +68,7 @@ void Character::TestCollision()
 	futureRectangle.SetLocation(Point<float>(futureRectangle.Location().x + velocity.x, futureRectangle.Location().y));
 
 	std::vector<Sprite*> collidedSprites = currentRoom->TestCollision(this, futureRectangle);
+	CollidedSprites(collidedSprites);
 	collided = collidedSprites.size();
 
 	for (int i = 0; i < collidedSprites.size(); i++)
@@ -95,6 +96,8 @@ void Character::TestCollision()
 	// vertical movement second
 	futureRectangle.SetLocation(Point<float>(futureRectangle.Location().x, futureRectangle.Location().y + velocity.y));
 	collidedSprites = currentRoom->TestCollision(this, futureRectangle);
+	CollidedSprites(collidedSprites);
+	collided = collided || collidedSprites.size();
 
 	for (int i = 0; i < collidedSprites.size(); i++)
 	{
@@ -354,6 +357,15 @@ Point<float> Player::GetInteractPoint() const
 	return Point<float>();
 }
 
+void Player::CollidedSprites(std::vector<Sprite*> collidedSprites)
+{
+	for (auto it = collidedSprites.begin(); it != collidedSprites.end(); it++)
+	{
+		(*it)->PlayerCollided();
+	}
+}
+
+
 #pragma endregion
 
 #pragma region NonPlayer Character
@@ -393,7 +405,7 @@ void NonPlayer::Move(float delta_time)
 				//random point within radius
 
 				float r = moveRadius * std::sqrt((float)std::rand() / RAND_MAX);
-				float theta = ((float)std::rand() / RAND_MAX) * 2 * (float)std::_Pi;
+				float theta = ((float)std::rand() / RAND_MAX) * 2 * (float)std::_Pi_val;
 				float x = startLocation.x + r * std::cos(theta);
 				float y = startLocation.y + r * std::sin(theta);
 
@@ -437,5 +449,4 @@ void NonPlayer::Move(float delta_time)
 		moveToLocation = GetPos();
 	}
 }
-
 #pragma endregion

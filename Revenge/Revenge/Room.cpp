@@ -5,6 +5,9 @@
 #include "OverworldManager.h"
 #include "FileReader.h"
 #include "Character.h"
+#include "InteractionComponent.h"
+#include "TriggerComponent.h"
+#include "Rectangle.h"
 
 #include <iostream>
 #include <fstream>
@@ -113,11 +116,11 @@ void Room::Unfreeze()
 	Object::Unfreeze();
 }
 
-const Tile* Room::GetTile(int layer, int x, int y) const
+Tile* Room::GetTile(int layer, int x, int y) const
 {
 	if (x >= dimensions.x || x < 0 || y >= dimensions.y || y < 0)
 		return nullptr;
-	return tiles[layer][x][y];
+	return tiles[layer][y][x];
 }
 
 std::vector<Sprite*> const Room::TestCollision(Sprite* collider, MyRectangle collisionRectangle) const
@@ -130,9 +133,14 @@ std::vector<Sprite*> const Room::TestCollision(Sprite* collider, MyRectangle col
 	{
 		for (int j = 0; j < sectorTileNum; j++)
 		{
-			if (sectors[collidedSectors[i]][j] && sectors[collidedSectors[i]][j]->Collidable() && sectors[collidedSectors[i]][j]->GetRectangle()->Intersects(collisionRectangle))
+			Tile* checkTile = sectors[collidedSectors[i]][j];
+
+			if (checkTile && (checkTile->Collidable() || checkTile->GetComponentOfType(ComponentType::Trigger) != nullptr))
 			{
-				collidedSprites.push_back(sectors[collidedSectors[i]][j]);
+				if (checkTile->GetRectangle()->Intersects(collisionRectangle))
+				{
+					collidedSprites.push_back(checkTile);
+				}
 			}
 		}
 	}
@@ -160,95 +168,6 @@ std::vector<Sprite*> const Room::TestCollision(Sprite* collider, MyRectangle col
 
 	return collidedSprites;
 }
-
-// example for CreateRoomData override
-/*
-Room::RoomData Room::CreateRoomData()
-{
-	std::vector<std::vector<std::vector<int>>> layers =
-	{
-		{
-			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
-			{-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1},
-			{-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1},
-			{-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1},
-			{-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1},
-			{-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1},
-			{-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1},
-			{-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1},
-			{-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1},
-			{-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1},
-			{-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1},
-			{-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1},
-			{-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1},
-			{-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1},
-			{-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1},
-			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1}
-		},
-
-		{
-			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-			{1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1},
-			{1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1},
-			{1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1},
-			{1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1},
-			{1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1},
-			{1,-1,-1,-1,-1,-1,-1,-1,-1,1,-1,-1,-1,-1,-1,1},
-			{1,-1,-1,-1,-1,-1,-1,-1,-1,1,-1,-1,-1,-1,-1,1},
-			{1,-1,-1,-1,-1,-1,-1,-1,-1,1,-1,-1,-1,-1,-1,1},
-			{1,-1,-1,-1,-1,-1,-1,-1,-1,1,-1,-1,-1,-1,-1,1},
-			{1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1},
-			{1,-1,-1,3,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1},
-			{1,-1,-1,-1,3,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1},
-			{1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1},
-			{1,3,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1},
-			{1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1}
-		},
-
-		{
-			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
-			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
-			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
-			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
-			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
-			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
-			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
-			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
-			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
-			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
-			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
-			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
-			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
-			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
-			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
-			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1}
-		}
-	};
-
-	std::vector<std::vector<int>> doorData = { {1, 240, 33}, {1, 240, 33} };
-	std::vector<std::vector<std::string>> textList = 
-	{ 
-		{"Hello!"}, 
-		{"Que es esta? Donde esta el queso de mi padre? Quien sus pantalones? This is a violation of basic human decency. That's super weird, so I wasn't thinking that much about it. Ooh look, a robin! That's really interesting. Robins that fly into windows are less interesting. Hmmmmmmmm? Continuing testing, since the font size has lowered. We're now testing on bigger boxes, trying to see if they can contain even more text. How much text could a text box box if a text box could box text? This sentence should send us over the edge, rolling us into a new box. Hopefully. Just kidding, we need a bit more. Wow, we can hold a lot of text. This seems like a lot of text. Maybe the font size should be bigger. "},
-		{"What?", "Who?", "When?" "Why?"}
-	};
-	dimensions = Point<int>(16, 16);
-	int doorCount = 2;
-	interactableCount = 3;
-	interactableTiles = new Interactable * [interactableCount];
-	npcCount = 1;
-
-#pragma region Create NPC Data
-
-	NPCs = new NonPlayer * [npcCount];
-
-	NPCs[0] = new TestNPC(std::string("NPC") + std::to_string(0), 200, 200, 32, 32, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_PLAYER), .6f);
-
-#pragma endregion
-
-	return RoomData(std::vector<std::vector<std::vector<int>>>(), 0, std::vector<std::vector<int>>(), std::vector<std::vector<std::string>>());
-}
-*/
 
 std::vector<int> const Room::GetSectors(MyRectangle collisionRectangle) const
 {
@@ -282,7 +201,7 @@ void Room::InterpretRoomData(RoomData roomData)
 #pragma region Translate Data into Tiles
 
 	// set up the tiles
-	int doorAt = 0, interactableAt = 0;
+	int doorAt = 0, dialogueAt = 0;
 
 	for (int l = 0; l < 3; l++)
 	{
@@ -296,36 +215,26 @@ void Room::InterpretRoomData(RoomData roomData)
 				if (roomData.layers[l][i][j] != -1 && roomData.layers[l][i][j] != -2)
 				{
 					const ProtoTile* prototype = OverworldManager::GetProtoTile(roomData.layers[l][i][j]);
+					Tile* newTile = new Tile(std::string("Tile") + std::to_string(l) + "," + std::to_string(i) + "," + std::to_string(j), prototype, (float)x, (float)y, .25f * (float)l);
+
 					if (prototype->door)
 					{
 						if (doorAt < roomData.doorCount)
 						{
-							tiles[l][i].push_back(new Door(std::string("Door") + std::to_string(doorAt), prototype, (float)x, (float)y, .25f * (float)l, (int)roomData.doorData[doorAt][0], (float)roomData.doorData[doorAt][1], (float)roomData.doorData[doorAt][2]));
+							newTile->AddComponent(new DoorComponent(roomData.doorData[doorAt][0], roomData.doorData[doorAt][1], roomData.doorData[doorAt][2]));
 							doorAt++;
 						}
-						else
-						{
-							OutputDebugString(L"ERROR READING DOOR DATA");
-						}
 					}
-					else if (prototype->interactable)
+					if (prototype->dialogueinteractable)
 					{
-						if (interactableAt < interactableCount)
+						if (dialogueAt < dialogueCount)
 						{
-							Interactable* interactable = new Interactable(std::string("Interactable") + std::to_string(interactableAt), prototype, (float)x, (float)y, .25f * (float)l, roomData.textList[interactableAt]);
-							interactableTiles.push_back(interactable);
-							tiles[l][i].push_back(interactable);
-							interactableAt++;
-						}
-						else
-						{
-							OutputDebugString(L"ERROR READING INTERACTABLE TILE DATA");
+							newTile->AddComponent(new DialogueComponent(roomData.textList[dialogueAt]));
+							dialogueAt++;
 						}
 					}
-					else
-					{
-						tiles[l][i].push_back(new Tile(std::string("Tile") + std::to_string(l) + "," + std::to_string(i) + "," + std::to_string(j), prototype, (float)x, (float)y, .25f * (float)l));
-					}
+
+					tiles[l][i].push_back(newTile);
 				}
 				else if (roomData.layers[l][i][j] == -2)
 				{

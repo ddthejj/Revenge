@@ -4,6 +4,7 @@
 #include "SpriteBatch.h"
 #include "InputManager.h"
 #include "MenuManager.h"
+#include "Rectangle.h"
 
 DialogueBox::DialogueBox(std::string _debugName, float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, float _layer, float _opacity, ANCHOR_POINT _anchor)
 	: BorderedBox(_debugName, _x, _y, _width, _height, _texture, _layer, _opacity, _anchor)

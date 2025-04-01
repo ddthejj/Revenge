@@ -111,6 +111,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>defines.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
@@ -173,6 +174,7 @@
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="MenuBox.cpp" />
     <ClCompile Include="MenuManager.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="OverworldManager.cpp" />
     <ClCompile Include="PauseMenu.cpp" />
     <ClCompile Include="PlayerCharacters.cpp" />
@@ -191,6 +193,7 @@
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TitleManager.cpp" />
+    <ClCompile Include="TriggerComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ability.h" />
@@ -229,6 +232,7 @@
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TitleManager.h" />
+    <ClInclude Include="TriggerComponent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

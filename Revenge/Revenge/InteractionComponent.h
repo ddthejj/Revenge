@@ -3,21 +3,25 @@
 
 class InteractionComponent : public Component
 {
-public:
-
-#pragma region Properties
-
-	void (*interactFunc) () = nullptr;
-
-#pragma endregion
-
 #pragma region Methods
 
-	virtual void Register() override;
-	virtual void Unregister() override;
+public:
 
-	void OnInteract();
+	InteractionComponent(ComponentType _type, bool _isUnique);
+	virtual void Interact() = 0;
 
 #pragma endregion Methods
 };
 
+class DialogueComponent : public InteractionComponent
+{
+protected:
+
+	std::vector<std::string> lines;
+
+public:
+
+	DialogueComponent(std::vector<std::string> _lines);
+	virtual ~DialogueComponent() override;
+	virtual void Interact();
+};

@@ -2,6 +2,7 @@
 #include "defines.h"
 #include "SpriteBatch.h"
 #include "Texture.h"
+#include "Rectangle.h"
 
 BorderedBox::BorderedBox(std::string _debugName, float x, float y, float width, float height, const Texture* _texture, float _layer, float _opacity, ANCHOR_POINT _anchor)
 	: UISprite(_debugName, x, y, width, height, _texture, _layer, _opacity, _anchor)

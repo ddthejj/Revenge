@@ -7,6 +7,7 @@
 #include "FileReader.h"
 #include "InputManager.h"
 #include "SoundManager.h"
+#include "Rectangle.h"
 
 MenuBox::MenuBox(std::string _debugName, float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, float _layer, float _opacity, ANCHOR_POINT _anchor)
 	: BorderedBox(_debugName, _x, _y, _width, _height, _texture, _layer, _opacity, _anchor)

@@ -6,11 +6,14 @@
 #include "Character.h"
 #include "Texture.h"
 #include "MenuManager.h"
+#include "Rectangle.h"
+#include "Component.h"
+#include "TriggerComponent.h"
 
 
 #pragma region ProtoTile
 
-ProtoTile::ProtoTile(ProtoTile* that) : ProtoTile(that->texture, that->height, that->width, that->collidable, that->door, that->interactable)
+ProtoTile::ProtoTile(ProtoTile* that) : ProtoTile(that->texture, that->height, that->width, that->collidable, that->door, that->dialogueinteractable)
 {
 
 }
@@ -36,53 +39,23 @@ void Tile::Update(float delta_time)
 
 }
 
-#pragma endregion
-
-#pragma region Door
-
-Door::Door(std::string _debugName, const ProtoTile* prototype, float _x, float _y, float _layer, int _destination, float _destX, float _destY) : Tile(_debugName, prototype, _x, _y, _layer)
+bool Tile::AddComponent(Component* _component)
 {
-	destination = _destination;
-	destX = _destX; destY = _destY;
-}
+	bool retVal = Object::AddComponent(_component);
 
-Door::~Door()
-{
-	if (active) Deactivate();
-}
-
-
-void Door::Update(float delta_time)
-{
-	if (rectangle->Intersects(*(OverworldManager::GetCurrentPlayer()->GetRectangle())))
+	if (retVal)
 	{
-		Manager::HitDoor(this);
+		switch (_component->GetType())
+		{
+		case ComponentType::DoorTrigger:
+		{
+			BindToPlayerCollided(std::bind(&DoorComponent::Trigger, (DoorComponent*)_component));
+			break;
+		}
+		}
 	}
-}
 
-#pragma endregion
-
-#pragma region Interactable
-
-Interactable::Interactable(std::string _debugName, const ProtoTile* prototype, float _x, float _y, float _layer, std::vector<std::string> _lines) : Tile(_debugName, prototype, _x, _y, _layer)
-{
-	lines = _lines;
-}
-
-Interactable::~Interactable()
-{
-	if (active) Deactivate();
-}
-
-
-void Interactable::Interact() const
-{
-	MenuManager::StartDialogue(nullptr, lines);
-}
-
-void Interactable::Update(float delta_time)
-{
-
+	return retVal;
 }
 
 #pragma endregion
