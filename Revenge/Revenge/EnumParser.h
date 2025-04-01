@@ -183,32 +183,3 @@ enum class MAGIC_TYPE
 #pragma endregion
 
 #pragma endregion
-
-
-class EnumParser
-{
-	static std::map<std::string, TILES>				tilesMap;
-	static std::map<std::string, TEXTURES_TEST>		testTexturesMap;
-	static std::map<std::string, TEXTURES_TITLE>	titleTexturesMap;
-	static std::map<std::string, KEYS>				keysMap;
-	static std::map<std::string, MOUSE_KEYS>		mouseKeysMap;
-	static std::map<std::string, FADE_STATUS>		fadeStatusMap;
-	static std::map<std::string, GAME_STATE>		gameStateMap;
-	static std::map<std::string, ANCHOR_POINT>		anchorPointMap;
-	static std::map<std::string, SOUND_CHANNEL>		soundChannelMap;
-	
-	static std::map<std::string, MAGIC_TYPE>		magicTypeMap;
-
-public:
-
-	static TILES ParseTiles(const std::string& name);
-	static TEXTURES_TEST ParseTestTexture(const std::string& name);
-	static TEXTURES_TITLE ParseTitleTexture(const std::string& name);
-	static KEYS ParseKeys(const std::string& name);
-	static MOUSE_KEYS ParseMouseKeys(const std::string& name);
-	static FADE_STATUS ParseFadeStatus(const std::string& name);
-	static GAME_STATE ParseGameState(const std::string& name);
-	static ANCHOR_POINT ParseAnchorPoint(const std::string& name);
-	static SOUND_CHANNEL ParseSoundChannel(const std::string& name);
-	static MAGIC_TYPE ParseMagicType(const std::string& name);
-};

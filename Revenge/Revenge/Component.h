@@ -6,6 +6,7 @@ enum ComponentType : int
 	None,
 	Interaction = 1 << 0, 
 	Trigger = 1 << 1,
+	Collision = 1 << 2,
 	DialogueInteraction = (1 << 3) | Interaction,
 	DoorTrigger = (1 << 4) | Trigger
 };

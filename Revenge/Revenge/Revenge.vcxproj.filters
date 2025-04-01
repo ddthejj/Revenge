@@ -169,6 +169,9 @@
     <ClCompile Include="TriggerComponent.cpp">
       <Filter>Source\Components</Filter>
     </ClCompile>
+    <ClCompile Include="CollisionComponent.cpp">
+      <Filter>Source\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Texture.h">
@@ -280,6 +283,9 @@
       <Filter>Content\Menus</Filter>
     </ClInclude>
     <ClInclude Include="TriggerComponent.h">
+      <Filter>Source\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionComponent.h">
       <Filter>Source\Components</Filter>
     </ClInclude>
   </ItemGroup>

@@ -59,46 +59,6 @@ std::vector<std::string> FileReader::ParseLine(std::string line, char delim) con
 	return lineList;
 }
 
-Point<int> MenuReader::GetDimensions() const
-{
-	// the file either didn't correctly open or contained nothing
-	if (lines.size() == 0)
-		return Point<int>(0, 0);
-
-	std::vector<std::string> dims = ParseLine(lines[0], ',');
-	return Point<int>(atoi(dims[0].c_str()), atoi(dims[1].c_str()));
-}
-
-std::vector<MenuReader::OptionData> MenuReader::GetOptions() const
-{
-	// get the number of options
-	int optionCount = atoi(lines[2].c_str());
-	std::vector<MenuReader::OptionData> optionsList = std::vector<MenuReader::OptionData>();
-
-	for (int i = 0; i < optionCount; i++)
-	{
-		int lineAt = i + 3;
-
-		std::vector<std::string> optionData = ParseLine(lines[lineAt], ',');
-		OptionData data;
-		data.text = optionData[0];
-		data.returnValue = atoi(optionData[1].c_str());
-		data.position.x = atoi(optionData[2].c_str());
-		data.position.y = atoi(optionData[3].c_str());
-		data.matrixLocation.x = atoi(optionData[4].c_str());
-		data.matrixLocation.y = atoi(optionData[5].c_str());
-		optionsList.push_back(data);
-	}
-
-	return optionsList;
-}
-
-ANCHOR_POINT MenuReader::GetAnchor() const
-{
-
-	return EnumParser::ParseAnchorPoint(lines[1]);
-}
-
 std::vector<unsigned long long> SaveReader::GetFlags() const
 {
 	std::vector<unsigned long long> flags;
