@@ -150,7 +150,6 @@ void MenuBox::Update(float delta_time)
 		}
 	}
 
-
 #pragma endregion
 
 	arrowTimer++;

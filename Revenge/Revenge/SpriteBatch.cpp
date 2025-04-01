@@ -45,16 +45,24 @@ void SpriteBatch::Begin()
 
 void SpriteBatch::Draw(const Texture* texture, const MyRectangle* rectangle, const MyRectangle* source, float opacity, float layer, int rot)
 {
+	MyRectangle drawRectangle(*rectangle);
+	drawRectangle.SetLocation(drawRectangle.Location() + Point<float>(windowWidth / 2.f, windowHeight / 2.f));
+	drawRectangle.SetLocation(drawRectangle.Location() - Point<float>(camera[0], camera[1]));
+ 	drawRectangle.SetLocation(drawRectangle.Location() + (Point<float>(windowWidth / 2.f, windowHeight / 2.f) - drawRectangle.Location()) * (1.f - camera[2]));
+
+	drawRectangle.SetWidth(drawRectangle.Width() * camera[2]);
+	drawRectangle.SetHeight(drawRectangle.Height() * camera[2]);
+
 	if (!source)
 	{
 		if (texture->SourceRectangle())
 		{
 			renderer->Draw(
 				texture->ID(),
-				((windowWidth / 2.0f) - camera[0]) + rectangle->X(),
-				((windowHeight / 2.0f) - camera[1]) + rectangle->Y(),
-				(int)rectangle->Width(),
-				(int)rectangle->Height(),
+				drawRectangle.X(),
+				drawRectangle.Y(),
+				(int)drawRectangle.Width(),
+				(int)drawRectangle.Height(),
 				texture->SourceRectangle()->X(),
 				texture->SourceRectangle()->Y(),
 				(int)texture->SourceRectangle()->Width(),
@@ -65,10 +73,10 @@ void SpriteBatch::Draw(const Texture* texture, const MyRectangle* rectangle, con
 		{
 			renderer->Draw(
 				texture->ID(),
-				((windowWidth / 2.0f) - camera[0]) + rectangle->X(),
-				((windowHeight / 2.0f) - camera[1]) + rectangle->Y(),
-				(int)rectangle->Width(),
-				(int)rectangle->Height(),
+				drawRectangle.X(),
+				drawRectangle.Y(),
+				(int)drawRectangle.Width(),
+				(int)drawRectangle.Height(),
 				0.f, 0.f, (int)texture->Width(), (int)texture->Height(),
 				opacity, layer, rot);
 		}
@@ -78,9 +86,10 @@ void SpriteBatch::Draw(const Texture* texture, const MyRectangle* rectangle, con
 		if (texture->SourceRectangle())
 		{
 			renderer->Draw(texture->ID(),
-				((windowWidth / 2.0f) - camera[0]) + rectangle->X(),
-				((windowHeight / 2.0f) - camera[1]) + rectangle->Y(),
-				(int)rectangle->Width(), (int)rectangle->Height(),
+				drawRectangle.X(),
+				drawRectangle.Y(),
+				(int)drawRectangle.Width(),
+				(int)drawRectangle.Height(),
 				source->X() + texture->SourceRectangle()->X(),
 				source->Y() + texture->SourceRectangle()->Y(),
 				(int)source->Height(),
@@ -90,10 +99,14 @@ void SpriteBatch::Draw(const Texture* texture, const MyRectangle* rectangle, con
 		else
 		{
 			renderer->Draw(texture->ID(),
-				((windowWidth / 2.0f) - camera[0]) + rectangle->X(),
-				((windowHeight / 2.0f) - camera[1]) + rectangle->Y(),
-				(int)rectangle->Width(), (int)rectangle->Height(),
-				source->X(), source->Y(), (int)source->Height(), (int)source->Width(),
+				drawRectangle.X(),
+				drawRectangle.Y(),
+				(int)drawRectangle.Width(),
+				(int)drawRectangle.Height(),
+				source->X(),
+				source->Y(),
+				(int)source->Height(),
+				(int)source->Width(),
 				opacity, layer, rot);
 		}
 	}
@@ -177,6 +190,11 @@ void SpriteBatch::MoveCamera(float x, float y)
 void SpriteBatch::SetCamera(float x, float y)
 {
 	camera[0] = x; camera[1] = y;
+}
+
+void SpriteBatch::SetCameraScale(float z)
+{
+	camera[2] = z;
 }
 
 void SpriteBatch::Resize(native_handle hWnd)

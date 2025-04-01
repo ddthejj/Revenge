@@ -15,9 +15,9 @@ class SpriteBatch
 {
 #pragma region Properties
 
-	Renderer* renderer;	// the real renderer for the game
-	float camera[2];	// the position of the camera
-	static int windowWidth, windowHeight;	// the window dimensions
+	Renderer* renderer;							// the real renderer for the game
+	float camera[3] = { 0, 0, 1.f };			// the position of the camera
+	static int windowWidth, windowHeight;		// the window dimensions
 
 #pragma endregion
 
@@ -58,6 +58,10 @@ public:
 	void MoveCamera(float x, float y);
 	// set the camera's position
 	void SetCamera(float x, float y);
+	// set the camera's scale
+	void SetCameraScale(float z);
+
+	void IncreaseCameraScale(float z) { camera[2] += z; }
 	// resize the renderer
 	void Resize(native_handle hwnd);
 
@@ -68,7 +72,7 @@ public:
 #pragma endregion
 
 #pragma region Get Values
-	
+
 	// Return the height of the window
 	int ScreenWidth() { return windowWidth; }
 	// Return the width of the window
