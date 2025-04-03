@@ -1,12 +1,19 @@
 #pragma once
 #include "Component.h"
 
+class CollisionComponent;
+
 class TriggerComponent : public Component
 {
+	MyRectangle* rectangle;
+
 public:
 
-	TriggerComponent(ComponentType _type, bool _isUnique);
-	virtual void Trigger() = 0;
+	TriggerComponent(COMPONENT_TYPE _type, bool _isUnique, MyRectangle* _rectangle);
+
+	MyRectangle* GetRectangle() { return rectangle; }
+
+	virtual void Trigger(CollisionComponent* component) = 0;
 };
 
 class DoorComponent : public TriggerComponent
@@ -19,6 +26,6 @@ private:
 
 public:
 
-	DoorComponent(int _destination, int _x, int _y);
-	virtual void Trigger();
+	DoorComponent(MyRectangle* _rectangle, int _destination, int _x, int _y);
+	virtual void Trigger(CollisionComponent* component);
 };

@@ -21,8 +21,6 @@ protected:
 	float layer = 0.f;							// the sprite's layer
 	float opacity = 1.f;						// the sprite's opacity
 
-	std::vector<std::function<void()>> onPlayerCollided;		// callback for when the player collides with this sprite
-
 #pragma endregion
 
 public:
@@ -69,12 +67,6 @@ public:
 	virtual void Freeze();
 	// unfreeze the sprite
 	virtual void Unfreeze();
-	// called when the player collides with this sprite
-	virtual void PlayerCollided();
-
-	void BindToPlayerCollided(std::function<void()> func);
-
-	void UnbindFromPlayerCollided(std::function<void()> func);
 
 #pragma endregion
 

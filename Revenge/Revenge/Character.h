@@ -88,10 +88,6 @@ public:
 
 	// move the character based on velocity
 	virtual void Move(float delta_time);
-	// check if current velocity will take you inside collision
-	void TestCollision();
-	// called when sprites are collided with while character is moving
-	virtual void CollidedSprites(std::vector<Sprite*> collidedSprite) {}
 	// animate the character based on movement
 	void AnimateMovement(float delta_time);
 	// check if character is moving
@@ -151,8 +147,6 @@ protected:
 
 	// returns the interact point of the player 
 	Point<float> GetInteractPoint() const;
-	// notify sprites that they have been collided with by the player
-	virtual void CollidedSprites(std::vector<Sprite*> collidedSprites);
 
 #pragma endregion
 };

@@ -9,6 +9,7 @@
 #include "Rectangle.h"
 #include "Component.h"
 #include "TriggerComponent.h"
+#include "CollisionComponent.h"
 
 
 #pragma region ProtoTile
@@ -25,7 +26,10 @@ ProtoTile::ProtoTile(ProtoTile* that) : ProtoTile(that->texture, that->height, t
 
 Tile::Tile(std::string _debugName, const ProtoTile* prototype, float _x, float _y, float _layer) : Sprite(_debugName, _x, _y, prototype->height, prototype->width, prototype->texture, _layer)
 {	
-	collidable = prototype->collidable;
+	if (prototype->collidable)
+	{
+		AddComponent(new StaticCollisionComponent(rectangle));
+	}
 }
 
 Tile::~Tile()
@@ -37,25 +41,6 @@ Tile::~Tile()
 void Tile::Update(float delta_time)
 {
 
-}
-
-bool Tile::AddComponent(Component* _component)
-{
-	bool retVal = Object::AddComponent(_component);
-
-	if (retVal)
-	{
-		switch (_component->GetType())
-		{
-		case ComponentType::DoorTrigger:
-		{
-			BindToPlayerCollided(std::bind(&DoorComponent::Trigger, (DoorComponent*)_component));
-			break;
-		}
-		}
-	}
-
-	return retVal;
 }
 
 #pragma endregion

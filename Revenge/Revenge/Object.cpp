@@ -11,11 +11,11 @@ Object::~Object()
 {
 	if (active) Deactivate();
 
-	if (components.size() > 0)
+	if (components.size()   > 0)
 	{
 		for (auto it = components.begin(); it != components.end(); it++)
 		{
-			delete (*it);
+			SafeDelete(*it);
 		}
 	}
 	components.clear();
@@ -26,6 +26,11 @@ void Object::Activate()
 	active = true; 
 	frozen = false; 
 	BindCallbacks();
+
+	for (auto it = components.begin(); it != components.end(); it++)
+	{
+		(*it)->Register();
+	}
 }
 
 void Object::Deactivate()
@@ -33,6 +38,11 @@ void Object::Deactivate()
 	active = false; 
 	frozen = false; 
 	UnbindCallbacks();
+
+	for (auto it = components.begin(); it != components.end(); it++)
+	{
+		(*it)->Unregister();
+	}
 }
 
 void Object::Freeze()
@@ -45,7 +55,7 @@ void Object::Unfreeze()
 	frozen = false;
 }
 
-Component* Object::GetComponentOfType(ComponentType type)
+Component* Object::GetComponentOfType(COMPONENT_TYPE type)
 {
 	for (auto it = components.begin(); it != components.end(); it++)
 	{

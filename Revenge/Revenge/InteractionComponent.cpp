@@ -3,12 +3,12 @@
 #include "MenuManager.h"
 
 
-InteractionComponent::InteractionComponent(ComponentType _type, bool _isUnique) : Component(_type, _isUnique)
+InteractionComponent::InteractionComponent(COMPONENT_TYPE _type, bool _isUnique) : Component(_type, _isUnique)
 {
 
 }
 
-DialogueComponent::DialogueComponent(std::vector<std::string> _lines) : InteractionComponent(ComponentType::DialogueInteraction, true)
+DialogueComponent::DialogueComponent(std::vector<std::string> _lines) : InteractionComponent(COMPONENT_TYPE::DIALOGUE_INTERACTION, true)
 {
 	lines = _lines;
 }

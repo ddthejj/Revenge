@@ -4,7 +4,7 @@
 
 class SpriteBatch;
 class Component;
-enum ComponentType : int;
+enum COMPONENT_TYPE : int;
 
 // the base class for all gameobjects
 class Object
@@ -51,7 +51,7 @@ public:
 	virtual void BindCallbacks() {}
 	virtual void UnbindCallbacks() {}
 
-	Component* GetComponentOfType(ComponentType type);
+	Component* GetComponentOfType(COMPONENT_TYPE type);
 	virtual bool AddComponent(Component* _component);
 
 #pragma endregion

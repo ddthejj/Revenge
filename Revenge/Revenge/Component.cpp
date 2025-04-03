@@ -2,11 +2,10 @@
 #include "Component.h"
 #include "ComponentManager.h"
 
-Component::Component(ComponentType _type, bool _isUnique)
+Component::Component(COMPONENT_TYPE _type, bool _isUnique)
 {
 	type = _type;
 	isUnique = _isUnique;
-	Register();
 }
 
 Component::~Component()

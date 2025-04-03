@@ -11,6 +11,8 @@
 #include "Ability.h"
 #include "FileReader.h"
 #include "Rectangle.h"
+#include "PhysicsManager.h"
+#include "CollisionComponent.h"
 
 #include <random>
 #include <ctime>
@@ -20,7 +22,7 @@
 
 Character::Character(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer) : Sprite(_debugName, x, y, height, width, 0, 0, 32, 32, _texture, _layer)
 {
-
+	AddComponent(new DynamicCollisionComponent(rectangle));
 }
 
 Character::~Character()
@@ -50,76 +52,12 @@ void Character::Move(float delta_time)
 		return;
 	}
 
-	TestCollision();
+	if (IsMoving())
+	{
+		collided = PhysicsManager::TryMove((CollisionComponent*)GetComponentOfType(COMPONENT_TYPE::COLLISION), velocity);
+	}
 
 	AnimateMovement(delta_time);
-}
-
-void Character::TestCollision()
-{
-	collided = false;
-	const Room* currentRoom = OverworldManager::GetCurrentRoom();
-
-	if (!currentRoom)
-		return;
-
-	// horizontal movement first
-	MyRectangle futureRectangle(*rectangle);
-	futureRectangle.SetLocation(Point<float>(futureRectangle.Location().x + velocity.x, futureRectangle.Location().y));
-
-	std::vector<Sprite*> collidedSprites = currentRoom->TestCollision(this, futureRectangle);
-	CollidedSprites(collidedSprites);
-	collided = collidedSprites.size();
-
-	for (int i = 0; i < collidedSprites.size(); i++)
-	{
-		Sprite* collidedSprite = collidedSprites[i];
-
-		if (velocity.x > 0) // moving right
-		{
-			if (futureRectangle.Right() - collidedSprite->GetRectangle()->Left() <= velocity.x)
-			{
-				futureRectangle.SetX(collidedSprite->GetRectangle()->Left() - 1 - futureRectangle.Width());
-			}
-		}
-		else if (velocity.x < 0) // moving left
-		{
-			if (futureRectangle.Left() - collidedSprite->GetRectangle()->Right() >= velocity.x)
-			{
-				futureRectangle.SetX(collidedSprite->GetRectangle()->Right() + 1);
-			}
-		}
-	}
-
-	rectangle->SetLocation(futureRectangle.Location());
-
-	// vertical movement second
-	futureRectangle.SetLocation(Point<float>(futureRectangle.Location().x, futureRectangle.Location().y + velocity.y));
-	collidedSprites = currentRoom->TestCollision(this, futureRectangle);
-	CollidedSprites(collidedSprites);
-	collided = collided || collidedSprites.size();
-
-	for (int i = 0; i < collidedSprites.size(); i++)
-	{
-		Sprite* collidedSprite = collidedSprites[i];
-
-		if (velocity.y < 0) // moving up
-		{
-			if (futureRectangle.Top() - collidedSprite->GetRectangle()->Bottom() >= velocity.y)
-			{
-				futureRectangle.SetY(collidedSprite->GetRectangle()->Bottom() + 1);
-			}
-		}
-		else if (velocity.y > 0) // moving down
-		{
-			if (futureRectangle.Bottom() - collidedSprite->GetRectangle()->Top() <= velocity.y)
-			{
-				futureRectangle.SetY(collidedSprite->GetRectangle()->Top() - 1 - futureRectangle.Height());
-			}
-		}
-	}
-
-	rectangle->SetLocation(futureRectangle.Location());
 }
 
 void Character::AnimateMovement(float delta_time)
@@ -346,13 +284,6 @@ Point<float> Player::GetInteractPoint() const
 	return Point<float>();
 }
 
-void Player::CollidedSprites(std::vector<Sprite*> collidedSprites)
-{
-	for (auto it = collidedSprites.begin(); it != collidedSprites.end(); it++)
-	{
-		(*it)->PlayerCollided();
-	}
-}
 
 
 #pragma endregion

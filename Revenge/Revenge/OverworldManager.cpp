@@ -39,6 +39,7 @@ void OverworldManager::Init()
 	maps.push_back(new TestMap0());
 	currentMap = maps[0];
 	currentMap->Activate();
+	currentMap->SetRoom(0);
 
 	party.push_back(currentPlayer);
 
@@ -179,7 +180,7 @@ bool OverworldManager::OnInteract(Point<float> interactPoint)
 {
 	if (Tile* interactedTile = currentMap->CurrentRoom()->GetTile(1, (int)std::floor(interactPoint.x / TILE_WIDTH), (int)std::floor(interactPoint.y / TILE_HEIGHT)))
 	{
-		if (InteractionComponent* tileInteracted = (InteractionComponent*)interactedTile->GetComponentOfType(ComponentType::DialogueInteraction))
+		if (InteractionComponent* tileInteracted = (InteractionComponent*)interactedTile->GetComponentOfType(COMPONENT_TYPE::DIALOGUE_INTERACTION))
 		{
 			tileInteracted->Interact();
 			return true;

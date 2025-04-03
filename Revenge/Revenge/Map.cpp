@@ -1,6 +1,8 @@
 #include "defines.h"
 #include "Map.h"
 #include "Room.h"
+#include "PhysicsManager.h"
+
 #include <string>
 
 Map::Map(std::string _debugName) : Object(_debugName)
@@ -52,19 +54,7 @@ const Room* Map::GetRoom(unsigned int index) const
 void Map::SetRoom(unsigned int index)
 {
 	if (index < roomCount)
+	{
 		currentRoom = rooms[index];
+	}
 }
-
-// example for CreateRooms override
-/*
-void Map::CreateRooms()
-{
-	roomCount = 2;
-
-	rooms = new Room * [roomCount];
-	rooms[0] = new TestRoom0(std::string("TestRoom0"));
-	rooms[1] = new TestRoom1(std::string("TestRoom1"));
-
-	currentRoom = rooms[0];
-}
-*/

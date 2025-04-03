@@ -178,6 +178,7 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="OverworldManager.cpp" />
     <ClCompile Include="PauseMenu.cpp" />
+    <ClCompile Include="PhysicsManager.cpp" />
     <ClCompile Include="PlayerCharacters.cpp" />
     <ClCompile Include="Renderer.h" />
     <ClCompile Include="main.cpp" />
@@ -221,6 +222,7 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="OverworldManager.h" />
     <ClInclude Include="PauseMenu.h" />
+    <ClInclude Include="PhysicsManager.h" />
     <ClInclude Include="PlayerCharacters.h" />
     <ClInclude Include="Rectangle.h" />
     <ClInclude Include="Room.h" />

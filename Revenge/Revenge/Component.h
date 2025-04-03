@@ -1,14 +1,15 @@
 #pragma once
 
-enum ComponentType : int
+enum COMPONENT_TYPE : int
 {
-	Invalid = -1,
-	None,
-	Interaction = 1 << 0, 
-	Trigger = 1 << 1,
-	Collision = 1 << 2,
-	DialogueInteraction = (1 << 3) | Interaction,
-	DoorTrigger = (1 << 4) | Trigger
+	INVALID = 0,
+	INTERACTION = 1 << 0,
+	TRIGGER = 1 << 1,
+	COLLISION = 1 << 2,
+	DIALOGUE_INTERACTION = (1 << 3) | INTERACTION,
+	DOOR_TRIGGER = (1 << 4) | TRIGGER,
+	STATIC_COLLISION = (1 << 5) | COLLISION,
+	DYNAMIC_COLLISION = (1 << 6) | COLLISION,
 };
 
 class Component
@@ -16,7 +17,7 @@ class Component
 private:
 #pragma region Properties
 
-	ComponentType type = None;
+	COMPONENT_TYPE type = COMPONENT_TYPE::INVALID;
 	bool isUnique = false;
 
 #pragma endregion Properties
@@ -25,7 +26,7 @@ private:
 
 protected:
 
-	Component(ComponentType _type, bool _isUnique = false);
+	Component(COMPONENT_TYPE _type, bool _isUnique = false);
 
 public:
 
@@ -34,7 +35,7 @@ public:
 	virtual void Register();
 	virtual void Unregister();
 
-	ComponentType GetType() { return type; }
+	COMPONENT_TYPE GetType() { return type; }
 	bool IsUnique() { return isUnique; }
 
 #pragma endregion Methods

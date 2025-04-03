@@ -82,7 +82,7 @@ void Sprite::IncreaseOpacity(float amnt)
 
 void Sprite::Activate()
 {
-	if (!active)
+ 	if (!active)
 	{
 		Manager::AddUpdate(this);
 		Manager::AddDraw(this);
@@ -116,28 +116,6 @@ void Sprite::Unfreeze()
 	{
 		Manager::AddUpdate(this);
 		Object::Unfreeze();
-	}
-}
-
-void Sprite::PlayerCollided()
-{
-	for (auto it = onPlayerCollided.begin(); it != onPlayerCollided.end(); it++)
-	{
-		(*it)();
-	}
-}
-
-void Sprite::BindToPlayerCollided(std::function<void()> func)
-{
-	onPlayerCollided.push_back(func);
-}
-
-void Sprite::UnbindFromPlayerCollided(std::function<void()> func)
-{
-	for (auto it = onPlayerCollided.begin(); it != onPlayerCollided.end(); it++)
-	{
-		onPlayerCollided.erase(it);
-		return;
 	}
 }
 

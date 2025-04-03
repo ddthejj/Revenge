@@ -21,17 +21,10 @@ struct ProtoTile
 
 class Tile : public Sprite
 {
-	bool collidable;
-
 public:
 	Tile(std::string _debugName, const ProtoTile* prototype, float _x, float _y, float _layer);
 	virtual ~Tile();
 
-	bool Collidable() const { return collidable; }
-
 	virtual void Interact() {}
 	virtual void Update(float delta_time);
-
-
-	virtual bool AddComponent(Component* _component) override;
 };

@@ -172,6 +172,9 @@
     <ClCompile Include="CollisionComponent.cpp">
       <Filter>Source\Components</Filter>
     </ClCompile>
+    <ClCompile Include="PhysicsManager.cpp">
+      <Filter>Source\Managers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Texture.h">
@@ -287,6 +290,9 @@
     </ClInclude>
     <ClInclude Include="CollisionComponent.h">
       <Filter>Source\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsManager.h">
+      <Filter>Source\Managers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

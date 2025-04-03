@@ -7,7 +7,7 @@ class InteractionComponent : public Component
 
 public:
 
-	InteractionComponent(ComponentType _type, bool _isUnique);
+	InteractionComponent(COMPONENT_TYPE _type, bool _isUnique);
 	virtual void Interact() = 0;
 
 #pragma endregion Methods

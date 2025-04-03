@@ -8,6 +8,7 @@
 #include "InteractionComponent.h"
 #include "TriggerComponent.h"
 #include "Rectangle.h"
+#include "PhysicsManager.h"
 
 #include <iostream>
 #include <fstream>
@@ -58,6 +59,8 @@ void Room::Activate()
 	{
 		NPCs[i]->Activate();
 	}
+
+	PhysicsManager::CreateSectors();
 
 	Object::Activate();
 }
@@ -123,78 +126,6 @@ Tile* Room::GetTile(int layer, int x, int y) const
 	return tiles[layer][y][x];
 }
 
-std::vector<Sprite*> const Room::TestCollision(Sprite* collider, MyRectangle collisionRectangle) const
-{
-	std::vector<int> collidedSectors = GetSectors(collisionRectangle);
-	int sectorTileNum = SECTOR_SIZE * SECTOR_SIZE;
-	std::vector<Sprite*> collidedSprites;
-
-	for (int i = 0; i < collidedSectors.size(); i++)
-	{
-		for (int j = 0; j < sectorTileNum; j++)
-		{
-			Tile* checkTile = sectors[collidedSectors[i]][j];
-
-			if (checkTile && (checkTile->Collidable() || checkTile->GetComponentOfType(ComponentType::Trigger) != nullptr))
-			{
-				if (checkTile->GetRectangle()->Intersects(collisionRectangle))
-				{
-					collidedSprites.push_back(checkTile);
-				}
-			}
-		}
-	}
-
-	for (int i = 0; i < npcCount; i++)
-	{
-		if (NPCs[i]->GetRectangle()->Intersects(collisionRectangle))
-		{
-			if (collider != NPCs[i])
-			{
-				collidedSprites.push_back(NPCs[i]);
-			}
-		}
-	}
-
-
-	const Player* currentPlayer = OverworldManager::GetCurrentPlayer();
-	if (currentPlayer->GetRectangle()->Intersects(collisionRectangle))
-	{
-		if (collider != currentPlayer)
-		{
-			collidedSprites.push_back((Sprite*)currentPlayer);
-		}
-	}
-
-	return collidedSprites;
-}
-
-std::vector<int> const Room::GetSectors(MyRectangle collisionRectangle) const
-{
-	int sectorDimsX = (int)std::ceil(dimensions.x / SECTOR_SIZE);
-	int sectorDimsY = (int)std::ceil(dimensions.y / SECTOR_SIZE);
-	int sectorNum = sectorDimsX * sectorDimsY;
-
-	std::vector<int> outSectors;
-
-	for (int i = 0; i < sectorNum; i++)
-	{
-		MyRectangle sectorRectangle(i % sectorDimsX * SECTOR_SIZE * TILE_WIDTH, (float)std::floor(i / sectorDimsY) * SECTOR_SIZE * TILE_HEIGHT, SECTOR_SIZE * TILE_WIDTH, SECTOR_SIZE * TILE_HEIGHT);
-
-		if (outSectors.size() == 0 && sectorRectangle.Contains(collisionRectangle))
-		{
-			outSectors.push_back(i);
-			return outSectors;
-		}
-		if (sectorRectangle.Intersects(collisionRectangle))
-		{
-			outSectors.push_back(i);
-		}
-	}
-
-	return outSectors;
-}
-
 void Room::InterpretRoomData(RoomData roomData)
 {
 
@@ -221,7 +152,7 @@ void Room::InterpretRoomData(RoomData roomData)
 					{
 						if (doorAt < roomData.doorCount)
 						{
-							newTile->AddComponent(new DoorComponent(roomData.doorData[doorAt][0], roomData.doorData[doorAt][1], roomData.doorData[doorAt][2]));
+							newTile->AddComponent(new DoorComponent(newTile->GetRectangle(), roomData.doorData[doorAt][0], roomData.doorData[doorAt][1], roomData.doorData[doorAt][2]));
 							doorAt++;
 						}
 					}
@@ -250,30 +181,7 @@ void Room::InterpretRoomData(RoomData roomData)
 		}
 	}
 
-	CreateSectors();
 
 #pragma endregion
 
-}
-
-void Room::CreateSectors()
-{
-	int sectorDimsX = (int)std::ceil(dimensions.x / SECTOR_SIZE);
-	int sectorDimsY = (int)std::ceil(dimensions.y / SECTOR_SIZE);
-
-	sectors = std::vector<std::vector<Tile*>>();
-
-	for (int sectorAt = 0; sectorAt < sectorDimsX * sectorDimsY; sectorAt++)
-	{
-		sectors.push_back(std::vector<Tile*>());
-	}
-
-	// segment the map into sectors to help reduce collision checking time
-	for (int y = 0; y < dimensions.y; y++)
-	{
-		for (int x = 0; x < dimensions.x; x++)
-		{
-			sectors[int(std::floor(x / SECTOR_SIZE) * sectorDimsX + std::floor(y / SECTOR_SIZE))].push_back(tiles[1][x][y]);
-		}
-	}
 }

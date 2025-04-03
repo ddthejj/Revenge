@@ -2,14 +2,14 @@
 #include <map>
 
 class Component;
-enum ComponentType : int;
+enum COMPONENT_TYPE : int;
 
 class ComponentManager
 {
 
 #pragma region Properties
 
-	static std::map<ComponentType, std::vector<Component*>> registeredComponents;
+	static std::map<COMPONENT_TYPE, std::vector<Component*>> registeredComponents;
 
 #pragma endregion
 
@@ -25,7 +25,7 @@ public:
 
 	static void UnregisterComponent(Component* componentToUnregister);
 
-	static std::vector<Component*> GetComponentsByType(ComponentType type);
+	static std::vector<Component*> GetComponentsByType(COMPONENT_TYPE type);
 
 #pragma endregion
 

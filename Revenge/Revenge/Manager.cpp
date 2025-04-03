@@ -15,6 +15,7 @@
 #include "TextureManager.h"
 #include "SoundManager.h"
 #include "ComponentManager.h"
+#include "PhysicsManager.h"
 
 GAME_STATE Manager::gameState = GAME_STATE::STATE_TITLE;
 SpriteBatch* Manager::spriteBatch = nullptr;
@@ -160,6 +161,7 @@ void Manager::Clean()
 	TextureManager::Clean();
 	InputManager::Clean();
 	SoundManager::Clean();
+	PhysicsManager::Clean();
 	SafeDelete(fadeRectangle);
 	SafeDelete(spriteBatch);
 

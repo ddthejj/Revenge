@@ -6,8 +6,8 @@
 class Tile;
 class Sprite;
 class NonPlayer;
-
-#define SECTOR_SIZE 4
+//class PhysicsManager;
+//struct PhysicsManager::Sector;
 
 class Room : public Object
 {
@@ -18,8 +18,7 @@ protected:
 	int dialogueCount = 0;
 	std::vector<NonPlayer*> NPCs;
 	int npcCount = 0;
-
-	std::vector<std::vector<Tile*>> sectors;
+	//std::vector<PhysicsManager::Sector> sector;
 
 	struct RoomData
 	{
@@ -56,7 +55,6 @@ public:
 	std::vector<NonPlayer*> const GetNPCs() const { return NPCs; }
 	int GetNPCCount() const { return npcCount; }
 
-	std::vector<Sprite*> const TestCollision(Sprite* collider, MyRectangle collisionRectangle) const;
 
 protected:
 
@@ -65,7 +63,5 @@ protected:
 	
 private:
 
-	void CreateSectors();
-	std::vector<int> const GetSectors(MyRectangle collisionRectangle) const;
 };
 

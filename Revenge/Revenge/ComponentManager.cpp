@@ -2,15 +2,17 @@
 #include "ComponentManager.h"
 #include "Component.h"
 
-std::map<ComponentType, std::vector<Component*>> ComponentManager::registeredComponents = std::map<ComponentType, std::vector<Component*>>();
+std::map<COMPONENT_TYPE, std::vector<Component*>> ComponentManager::registeredComponents = std::map<COMPONENT_TYPE, std::vector<Component*>>();
 
 
 void ComponentManager::Init()
 {
-	registeredComponents.insert(std::pair(ComponentType::Interaction, std::vector<Component*>()));
-	registeredComponents.insert(std::pair(ComponentType::Trigger, std::vector<Component*>()));
-	registeredComponents.insert(std::pair(ComponentType::DialogueInteraction, std::vector<Component*>()));
-	registeredComponents.insert(std::pair(ComponentType::DoorTrigger, std::vector<Component*>()));
+	registeredComponents.insert(std::pair(COMPONENT_TYPE::INTERACTION, std::vector<Component*>()));
+	registeredComponents.insert(std::pair(COMPONENT_TYPE::TRIGGER, std::vector<Component*>()));
+	registeredComponents.insert(std::pair(COMPONENT_TYPE::DIALOGUE_INTERACTION, std::vector<Component*>()));
+	registeredComponents.insert(std::pair(COMPONENT_TYPE::DOOR_TRIGGER, std::vector<Component*>()));
+	// we don't differentiate between collision types here, the physics manager handles that.
+	registeredComponents.insert(std::pair(COMPONENT_TYPE::COLLISION, std::vector<Component*>())); 
 }
 
 void ComponentManager::Clean()
@@ -47,7 +49,7 @@ void ComponentManager::UnregisterComponent(Component* componentToUnregister)
 	}
 }
 
-std::vector<Component*> ComponentManager::GetComponentsByType(ComponentType type)
+std::vector<Component*> ComponentManager::GetComponentsByType(COMPONENT_TYPE type)
 {
 	return registeredComponents[type];
 }
