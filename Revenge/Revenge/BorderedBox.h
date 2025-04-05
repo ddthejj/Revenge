@@ -2,6 +2,7 @@
 
 #include "Sprite.h"
 
+
 class BorderedBox : public UISprite
 {
 public:

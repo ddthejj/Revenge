@@ -7,8 +7,9 @@ using native_handle = void*;
 class Texture;
 class MyRectangle;
 class Renderer;
-class Text;
+class Sprite;
 class UISprite;
+class Text;
 
 // the access for the renderer
 class SpriteBatch
@@ -34,24 +35,16 @@ public:
 	void UnloadTextures();
 	// begin drawing
 	void Begin();
-	// draw a texture with a source rectangle
-	void Draw(const Texture* texture, const MyRectangle* rectangle, const MyRectangle* source, float opacity, float layer, int rot = 0);
-	// draw a texture without a source rectangle
-	void Draw(const Texture* texture, const MyRectangle* rectangle, float opacity, float layer, int rot = 0) { Draw(texture, rectangle, nullptr, opacity, layer, rot); }
-	// draw a ui object with a source rectangle
-	void DrawUI(const Texture* texture, const MyRectangle* rectangle, const MyRectangle* source, float opacity, float layer, int rot = 0, ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
-	// draw a ui object without a source rectangle
-	void DrawUI(const Texture* texture, const MyRectangle* rectangle, float opacity, float layer, int rot = 0, ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT) { DrawUI(texture, rectangle, nullptr, opacity, layer, rot, anchor); }
-	// draw a ui object with a source rectangle within a bounding sprite
-	void DrawUIInSprite(const Texture* texture, const MyRectangle* rectangle, const MyRectangle* source, const UISprite* sourceSprite, float opacity, float layer, int rot = 0, ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
-	// draw a ui object without a source rectangle within a bounding sprite
-	void DrawUIInSprite(const Texture* texture, const MyRectangle* rectangle, const UISprite* sourceSprite, float opacity, float layer, int rot = 0, ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT) { DrawUIInSprite(texture, rectangle, nullptr, sourceSprite, opacity, layer, rot, anchor); }
-	// write text
-	void WriteText(const char* text, const MyRectangle* rectangle, float layer, float opacity = 1.f, ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
+	// draw a sprite
+	void Draw(const Sprite* sprite);
+	// draw a UI sprite
+	void DrawUI(const UISprite* sprite);
+	// draw a UI sprite within another UI sprite
+	void DrawUIInSprite(const UISprite* drawSprite, const UISprite* sourceSprite);
 	// write text with a text object
 	void WriteText(const Text* text);
-	// write text within a bounding sprite
-	void WriteTextInSprite(const char* text, const MyRectangle* textRectangle, const UISprite* sourceSprite, float layer, float opacity = 1.f, ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
+	// write text within a bounding UIsprite
+	void WriteTextInSprite(const Text* text, const UISprite* sprite);
 	// end drawing
 	void End();
 	// move the camera
@@ -77,8 +70,6 @@ public:
 	int ScreenWidth() { return windowWidth; }
 	// Return the width of the window
 	int ScreenHeight() { return windowHeight; }
-
-	static Point<float> GetAbsolutePos(const MyRectangle* rectangle, const MyRectangle* sourceRectangle, ANCHOR_POINT anchor);
 
 #pragma endregion
 

@@ -7,7 +7,24 @@ struct DelegateHandle
 {
 };
 
+enum class KEYS			// Keybinds
+{
+	KEY_UP,				// Up key
+	KEY_DOWN,			// Down key
+	KEY_LEFT,			// Left key
+	KEY_RIGHT,			// Right key
+	KEY_MENU,			// Open menu
+	KEY_INTERACT,		// Select / interact with tiles
+	KEY_MAX
+};
 
+enum class MOUSE_KEYS	// Mouse buttons
+{
+	MOUSE_KEY_LEFT,		// Left mouse button
+	MOUSE_KEY_RIGHT,	// Right mouse button
+	MOUSE_KEY_MIDDLE,	// Middle mouse button
+	MOUSE_KEY_MAX
+};
 
 // handles all input for the game
 class InputManager

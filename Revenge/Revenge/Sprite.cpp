@@ -6,22 +6,32 @@
 #include "Rectangle.h"
 #include <algorithm>
 
-Sprite::Sprite(std::string _debugName, float x, float y, float width, float height, const Texture* _texture, float _layer, float _opacity) : Sprite(_debugName, x, y, width, height, 0, 0,
-	// if the texture has a default source rectangle, use it as the sprite's source rectangle, but if it doesn't, just use the normal texture height / width 
+Sprite::Sprite(std::string _debugName, float x, float y, float width, float height, const Texture* _texture, float _layer, float _opacity, ROTATIONS _rotation) : Sprite(_debugName, x, y, width, height, 0, 0,
 	_texture ? (_texture->SourceRectangle() ? _texture->SourceRectangle()->Width() : _texture->Width()) : 0, 
 	_texture ? (_texture->SourceRectangle() ? _texture->SourceRectangle()->Height() : _texture->Height()) : 0, 
-	_texture, _layer, _opacity)
+	_texture, _layer, _opacity, _rotation)
 {
-	// just call the constructor of Object and don't do anything special in the sprite class itself
+
 }
 
-Sprite::Sprite(std::string _debugName, float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, const Texture* _texture, float _layer, float _opacity) : Object(_debugName)
+Sprite::Sprite(std::string _debugName, float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, const Texture* _texture, float _layer, float _opacity, ROTATIONS _rotation) : Object(_debugName)
 {
 	rectangle = new MyRectangle(x, y, width, height);
 	sourceRectangle = new MyRectangle(sX, sY, sWidth, sHeight);
 	texture = _texture;
 	layer = _layer;
 	opacity = _opacity;
+	rotation = _rotation;
+}
+
+Sprite::Sprite(const Sprite& _that) : Object(_that.debugName)
+{
+	rectangle = new MyRectangle(*_that.GetRectangle());
+	sourceRectangle = new MyRectangle(*_that.GetSourceRectangle());
+	texture = _that.GetTexture();
+	layer = _that.GetLayer();
+	opacity = _that.GetOpacity();
+	rotation = _that.GetRotation();
 }
 
 Sprite::~Sprite()
@@ -32,14 +42,14 @@ Sprite::~Sprite()
 	delete sourceRectangle;
 }
 
-MyRectangle* Sprite::GetRectangle() const
-{
-	return rectangle;
-}
-
 Point<float> Sprite::GetPos() const
 {
 	return rectangle->Location();
+}
+
+Point<float> Sprite::GetSourcePos() const
+{
+	return sourceRectangle->Location();
 }
 
 void Sprite::SetRectangle(const MyRectangle& _rectangle)
@@ -121,27 +131,25 @@ void Sprite::Unfreeze()
 
 void Sprite::Draw(SpriteBatch* spriteBatch)
 {
-	if (!sourceRectangle)
-	{
-		spriteBatch->Draw(texture, rectangle, opacity, layer);
-	}
-	else
-	{
-		spriteBatch->Draw(texture, rectangle, sourceRectangle, opacity, layer);
-	}
+	spriteBatch->Draw(this);
 }
 
 
-UISprite::UISprite(std::string _debugName, float x, float y, float width, float height, const Texture* _texture, float _layer, float _opacity, ANCHOR_POINT _anchor) :
-	Sprite(_debugName, x, y, width, height, _texture, _layer, _opacity)
+UISprite::UISprite(std::string _debugName, float x, float y, float width, float height, const Texture* _texture, float _layer, float _opacity, ROTATIONS _rotation, ANCHOR_POINT _anchor) :
+	Sprite(_debugName, x, y, width, height, _texture, _layer, _opacity, _rotation)
 {
 	anchor = _anchor;
 }
 
-UISprite::UISprite(std::string _debugName, float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, const Texture* _texture, float _layer, float _opacity, ANCHOR_POINT _anchor) :
-	Sprite(_debugName, x, y, width, height, sX, sY, sWidth, sHeight, _texture, _layer, _opacity)
+UISprite::UISprite(std::string _debugName, float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, const Texture* _texture, float _layer, float _opacity, ROTATIONS _rotation, ANCHOR_POINT _anchor) :
+	Sprite(_debugName, x, y, width, height, sX, sY, sWidth, sHeight, _texture, _layer, _opacity, _rotation)
 {
 	anchor = _anchor;
+}
+
+UISprite::UISprite(const UISprite& _that) : Sprite(_that)
+{
+	anchor = _that.GetAnchorPoint();
 }
 
 void UISprite::Deactivate()
@@ -151,16 +159,10 @@ void UISprite::Deactivate()
 
 void UISprite::Draw(SpriteBatch* spriteBatch)
 {
-	if (!sourceRectangle)
-		spriteBatch->DrawUI(texture, rectangle, opacity, layer, 0, anchor);
-	else
-		spriteBatch->DrawUI(texture, rectangle, sourceRectangle, opacity, layer, 0, anchor);
+	spriteBatch->DrawUI(this);
 }
 
 void UISprite::DrawInSprite(SpriteBatch* spriteBatch, UISprite* parent)
 {
-	if (!sourceRectangle)
-		spriteBatch->DrawUIInSprite(texture, rectangle, parent, opacity, layer, 0, anchor);
-	else
-		spriteBatch->DrawUIInSprite(texture, rectangle, sourceRectangle, parent, opacity, layer, 0, anchor);
+	spriteBatch->DrawUIInSprite(this, parent);
 }

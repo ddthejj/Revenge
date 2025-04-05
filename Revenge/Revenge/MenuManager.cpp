@@ -9,6 +9,7 @@
 #include "InputManager.h"
 #include "DialogueBox.h"
 #include "SoundManager.h"
+#include "OverworldManager.h"
 
 std::vector<MenuBox*> MenuManager::menuList = std::vector<MenuBox*>();
 MenuBox* MenuManager::activeMenu = nullptr;
@@ -48,7 +49,7 @@ void MenuManager::CloseAllMenus()
 	}
 	menuList.clear();
 
-	Manager::UnfreezeScene();
+	OverworldManager::UnfreezeScene();
 }
 
 void MenuManager::SetMenuOpacity(float _opacity)
@@ -127,7 +128,7 @@ void MenuManager::MenuClosed(MenuBox* menu)
 			}
 			else
 			{
-				Manager::UnfreezeScene();
+				OverworldManager::UnfreezeScene();
 			}
 
 			return;
@@ -143,9 +144,9 @@ void MenuManager::StartDialogue(Character* speaker, std::vector<std::string> tex
 		return;
 	}
 
-	Manager::FreezeScene();
+	OverworldManager::FreezeScene();
 
-	activeDialogueBox = new DialogueBox("DialogBox", 0, 50, WIDTH - 100, (HEIGHT / 8.f) + 25, TextureManager::GetTexture((int)TEXTURES_TEST::TEX_T_MENU), Manager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW));
+	activeDialogueBox = new DialogueBox("DialogBox", 0, 50, WIDTH - 100, (HEIGHT / 8.f) + 25, TextureManager::GetTexture((int)TEXTURES_TEST::TEX_T_MENU), TextureManager::GetTexture((int)TEXTURES_TEST::TEX_T_ARROW));
 	activeDialogueBox->SetText(speaker, text);
 	activeDialogueBox->Open();
 }
@@ -155,7 +156,7 @@ void MenuManager::EndDialogue()
 	if (!activeDialogueBox) return;
 
 	activeDialogueBox->Deactivate();
-	Manager::UnfreezeScene();
+	OverworldManager::UnfreezeScene();
 	SafeDelete(activeDialogueBox);
 }
 

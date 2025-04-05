@@ -4,12 +4,12 @@
 #include "CollisionComponent.h"
 
 
-TriggerComponent::TriggerComponent(COMPONENT_TYPE _type, bool _isUnique, MyRectangle* _rectangle) : Component(_type, _isUnique)
+TriggerComponent::TriggerComponent(Object* _owner, COMPONENT_TYPE _type, bool _isUnique, MyRectangle* _rectangle) : Component(_owner, _type, _isUnique)
 {
 	rectangle = _rectangle;
 }
 
-DoorComponent::DoorComponent(MyRectangle* _rectangle, int _destination, int _x, int _y) : TriggerComponent(COMPONENT_TYPE::DOOR_TRIGGER, true, _rectangle)
+DoorComponent::DoorComponent(Object* _owner, MyRectangle* _rectangle, int _destination, int _x, int _y) : TriggerComponent(_owner, COMPONENT_TYPE::DOOR_TRIGGER, true, _rectangle)
 {
 	destination = _destination;
 	x = _x;

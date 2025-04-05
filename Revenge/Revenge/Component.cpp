@@ -1,9 +1,11 @@
 #include "defines.h"
 #include "Component.h"
 #include "ComponentManager.h"
+#include "Object.h"
 
-Component::Component(COMPONENT_TYPE _type, bool _isUnique)
+Component::Component(Object* _owner, COMPONENT_TYPE _type, bool _isUnique)
 {
+	owner = _owner;
 	type = _type;
 	isUnique = _isUnique;
 }

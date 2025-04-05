@@ -22,11 +22,7 @@ void PhysicsManager::Clean()
 	staticCollisionComponents.clear();
 	dynamicCollisionComponents.clear();
 
-	for (auto it = sectors.begin(); it != sectors.end(); it++)
-	{
-		SafeDelete(*it);
-	}
-	sectors.clear();
+	ClearSectors();
 }
 
 template <typename T>
@@ -205,9 +201,18 @@ std::vector<PhysicsManager::Sector*> const PhysicsManager::GetSectors(MyRectangl
 	return outSectors;
 }
 
+void PhysicsManager::ClearSectors()
+{
+	for (auto it = sectors.begin(); it != sectors.end(); it++)
+	{
+		SafeDelete(*it);
+	}
+	sectors.clear();
+}
+
 void PhysicsManager::CreateSectors()
 {
-	sectors.clear();
+	ClearSectors();
 
 	int sectorDimsX = (int)std::ceil(OverworldManager::GetCurrentRoom()->GetDimensions().x / SECTOR_SIZE);
 	int sectorDimsY = (int)std::ceil(OverworldManager::GetCurrentRoom()->GetDimensions().y / SECTOR_SIZE);

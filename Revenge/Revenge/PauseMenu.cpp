@@ -1,6 +1,5 @@
 #include "defines.h"
 #include "PauseMenu.h"
-#include "EnumParser.h"
 #include "TextureManager.h"
 #include "MenuManager.h"
 #include "Manager.h"

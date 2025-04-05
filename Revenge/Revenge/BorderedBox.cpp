@@ -5,12 +5,12 @@
 #include "Rectangle.h"
 
 BorderedBox::BorderedBox(std::string _debugName, float x, float y, float width, float height, const Texture* _texture, float _layer, float _opacity, ANCHOR_POINT _anchor)
-	: UISprite(_debugName, x, y, width, height, _texture, _layer, _opacity, _anchor)
+	: UISprite(_debugName, x, y, width, height, _texture, _layer, _opacity, ROTATIONS::NONE, _anchor)
 {
 }
 
 BorderedBox::BorderedBox(std::string _debugName, float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, const Texture* _texture, float _layer, float _opacity, ANCHOR_POINT _anchor)
-	: UISprite(_debugName, x, y, width, height, sX, sY, sWidth, sHeight, _texture, _layer, _opacity, _anchor)
+	: UISprite(_debugName, x, y, width, height, sX, sY, sWidth, sHeight, _texture, _layer, _opacity, ROTATIONS::NONE, _anchor)
 {
 }
 
@@ -26,30 +26,58 @@ void BorderedBox::DrawBox(SpriteBatch* spriteBatch)
 		MyRectangle screenspaceRec = GetScreenLocation(*rectangle, anchor);
 
 		// background
-		spriteBatch->DrawUI(texture, rectangle, &backgroundSource, opacity, layer, 0, anchor);
+
+		UISprite tempSprite = UISprite(
+			debugName + "DrawSprite",
+			rectangle->X(), rectangle->Y(), rectangle->Width(), rectangle->Height(),
+			backgroundSource.X(), backgroundSource.Y(), backgroundSource.Width(), backgroundSource.Height(),
+			texture, layer, opacity, ROTATIONS::NONE, anchor);
+		spriteBatch->DrawUI(&tempSprite);
+		
 		// edges
-		MyRectangle edgeRectangle = MyRectangle(screenspaceRec.X(), screenspaceRec.Y(), borderSource.Width(), rectangle->Height());
-		spriteBatch->DrawUI(texture, &edgeRectangle, &borderSource, opacity, layer + .2f, 0); // left
-		borderSource.SetY(10);
-		edgeRectangle = MyRectangle(screenspaceRec.X(), screenspaceRec.Y(), rectangle->Width(), borderSource.Height());
-		spriteBatch->DrawUI(texture, &edgeRectangle, &borderSource, opacity, layer + .2f, (int)ROTATIONS::ROT_90); // top
-		borderSource.SetY(20);
-		edgeRectangle = MyRectangle(screenspaceRec.Right() - borderSource.Width(), screenspaceRec.Y(), borderSource.Width(), rectangle->Height());
-		spriteBatch->DrawUI(texture, &edgeRectangle, &borderSource, opacity, layer + .2f, (int)ROTATIONS::HORIZONTAL); // right
-		borderSource.SetY(30);
-		edgeRectangle = MyRectangle(screenspaceRec.X(), screenspaceRec.Bottom() - borderSource.Height(), rectangle->Width(), borderSource.Height());
-		spriteBatch->DrawUI(texture, &edgeRectangle, &borderSource, opacity, layer + .2f, (int)ROTATIONS::ROT_270); // bottom
+
+		tempSprite.SetRectangle(MyRectangle(screenspaceRec.X(), screenspaceRec.Y(), borderSource.Width(), rectangle->Height()));
+		tempSprite.SetSource(borderSource);
+		tempSprite.SetLayer(layer + .2f);
+		tempSprite.SetAnchorPoint(ANCHOR_POINT::ANCHOR_TOP_LEFT);
+		spriteBatch->DrawUI(&tempSprite);
+
+		tempSprite.GetSourceRectangle()->SetY(10);
+		tempSprite.SetRectangle(MyRectangle(screenspaceRec.X(), screenspaceRec.Y(), rectangle->Width(), borderSource.Height()));
+		tempSprite.SetRotation(ROTATIONS::ROT_90);
+		spriteBatch->DrawUI(&tempSprite);
+
+		tempSprite.GetSourceRectangle()->SetY(20);
+		tempSprite.SetRectangle(MyRectangle(screenspaceRec.Right() - borderSource.Width(), screenspaceRec.Y(), borderSource.Width(), rectangle->Height()));
+		tempSprite.SetRotation(ROTATIONS::HORIZONTAL);
+		spriteBatch->DrawUI(&tempSprite);
+
+		tempSprite.GetSourceRectangle()->SetY(30);
+		tempSprite.SetRectangle(MyRectangle(screenspaceRec.X(), screenspaceRec.Bottom() - borderSource.Height(), rectangle->Width(), borderSource.Height()));
+		tempSprite.SetRotation(ROTATIONS::ROT_270);
+		spriteBatch->DrawUI(&tempSprite);
+		
 		// corners
-		MyRectangle cornerRectangle = MyRectangle(screenspaceRec.X(), screenspaceRec.Y(), cornerSource.Width(), cornerSource.Height());
-		spriteBatch->DrawUI(texture, &cornerRectangle, &cornerSource, opacity, layer + .3f, 0); // top left
-		cornerSource.SetY(10);
-		cornerRectangle = MyRectangle(screenspaceRec.Right() - cornerSource.Width(), screenspaceRec.Y(), cornerSource.Width(), cornerSource.Height());
-		spriteBatch->DrawUI(texture, &cornerRectangle, &cornerSource, opacity, layer + .3f, (int)ROTATIONS::ROT_90); // top right
-		cornerSource.SetY(20);
-		cornerRectangle = MyRectangle(screenspaceRec.Right() - cornerSource.Width(), screenspaceRec.Bottom() - cornerSource.Height(), cornerSource.Width(), cornerSource.Height());
-		spriteBatch->DrawUI(texture, &cornerRectangle, &cornerSource, opacity, layer + .3f, (int)ROTATIONS::ROT_180); // bottom right
-		cornerSource.SetY(30);
-		cornerRectangle = MyRectangle(screenspaceRec.X(), screenspaceRec.Bottom() - cornerSource.Height(), cornerSource.Width(), cornerSource.Height());
-		spriteBatch->DrawUI(texture, &cornerRectangle, &cornerSource, opacity, layer + .3f, (int)ROTATIONS::ROT_270); // bottom left
+
+		tempSprite.SetRectangle(MyRectangle(screenspaceRec.X(), screenspaceRec.Y(), cornerSource.Width(), cornerSource.Height()));
+		tempSprite.SetSource(cornerSource);
+		tempSprite.SetLayer(layer + .3f);
+		tempSprite.SetRotation(ROTATIONS::NONE);
+		spriteBatch->DrawUI(&tempSprite);
+
+		tempSprite.GetSourceRectangle()->SetY(10);
+		tempSprite.SetRectangle(MyRectangle(screenspaceRec.Right() - cornerSource.Width(), screenspaceRec.Y(), cornerSource.Width(), cornerSource.Height()));
+		tempSprite.SetRotation(ROTATIONS::ROT_90);
+		spriteBatch->DrawUI(&tempSprite);
+
+		tempSprite.GetSourceRectangle()->SetY(20);
+		tempSprite.SetRectangle(MyRectangle(screenspaceRec.Right() - cornerSource.Width(), screenspaceRec.Bottom() - cornerSource.Height(), cornerSource.Width(), cornerSource.Height()));
+		tempSprite.SetRotation(ROTATIONS::ROT_180);
+		spriteBatch->DrawUI(&tempSprite);
+
+		tempSprite.GetSourceRectangle()->SetY(30);
+		tempSprite.SetRectangle(MyRectangle(screenspaceRec.X(), screenspaceRec.Bottom() - cornerSource.Height(), cornerSource.Width(), cornerSource.Height()));
+		tempSprite.SetRotation(ROTATIONS::ROT_270);
+		spriteBatch->DrawUI(&tempSprite);
 	}
 }

@@ -2,6 +2,7 @@
 #include "Rectangle.h"
 #include "Math.h"
 #include "Manager.h"
+#include "Object.h"
 
 
 float Lerp(float start, float end, float percent)

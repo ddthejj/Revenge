@@ -29,16 +29,6 @@ Sprite* Manager::fadeRectangle = nullptr;
 
 bool Manager::quit = false;
 
-const Texture* Manager::GetTexture(int index)
-{
-	return TextureManager::GetTexture(index);
-}
-
-const Texture* Manager::GetTexture(const char* name)
-{
-	return TextureManager::GetTexture(name);
-}
-
 void Manager::ChangeGameState(GAME_STATE _gameState)
 {
 
@@ -232,20 +222,20 @@ void Manager::StartRoomChange()
 
 FADE_STATUS Manager::FadeScene()
 {
-	if (fadingOut && fadeRectangle->Opacity() <= 0.f) // begin fade
+	if (fadingOut && fadeRectangle->GetOpacity() <= 0.f) // begin fade
 	{
 		fadeRectangle->Activate();
 		fadeRectangle->IncreaseOpacity(ROOM_FADE_SPEED);
 		return FADE_STATUS::FADE_START;
 	}
-	else if (fadingOut && fadeRectangle->Opacity() >= 1.f) // when fade out is done
+	else if (fadingOut && fadeRectangle->GetOpacity() >= 1.f) // when fade out is done
 	{
 		fadingOut = false;
 		fadingIn = true;
 		fadeRectangle->DecreaseOpacity(ROOM_FADE_SPEED);
 		return FADE_STATUS::FADE_SWITCH;
 	}
-	else if (fadingIn && fadeRectangle->Opacity() <= 0.f) // fading done
+	else if (fadingIn && fadeRectangle->GetOpacity() <= 0.f) // fading done
 	{
 		fadingIn = false;
 		fadeRectangle->Deactivate();
@@ -270,17 +260,6 @@ FADE_STATUS Manager::FadeScene()
 Point<float> Manager::MeasureString(std::string text)
 {
 	return spriteBatch->MeasureString(text);
-}
-
-
-void Manager::FreezeScene()
-{
-	OverworldManager::FreezeScene();
-}
-
-void Manager::UnfreezeScene()
-{
-	OverworldManager::UnfreezeScene();
 }
 
 void Manager::Update(float delta_time)

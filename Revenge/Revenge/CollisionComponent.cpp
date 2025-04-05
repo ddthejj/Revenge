@@ -2,7 +2,7 @@
 #include "CollisionComponent.h"
 #include "PhysicsManager.h"
 
-CollisionComponent::CollisionComponent(COMPONENT_TYPE type) : Component(type)
+CollisionComponent::CollisionComponent(Object* _owner, COMPONENT_TYPE type) : Component(_owner, type)
 {
 
 }
@@ -28,12 +28,12 @@ void CollisionComponent::Unregister()
 	PhysicsManager::UnregisterCollision(this);
 }
 
-StaticCollisionComponent::StaticCollisionComponent(MyRectangle* rectangle) : CollisionComponent(COMPONENT_TYPE::STATIC_COLLISION)
+StaticCollisionComponent::StaticCollisionComponent(Object* _owner, MyRectangle* rectangle) : CollisionComponent(_owner, COMPONENT_TYPE::STATIC_COLLISION)
 {
 	collider = rectangle;
 }
 
-DynamicCollisionComponent::DynamicCollisionComponent(MyRectangle* rectangle) : CollisionComponent(COMPONENT_TYPE::DYNAMIC_COLLISION)
+DynamicCollisionComponent::DynamicCollisionComponent(Object* _owner, MyRectangle* rectangle) : CollisionComponent(_owner, COMPONENT_TYPE::DYNAMIC_COLLISION)
 {
 	collider = rectangle;
 }

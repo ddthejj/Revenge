@@ -115,9 +115,6 @@
     <ClCompile Include="SoundManager.cpp">
       <Filter>Source\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="EnumParser.cpp">
-      <Filter>Source\Utilities</Filter>
-    </ClCompile>
     <ClCompile Include="DialogueBox.cpp">
       <Filter>Source\Menus</Filter>
     </ClCompile>
@@ -233,9 +230,6 @@
     </ClInclude>
     <ClInclude Include="AudioPlayer.h">
       <Filter>Source\Sounds</Filter>
-    </ClInclude>
-    <ClInclude Include="EnumParser.h">
-      <Filter>Source\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="SoundManager.h">
       <Filter>Source\Managers</Filter>

@@ -9,7 +9,7 @@ class TriggerComponent : public Component
 
 public:
 
-	TriggerComponent(COMPONENT_TYPE _type, bool _isUnique, MyRectangle* _rectangle);
+	TriggerComponent(Object* _owner, COMPONENT_TYPE _type, bool _isUnique, MyRectangle* _rectangle);
 
 	MyRectangle* GetRectangle() { return rectangle; }
 
@@ -26,6 +26,6 @@ private:
 
 public:
 
-	DoorComponent(MyRectangle* _rectangle, int _destination, int _x, int _y);
+	DoorComponent(Object* _owner, MyRectangle* _rectangle, int _destination, int _x, int _y);
 	virtual void Trigger(CollisionComponent* component);
 };

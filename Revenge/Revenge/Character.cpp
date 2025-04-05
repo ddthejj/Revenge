@@ -14,6 +14,8 @@
 #include "PhysicsManager.h"
 #include "CollisionComponent.h"
 
+#include "InteractionComponent.h"
+
 #include <random>
 #include <ctime>
 #include <cmath>
@@ -22,7 +24,7 @@
 
 Character::Character(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer) : Sprite(_debugName, x, y, height, width, 0, 0, 32, 32, _texture, _layer)
 {
-	AddComponent(new DynamicCollisionComponent(rectangle));
+	AddComponent(new DynamicCollisionComponent(this, rectangle));
 }
 
 Character::~Character()
@@ -37,7 +39,7 @@ Character::~Character()
 
 void Character::Draw(SpriteBatch* spriteBatch)
 {
-	spriteBatch->Draw(texture, rectangle, sourceRectangle, 1.0f, layer);
+	spriteBatch->Draw(this);
 }
 
 void Character::Move(float delta_time)
@@ -223,7 +225,7 @@ bool Player::OnInteractCallback()
 bool Player::OnMenuCallback()
 {
 	MenuManager::OpenOverworldMenu();
-	Manager::FreezeScene();
+	OverworldManager::FreezeScene();
 	return true;
 }
 
@@ -294,6 +296,8 @@ NonPlayer::NonPlayer(std::string _debugName, float x, float y, float height, flo
 {
 	startLocation = Point<float>(x, y);
 	moveToLocation = startLocation;
+
+	AddComponent(new DialogueComponent(this, rectangle, std::vector<std::string>{"hello!"}));
 }
 
 NonPlayer::~NonPlayer()
@@ -355,8 +359,6 @@ void NonPlayer::Move(float delta_time)
 		velocity = moveToLocation - GetPos();
 		velocity.Normalize();
 		velocity *= mvmntSpeed;
-
-		OutputDebugStringA((std::to_string(velocity.x) + ", " + std::to_string(velocity.y) + '\n').c_str());
 	}
 
 	Point<float> prevPos = GetPos();

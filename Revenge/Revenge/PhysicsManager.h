@@ -41,5 +41,6 @@ private:
 	static std::vector<CollisionComponent*> const TestCollision(CollisionComponent* collisionComp, MyRectangle* futureRectangle);
 
 	static std::vector<Sector*> const GetSectors(MyRectangle* collisionRectangle);
+	static void ClearSectors();
 };
 

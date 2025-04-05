@@ -1,8 +1,7 @@
 #include "defines.h"
 #include "TitleManager.h"
-#include "Manager.h"
 #include "Sprite.h"
-#include "Manager.h"
+#include "TextureManager.h"
 #include "Texture.h"
 #include "InputManager.h"
 #include "Text.h"
@@ -57,10 +56,10 @@ bool TitleManager::AnyKeyPressed(char key)
 
 void TitleManager::Init()
 {
-	const Texture* logoTexture = Manager::GetTexture("LOGO");
+	const Texture* logoTexture = TextureManager::GetTexture("LOGO");
 	float desiredheight = logoTexture->Height() * ((float)(Manager::GetScreenWidth() * .75f) / (float)logoTexture->Width());
 
-	logo = new UISprite("LogoSprite", 0, 0, Manager::GetScreenWidth() * .75f, desiredheight, logoTexture, 1.f, 0.f, ANCHOR_POINT::ANCHOR_CENTER);
+	logo = new UISprite("LogoSprite", 0, 0, Manager::GetScreenWidth() * .75f, desiredheight, logoTexture, 1.f, 0.f, ROTATIONS::NONE, ANCHOR_POINT::ANCHOR_CENTER);
 	logo->Activate();
 
 	auto delHandle = InputManager::AnyKeyPressedCallback_Attach(std::bind(&TitleManager::AnyKeyPressed, std::placeholders::_1), nullptr);
@@ -91,12 +90,12 @@ void TitleManager::EndSplash()
 	SafeDelete(logo);
 
 	// make the actual title sprite
-	const Texture* titleTexture = Manager::GetTexture("TITLE");
+	const Texture* titleTexture = TextureManager::GetTexture("TITLE");
 	float desiredHeight = titleTexture->Height() * ((float)(Manager::GetScreenWidth() * .75f) / (float)titleTexture->Width());
-	title = new UISprite("TitleSprite", 0, 0, Manager::GetScreenWidth() * .75f, desiredHeight, titleTexture, .1f, 0.f, ANCHOR_POINT::ANCHOR_CENTER);
+	title = new UISprite("TitleSprite", 0, 0, Manager::GetScreenWidth() * .75f, desiredHeight, titleTexture, .1f, 0.f, ROTATIONS::NONE, ANCHOR_POINT::ANCHOR_CENTER);
 	title->Activate();
 	// make the title background sprite
-	const Texture* titleBackgroundTexture = Manager::GetTexture("TITLE_BACKGROUND");
+	const Texture* titleBackgroundTexture = TextureManager::GetTexture("TITLE_BACKGROUND");
 	float widthRatio = (float)Manager::GetScreenWidth() / (float)titleBackgroundTexture->Width(),
 		heightRatio = (float)Manager::GetScreenHeight() / (float)titleBackgroundTexture->Height();
 	float titleBackgroundHeight, titleBackgroundWidth;
@@ -111,7 +110,7 @@ void TitleManager::EndSplash()
 		titleBackgroundHeight = titleBackgroundTexture->Height() * widthRatio;
 	}
 
-	titleBackground = new UISprite("TitleBackground", 0, 0, titleBackgroundWidth, titleBackgroundHeight, titleBackgroundTexture, 0.f, 0.f, ANCHOR_POINT::ANCHOR_CENTER);
+	titleBackground = new UISprite("TitleBackground", 0, 0, titleBackgroundWidth, titleBackgroundHeight, titleBackgroundTexture, 0.f, 0.f, ROTATIONS::NONE, ANCHOR_POINT::ANCHOR_CENTER);
 	titleBackground->Activate();
 
 	timer = 0.f;
@@ -204,7 +203,7 @@ void TitleManager::Update(float delta_time)
 			float startpos = 0, endpos = -((Manager::GetScreenHeight() / 2.f) - (title->GetRectangle()->Height() / 2.f) - (Manager::GetScreenHeight() * .05f));
 			title->SetPos(Point<float>(title->GetPos().x, LerpToRangeClamped(SPLASH_TIME, SPLASH_TIME * 2.5f, startpos, endpos, timer)));
 			// fade in background sprite
-			if (titleBackground->Opacity() != 1.f)
+			if (titleBackground->GetOpacity() != 1.f)
 			{
 				// the amount to change the fade of the title by
 				float fadeAmount = (delta_time) / (SPLASH_TIME);

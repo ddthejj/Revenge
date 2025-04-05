@@ -2,6 +2,7 @@
 #include "TestMaps.h"
 
 #include "OverworldManager.h"
+#include "TextureManager.h"
 #include "Tile.h"
 #include "Character.h"
 
@@ -9,10 +10,6 @@
 #include <fstream>
 #include <string>
 
-#include "Manager.h"
-#include "OverworldManager.h"
-#include "FileReader.h"
-#include "Character.h"
 
 void TestMap0::CreateRooms()
 {
@@ -181,7 +178,7 @@ Room::RoomData TestRoom1::CreateRoomData()
 
 #pragma region Create NPC Data
 
-	NPCs.push_back(new TestNPC(200, 200, 32, 32, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_PLAYER), .6f));
+	NPCs.push_back(new TestNPC(200, 200, 32, 32, TextureManager::GetTexture((int)TEXTURES_TEST::TEX_T_PLAYER), .6f));
 
 #pragma endregion
 

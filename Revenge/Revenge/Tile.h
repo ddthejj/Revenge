@@ -6,6 +6,15 @@ class Texture;
 class MyRectangle;
 class Room;
 
+enum class TILES : int	// Tiles
+{
+	TILE_BROWNFLOOR = 0,	// Test floor
+	TILE_REDWALL,			// Test wall
+	TILE_GREENDOOR,			// Test door
+	TILE_BLUETEXT,			// Test interaction tile
+	TILE_MAX
+};
+
 struct ProtoTile
 {
 	const Texture* texture;

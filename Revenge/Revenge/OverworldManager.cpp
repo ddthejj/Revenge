@@ -1,8 +1,9 @@
 #include "defines.h"
-#include "Manager.h"
+#include "TextureManager.h"
 #include "InputManager.h"
 #include "OverworldManager.h"
 #include "SaveManager.h"
+#include "ComponentManager.h"
 
 #include "Map.h"
 #include "TestMaps.h"
@@ -14,7 +15,7 @@
 
 #include <cmath>
 
-ProtoTile* OverworldManager::protoTiles[(int)TILES::TILE_MAX];
+std::vector<ProtoTile*> OverworldManager::protoTiles;
 std::vector<Map*> OverworldManager::maps;
 
 Map* OverworldManager::currentMap = nullptr;
@@ -28,13 +29,13 @@ bool OverworldManager::isRoomTransitioning = false;
 void OverworldManager::Init()
 {
 	// test player
-	currentPlayer = new PC_Archer("Player", 240, 240, 32, 32, Manager::GetTexture((int)TEXTURES_TEST::TEX_T_PLAYER), .6f);
+	currentPlayer = new PC_Archer("Player", 240, 240, 32, 32, TextureManager::GetTexture((int)TEXTURES_TEST::TEX_T_PLAYER), .6f);
 	currentPlayer->Activate();
 	// prototype tiles
-	protoTiles[(int)TILES::TILE_BROWNFLOOR] = new ProtoTile(Manager::GetTexture((int)TEXTURES_TEST::TEX_T_BROWNFLOOR), 32, 32);
-	protoTiles[(int)TILES::TILE_REDWALL] = new ProtoTile(Manager::GetTexture((int)TEXTURES_TEST::TEX_T_REDWALL), 32, 32, true);
-	protoTiles[(int)TILES::TILE_GREENDOOR] = new ProtoTile(Manager::GetTexture((int)TEXTURES_TEST::TEX_T_GREENDOOR), 32, 32, false, true);
-	protoTiles[(int)TILES::TILE_BLUETEXT] = new ProtoTile(Manager::GetTexture((int)TEXTURES_TEST::TEX_T_BLUETEXT), 32, 32, true, false, true);
+	protoTiles.push_back(new ProtoTile(TextureManager::GetTexture((int)TEXTURES_TEST::TEX_T_BROWNFLOOR), 32, 32));
+	protoTiles.push_back(new ProtoTile(TextureManager::GetTexture((int)TEXTURES_TEST::TEX_T_REDWALL), 32, 32, true));
+	protoTiles.push_back(new ProtoTile(TextureManager::GetTexture((int)TEXTURES_TEST::TEX_T_GREENDOOR), 32, 32, false, true));
+	protoTiles.push_back(new ProtoTile(TextureManager::GetTexture((int)TEXTURES_TEST::TEX_T_BLUETEXT), 32, 32, true, false, true));
 	// add maps
 	maps.push_back(new TestMap0());
 	currentMap = maps[0];
@@ -178,14 +179,15 @@ void OverworldManager::Update(float delta_time)
 
 bool OverworldManager::OnInteract(Point<float> interactPoint)
 {
-	if (Tile* interactedTile = currentMap->CurrentRoom()->GetTile(1, (int)std::floor(interactPoint.x / TILE_WIDTH), (int)std::floor(interactPoint.y / TILE_HEIGHT)))
+	std::vector<Component*> components = ComponentManager::GetComponentsByType(COMPONENT_TYPE::INTERACTION);
+
+	for (auto it = components.begin(); it != components.end(); it++)
 	{
-		if (InteractionComponent* tileInteracted = (InteractionComponent*)interactedTile->GetComponentOfType(COMPONENT_TYPE::DIALOGUE_INTERACTION))
+		if (((InteractionComponent*)(*it))->TryInteract(interactPoint))
 		{
-			tileInteracted->Interact();
 			return true;
 		}
 	}
-	
+
 	return false;
 }

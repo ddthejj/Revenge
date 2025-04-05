@@ -3,6 +3,14 @@
 
 class AudioPlayer;
 
+enum class SOUND_CHANNEL
+{
+	MASTER,
+	MUSIC,
+	SFX,
+	SOUND_CHANNEL_MAX
+};
+
 class SoundManager
 {
 private:

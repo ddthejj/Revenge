@@ -1,5 +1,7 @@
 #pragma once
 
+class Object;
+
 enum COMPONENT_TYPE : int
 {
 	INVALID = 0,
@@ -17,6 +19,7 @@ class Component
 private:
 #pragma region Properties
 
+	Object* owner;
 	COMPONENT_TYPE type = COMPONENT_TYPE::INVALID;
 	bool isUnique = false;
 
@@ -26,7 +29,7 @@ private:
 
 protected:
 
-	Component(COMPONENT_TYPE _type, bool _isUnique = false);
+	Component(Object* _owner, COMPONENT_TYPE _type, bool _isUnique = false);
 
 public:
 

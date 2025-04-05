@@ -1,19 +1,20 @@
 #include "defines.h"
 #include "MenuBox.h"
 #include "SpriteBatch.h"
-#include "Manager.h"
+#include "OverworldManager.h"
 #include "Texture.h"
 #include "MenuManager.h"
 #include "FileReader.h"
 #include "InputManager.h"
 #include "SoundManager.h"
 #include "Rectangle.h"
+#include "Text.h"
 
 MenuBox::MenuBox(std::string _debugName, float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, float _layer, float _opacity, ANCHOR_POINT _anchor)
 	: BorderedBox(_debugName, _x, _y, _width, _height, _texture, _layer, _opacity, _anchor)
 {
 	optionAt = new Point<int>();
-	arrow = new UISprite("menuArrow", 0, 0, 7, 7, 0, 0, 15, 15, _arrowTexture, _layer + .1f, _opacity, _anchor);
+	arrow = new UISprite("menuArrow", 0, 0, 7, 7, 0, 0, 15, 15, _arrowTexture, _layer + .1f, _opacity, ROTATIONS::NONE, _anchor);
 	// options need to be set later
 	if ((unsigned char)anchor & (unsigned char)ANCHOR_POINT::HCENTER)
 	{
@@ -175,8 +176,8 @@ void MenuBox::Draw(SpriteBatch* spriteBatch)
 			MenuOption* option = options[i][j];
 			if (option)
 			{
-				MyRectangle textRectangle = MyRectangle(option->x + textOffset.x, option->y + textOffset.y, option->GetDimenstions().x, option->GetDimenstions().y);
-				spriteBatch->WriteTextInSprite(option->GetText().c_str(), &textRectangle, this, layer + .1f, opacity, option->anchor);
+				Text text = Text(debugName + "Text", option->x + textOffset.x, option->y + textOffset.y, option->GetDimenstions().x, option->GetDimenstions().y, option->GetText(), layer + .1f, opacity, option->anchor);
+				spriteBatch->WriteTextInSprite(&text, this);
 			}
 		}
 	}
@@ -314,7 +315,7 @@ bool MenuBox::InteractPressed()
 bool MenuBox::MenuPressed()
 {
 	MenuManager::CloseAllMenus();
-	Manager::UnfreezeScene();
+	OverworldManager::UnfreezeScene();
 	return true;
 }
 

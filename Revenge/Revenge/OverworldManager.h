@@ -1,7 +1,5 @@
 #pragma once
 
-
-
 class Map;                                                                                                                                                                                                                                               
 struct ProtoTile;
 class Sprite;
@@ -22,7 +20,7 @@ class OverworldManager
 #pragma region Properties
 
 	static std::vector<Map*> maps;				// List of all maps possible
-	static ProtoTile* protoTiles[(int)TILES::TILE_MAX];		// List of all prototype tiles 
+	static std::vector<ProtoTile*> protoTiles;	// List of all prototype tiles 
 
 	static Map* currentMap;						// Currently loaded map
 	static DoorData doorHit;						// The door that the player hit

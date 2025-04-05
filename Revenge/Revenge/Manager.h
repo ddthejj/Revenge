@@ -15,12 +15,31 @@ class Player;
 class Door;
 class Character;
 
+enum class FADE_STATUS	// Fade in and out status
+{
+	FADE_START,			// first frame of the fade out
+	FADE_OUT,			// transitioning to black
+	FADE_SWITCH,		// first frame of the fade in
+	FADE_IN,			// transitioning the screen black in
+	FADE_DONE,			// transition over
+	FADE_MAX
+};
+
+enum class GAME_STATE	// game state
+{
+	STATE_TITLE,		// title screen
+	STATE_LOADING,		// loading
+	STATE_OVERWORLD,	// overworld map
+	STATE_BATTLE,		// fighting 
+	STATE_CUTSCENE,		// in a cutscene
+	STATE_DIALOGUE,		// talking 
+	STATE_MAX
+};
+
 // handles the entire game and all other managers
 class Manager
 {
 private:
-
-#pragma region Properties
 
 	static GAME_STATE gameState;				// Current mode the game is in
 	static SpriteBatch* spriteBatch;			// Renderer class
@@ -33,26 +52,14 @@ private:
 
 	static bool quit;							// updated for main to end the loop gracefully
 
-#pragma endregion
-
 public:
 
-#pragma region GameManager Access
-
-	// Get a texture with index
-	static const Texture* GetTexture(int index);
-	// Get a texture with string
-	static const Texture* GetTexture(const char* name);
 	// Get the game state
 	static GAME_STATE GetGameState() { return gameState; }
 	// Set the game state
 	static void ChangeGameState(GAME_STATE _gameState);
 	// Quit the game
 	static void Quit();
-
-#pragma endregion
-
-#pragma region Access from Main
 
 	// Update the window size and position when the window is moved / resized
 	static void ResizeWindow(HWND hwnd);
@@ -61,18 +68,11 @@ public:
 	// Check if we have quit the game
 	static bool ShouldEnd() { return quit; }
 
-#pragma endregion
-
-#pragma region SpriteBatch Access
-
 	// Returns the height of the game window
 	static int GetScreenWidth();
 	//Returns the width of the game window
 	static int GetScreenHeight();
 
-#pragma endregion
-
-#pragma region Methods
 
 	// Initialize the whole game
 	static void Init(HWND hwnd);
@@ -103,10 +103,6 @@ public:
 	static bool CanChangeRoom();
 	// Start the fade process for a room transition
 	static void StartRoomChange();
-	// Freeze the entire scene
-	static void FreezeScene();
-	// Unfreeze the entire scene
-	static void UnfreezeScene();
 	// Fade the scene
 	static FADE_STATUS FadeScene();
 	// Measure the size of a string with a given font
@@ -116,7 +112,5 @@ public:
 	static void Update(float delta_time);
 	// Draw every ovject in the draw list
 	static void Draw();
-
-#pragma endregion
 };
 

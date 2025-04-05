@@ -7,7 +7,7 @@ public:
 
 	MyRectangle* collider = nullptr;
 
-	CollisionComponent(COMPONENT_TYPE type);
+	CollisionComponent(Object* _owner, COMPONENT_TYPE type);
 	virtual ~CollisionComponent();
 
 	virtual void Collide(CollisionComponent* collider) = 0;
@@ -19,7 +19,7 @@ class StaticCollisionComponent : public CollisionComponent
 {
 public:
 
-	StaticCollisionComponent(MyRectangle* rectangle);
+	StaticCollisionComponent(Object* _owner, MyRectangle* rectangle);
 	virtual void Collide(CollisionComponent* collider) override {};
 };
 
@@ -27,6 +27,6 @@ class DynamicCollisionComponent : public CollisionComponent
 {
 public:
 
-	DynamicCollisionComponent(MyRectangle* rectangle);
+	DynamicCollisionComponent(Object* _owner, MyRectangle* rectangle);
 	virtual void Collide(CollisionComponent* collider) override {};
 };

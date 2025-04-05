@@ -28,7 +28,7 @@ Tile::Tile(std::string _debugName, const ProtoTile* prototype, float _x, float _
 {	
 	if (prototype->collidable)
 	{
-		AddComponent(new StaticCollisionComponent(rectangle));
+		AddComponent(new StaticCollisionComponent(this, rectangle));
 	}
 }
 

@@ -1,17 +1,5 @@
 #pragma once
 
-enum ROTATIONS
-{
-	NONE = 0,
-	HORIZONTAL,
-	VERTICAL,
-	ROT_90,
-	ROT_90_VERTICAL,
-	ROT_180,
-	ROT_270,
-	ROT_270_VERTICAL
-};
-
 class MyRectangle;
 
 class Texture

@@ -7,7 +7,6 @@
 #include <crtdbg.h>
 #endif
 #include "Math.h"
-#include "EnumParser.h"
 #include <vector>
 
 #if defined(_DEBUG) || defined(DEBUG)
@@ -49,5 +48,3 @@ template <class T> void SafeDelete(T*& p)
 		p = nullptr;
 	}
 }
-
-// enums have been moved to the enum parser class

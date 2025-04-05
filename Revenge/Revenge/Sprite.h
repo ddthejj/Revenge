@@ -1,12 +1,23 @@
 #pragma once
 #include "Object.h"
-#include "EnumParser.h"
 #include <map>
 #include <functional>
 
 class MyRectangle;
 class Texture;
 template<typename T> struct Point;
+
+enum ROTATIONS
+{
+	NONE = 0,
+	HORIZONTAL,
+	VERTICAL,
+	ROT_90,
+	ROT_90_VERTICAL,
+	ROT_180,
+	ROT_270,
+	ROT_270_VERTICAL
+};
 
 // base class for all drawable objects
 class Sprite : public Object
@@ -20,6 +31,7 @@ protected:
 	const Texture* texture;						// the sprite's texture
 	float layer = 0.f;							// the sprite's layer
 	float opacity = 1.f;						// the sprite's opacity
+	ROTATIONS rotation = ROTATIONS::NONE;		// the sprite's rotation
 
 #pragma endregion
 
@@ -28,9 +40,10 @@ public:
 #pragma region Methods
 
 	// create a sprite without a source rectangle
-	Sprite(std::string _debugName, float x, float y, float width, float height, const Texture* _texture, float _layer, float _opacity = 1.f);
+	Sprite(std::string _debugName, float x, float y, float width, float height, const Texture* _texture, float _layer, float _opacity = 1.f, ROTATIONS _rotation = ROTATIONS::NONE);
 	// create a sprite with a source rectangle
-	Sprite(std::string _debugName, float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, const Texture* _texture, float _layer, float _opacity = 1.f);
+	Sprite(std::string _debugName, float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, const Texture* _texture, float _layer, float _opacity = 1.f, ROTATIONS _rotation = ROTATIONS::NONE);
+	Sprite(const Sprite& _that);
 	~Sprite();
 
 	// set the main rectangle
@@ -47,13 +60,27 @@ public:
 	void DecreaseOpacity(float amnt);
 	// increase the sprite's opacity
 	void IncreaseOpacity(float amnt);
+	// set the layer
+	void SetLayer(float _layer) { layer = _layer; }
+	// set the rotation
+	void SetRotation(ROTATIONS _rotation) { rotation = _rotation; }
 
 	// return the main rectangle
-	MyRectangle* GetRectangle() const;
+	MyRectangle* GetRectangle() const { return rectangle; };
 	// return the main rectangle's position
 	Point<float> GetPos() const;
+	// return the main rectangle
+	MyRectangle* GetSourceRectangle() const { return sourceRectangle; }
+	// return the main rectangle's position
+	Point<float> GetSourcePos() const;
+	// return the texture
+	const Texture* GetTexture() const { return texture; }
 	// return the opacity
-	float Opacity() const { return opacity; }
+	float GetOpacity() const { return opacity; }
+	// return the layer
+	float GetLayer() const { return layer; }
+	// return the rotation
+	ROTATIONS GetRotation() const { return rotation; }
 
 	// draw the sprite in the world
 	virtual void Draw(SpriteBatch* spriteBatch);
@@ -78,13 +105,14 @@ protected:
 
 	ANCHOR_POINT anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT;
 
-public: 
+public:
 
 	// create a sprite without a source rectangle
-	UISprite(std::string _debugName, float x, float y, float width, float height, const Texture* _texture, float _layer, float _opacity = 1.f, ANCHOR_POINT _anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
+	UISprite(std::string _debugName, float x, float y, float width, float height, const Texture* _texture, float _layer, float _opacity = 1.f, ROTATIONS _rotation = ROTATIONS::NONE, ANCHOR_POINT _anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
 	// create a sprite with a source rectangle
-	UISprite(std::string _debugName, float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, const Texture* _texture, float _layer, float _opacity = 1.f, ANCHOR_POINT _anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
-	
+	UISprite(std::string _debugName, float x, float y, float width, float height, float sX, float sY, float sWidth, float sHeight, const Texture* _texture, float _layer, float _opacity = 1.f, ROTATIONS _rotation = ROTATIONS::NONE, ANCHOR_POINT _anchor = ANCHOR_POINT::ANCHOR_TOP_LEFT);
+	UISprite(const UISprite& _that);
+
 	virtual void Deactivate();
 	// draw the sprite as UI
 	virtual void Draw(SpriteBatch* spriteBatch);

@@ -4,6 +4,36 @@
 class Room;
 class Ability;
 
+enum class MOVE_MODE
+{
+	NONE,
+	RANDOM_RADIUS,
+	FOLLOW,
+	CHASE
+};
+
+enum class MAGIC_TYPE
+{
+	NONE = 0,
+
+	ELEMENTAL = 1 << 5,
+	HUMANITY = 1 << 6,
+
+	FIRE = ELEMENTAL | (1 << 0),
+	WATER = ELEMENTAL | (1 << 1),
+	LIFE = ELEMENTAL | (1 << 2),
+	EARTH = ELEMENTAL | (1 << 3),
+	VENOM = ELEMENTAL | (1 << 4),
+
+	MAGNET = HUMANITY | (1 << 0),
+	WARD = HUMANITY | (1 << 1),
+	LIGHT = HUMANITY | (1 << 2),
+	MIND = HUMANITY | (1 << 3),
+	NECRO = HUMANITY | (1 << 4),
+
+	UNDECIDED = 1 << 7,
+};
+
 // The base class for any character
 class Character : public Sprite
 {

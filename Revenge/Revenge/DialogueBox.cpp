@@ -5,11 +5,12 @@
 #include "InputManager.h"
 #include "MenuManager.h"
 #include "Rectangle.h"
+#include "Text.h"
 
 DialogueBox::DialogueBox(std::string _debugName, float _x, float _y, float _width, float _height, const Texture* _texture, const Texture* _arrowTexture, float _layer, float _opacity, ANCHOR_POINT _anchor)
 	: BorderedBox(_debugName, _x, _y, _width, _height, _texture, _layer, _opacity, _anchor)
 {
-	arrow = new UISprite("dialogArrow", 15, 15, 7, 7, 0, 0, 15, 15, _arrowTexture, _layer + .01f, _opacity, ANCHOR_POINT::ANCHOR_BOTTOM_RIGHT);
+	arrow = new UISprite("dialogArrow", 15, 15, 7, 7, 0, 0, 15, 15, _arrowTexture, _layer + .01f, _opacity, ROTATIONS::NONE, ANCHOR_POINT::ANCHOR_BOTTOM_RIGHT);
 	arrow->SetOpacity(0.f);
 }
 
@@ -35,8 +36,8 @@ void DialogueBox::Draw(SpriteBatch* spriteBatch)
 	}
 
 	// draw text
-	MyRectangle textRectangle = MyRectangle(25, 25, rectangle->Width() - 50, 10);
-	spriteBatch->WriteTextInSprite(currentText.c_str(), &textRectangle, this, layer + .01f, opacity, ANCHOR_POINT::ANCHOR_TOP_LEFT);
+	Text text = Text(debugName + "Text", 25, 25, rectangle->Width() - 50, 10, currentText, layer + .01f, opacity, ANCHOR_POINT::ANCHOR_TOP_LEFT);
+	spriteBatch->WriteTextInSprite(&text, this);
 
 	// draw the arrow
 	arrow->DrawInSprite(spriteBatch, this);

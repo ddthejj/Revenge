@@ -6,6 +6,26 @@ class SpriteBatch;
 class Component;
 enum COMPONENT_TYPE : int;
 
+enum class ANCHOR_POINT : unsigned char
+{
+	TOP = (0) << 2,
+	VCENTER = (1) << 2,
+	BOTTOM = (1 << 1) << 2,
+	LEFT = 0,
+	HCENTER = 1,
+	RIGHT = 1 << 1,
+
+	ANCHOR_TOP_LEFT = TOP | LEFT,
+	ANCHOR_TOP_CENTER = TOP | HCENTER,
+	ANCHOR_TOP_RIGHT = TOP | RIGHT,
+	ANCHOR_CENTER_LEFT = VCENTER | LEFT,
+	ANCHOR_CENTER = VCENTER | HCENTER,
+	ANCHOR_CENTER_RIGHT = VCENTER | RIGHT,
+	ANCHOR_BOTTOM_LEFT = BOTTOM | LEFT,
+	ANCHOR_BOTTOM_CENTER = BOTTOM | HCENTER,
+	ANCHOR_BOTTOM_RIGHT = BOTTOM | RIGHT
+};
+
 // the base class for all gameobjects
 class Object
 {

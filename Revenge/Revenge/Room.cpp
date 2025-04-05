@@ -100,6 +100,12 @@ void Room::Freeze()
 			}
 		}
 	}
+
+	for (int i = 0; i < npcCount; i++)
+	{
+		NPCs[i]->Freeze();
+	}
+
 	Object::Freeze();
 }
 
@@ -115,6 +121,11 @@ void Room::Unfreeze()
 					tiles[l][i][j]->Unfreeze();
 			}
 		}
+	}
+
+	for (int i = 0; i < npcCount; i++)
+	{
+		NPCs[i]->Unfreeze();
 	}
 	Object::Unfreeze();
 }
@@ -152,7 +163,7 @@ void Room::InterpretRoomData(RoomData roomData)
 					{
 						if (doorAt < roomData.doorCount)
 						{
-							newTile->AddComponent(new DoorComponent(newTile->GetRectangle(), roomData.doorData[doorAt][0], roomData.doorData[doorAt][1], roomData.doorData[doorAt][2]));
+							newTile->AddComponent(new DoorComponent(newTile, newTile->GetRectangle(), roomData.doorData[doorAt][0], roomData.doorData[doorAt][1], roomData.doorData[doorAt][2]));
 							doorAt++;
 						}
 					}
@@ -160,7 +171,7 @@ void Room::InterpretRoomData(RoomData roomData)
 					{
 						if (dialogueAt < dialogueCount)
 						{
-							newTile->AddComponent(new DialogueComponent(roomData.textList[dialogueAt]));
+							newTile->AddComponent(new DialogueComponent(newTile, newTile->GetRectangle(), roomData.textList[dialogueAt]));
 							dialogueAt++;
 						}
 					}
