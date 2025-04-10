@@ -109,7 +109,7 @@ PartyMenu::PartyMenu(Point<float> location) : MenuBox(
 	for (int i = 0; i < (int)party.size(); i++)
 	{
 		options[0].push_back(new CharacterMenuOption(
-			party[i]->FirstName(),
+			party[i]->GetCharacterData()->GivenName(),
 			40.f,
 			30.f * (float)(i + 1),
 			ANCHOR_POINT::ANCHOR_TOP_LEFT,

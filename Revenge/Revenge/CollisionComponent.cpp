@@ -12,18 +12,18 @@ CollisionComponent::~CollisionComponent()
 
 }
 
-void CollisionComponent::Register()
+void CollisionComponent::Activate()
 {
 	// register collision with the physics system alongside the component manager
-	Component::Register();
+	Component::Activate();
 
 	PhysicsManager::RegisterCollision(this);
 }
 
-void CollisionComponent::Unregister()
+void CollisionComponent::Deactivate()
 {
 	// register collision with the physics system alongside the component manager
-	Component::Unregister();
+	Component::Deactivate();
 
 	PhysicsManager::UnregisterCollision(this);
 }

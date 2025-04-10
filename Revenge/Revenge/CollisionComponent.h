@@ -11,8 +11,8 @@ public:
 	virtual ~CollisionComponent();
 
 	virtual void Collide(CollisionComponent* collider) = 0;
-	virtual void Register() override;
-	virtual void Unregister() override;
+	virtual void Activate() override;
+	virtual void Deactivate() override;
 };
 
 class StaticCollisionComponent : public CollisionComponent

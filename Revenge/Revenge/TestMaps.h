@@ -27,11 +27,3 @@ public:
 protected:
 	virtual RoomData CreateRoomData() override;
 };
-
-class TestNPC : public NonPlayer
-{
-public:
-	TestNPC(float x, float y, float height, float width, const Texture* _texture, float _layer) : NonPlayer("TestNPC", x, y, height, width, _texture, _layer) { CreateCharacterData(); }
-protected:
-	virtual void CreateCharacterData() override;
-};

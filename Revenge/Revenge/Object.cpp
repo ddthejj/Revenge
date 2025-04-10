@@ -29,7 +29,7 @@ void Object::Activate()
 
 	for (auto it = components.begin(); it != components.end(); it++)
 	{
-		(*it)->Register();
+		(*it)->Activate();
 	}
 }
 
@@ -41,18 +41,28 @@ void Object::Deactivate()
 
 	for (auto it = components.begin(); it != components.end(); it++)
 	{
-		(*it)->Unregister();
+		(*it)->Deactivate();
 	}
 }
 
 void Object::Freeze()
 {
 	frozen = true;
+
+	for (auto it = components.begin(); it != components.end(); it++)
+	{
+		(*it)->Freeze();
+	}
 }
 
 void Object::Unfreeze()
 {
 	frozen = false;
+
+	for (auto it = components.begin(); it != components.end(); it++)
+	{
+		(*it)->Unfreeze();
+	}
 }
 
 Component* Object::GetComponentOfType(COMPONENT_TYPE type)

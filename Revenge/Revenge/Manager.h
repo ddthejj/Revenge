@@ -13,7 +13,6 @@ struct ProtoTile;
 class Room;
 class Player;
 class Door;
-class Character;
 
 enum class FADE_STATUS	// Fade in and out status
 {

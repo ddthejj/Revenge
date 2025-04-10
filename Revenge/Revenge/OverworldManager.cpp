@@ -4,12 +4,12 @@
 #include "OverworldManager.h"
 #include "SaveManager.h"
 #include "ComponentManager.h"
+#include "CharacterManager.h"
 
 #include "Map.h"
 #include "TestMaps.h"
 #include "Room.h"
 #include "Tile.h"
-#include "PlayerCharacters.h"
 #include "InteractionComponent.h"
 #include "Rectangle.h"
 
@@ -29,7 +29,7 @@ bool OverworldManager::isRoomTransitioning = false;
 void OverworldManager::Init()
 {
 	// test player
-	currentPlayer = new PC_Archer("Player", 240, 240, 32, 32, TextureManager::GetTexture((int)TEXTURES_TEST::TEX_T_PLAYER), .6f);
+	currentPlayer = new Player("Player", 240, 240, 32, 32, TextureManager::GetTexture((int)TEXTURES_TEST::TEX_T_PLAYER), .6f, CharacterManager::GetCharacterData(CHARACTER_LIST::ARCHER));
 	currentPlayer->Activate();
 	// prototype tiles
 	protoTiles.push_back(new ProtoTile(TextureManager::GetTexture((int)TEXTURES_TEST::TEX_T_BROWNFLOOR), 32, 32));

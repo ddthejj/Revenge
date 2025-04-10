@@ -13,6 +13,7 @@ void ComponentManager::Init()
 	registeredComponents.insert(std::pair(COMPONENT_TYPE::DOOR_TRIGGER, std::vector<Component*>()));
 	// we don't differentiate between collision types here, the physics manager handles that.
 	registeredComponents.insert(std::pair(COMPONENT_TYPE::COLLISION, std::vector<Component*>())); 
+	registeredComponents.insert(std::pair(COMPONENT_TYPE::COLLISION, std::vector<Component*>())); 
 }
 
 void ComponentManager::Clean()

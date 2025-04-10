@@ -1,9 +1,9 @@
 #include "defines.h"
 #include "Component.h"
 #include "ComponentManager.h"
-#include "Object.h"
+#include "Manager.h"
 
-Component::Component(Object* _owner, COMPONENT_TYPE _type, bool _isUnique)
+Component::Component(Object* _owner, COMPONENT_TYPE _type, bool _isUnique) : Object("Component")
 {
 	owner = _owner;
 	type = _type;
@@ -12,15 +12,19 @@ Component::Component(Object* _owner, COMPONENT_TYPE _type, bool _isUnique)
 
 Component::~Component()
 {
-	Unregister();
+	Deactivate();
 }
 
-void Component::Register()
+void Component::Activate()
 {
+	Object::Activate();
+	Manager::AddUpdate(this);
 	ComponentManager::RegisterComponent(this);
 }
 
-void Component::Unregister()
+void Component::Deactivate()
 {
+	Object::Deactivate();
+	Manager::RemoveUpdate(this);
 	ComponentManager::UnregisterComponent(this);
 }

@@ -4,7 +4,7 @@
 
 enum class ANCHOR_POINT : unsigned char;
 class NonPlayer;
-enum class MAGIC_TYPE;
+enum class MAGIC_TYPE : unsigned int;
 class Ability;
 enum class MOVE_MODE;
 

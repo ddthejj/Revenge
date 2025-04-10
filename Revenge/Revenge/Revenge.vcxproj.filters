@@ -41,9 +41,6 @@
     <Filter Include="Content\Maps">
       <UniqueIdentifier>{1e320deb-75e9-403a-ae18-ae4ceb8b28ba}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Content\Characters">
-      <UniqueIdentifier>{67df24f8-c122-4f60-b222-2612967e5fe1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Content\Test">
       <UniqueIdentifier>{26a49294-50ee-43c9-bc5f-115cae57af68}</UniqueIdentifier>
     </Filter>
@@ -154,9 +151,6 @@
     <ClCompile Include="TestMaps.cpp">
       <Filter>Content\Test</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerCharacters.cpp">
-      <Filter>Content\Characters</Filter>
-    </ClCompile>
     <ClCompile Include="PauseMenu.cpp">
       <Filter>Content\Menus</Filter>
     </ClCompile>
@@ -171,6 +165,18 @@
     </ClCompile>
     <ClCompile Include="PhysicsManager.cpp">
       <Filter>Source\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterManager.cpp">
+      <Filter>Source\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon.cpp">
+      <Filter>Source\Base Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="MovementComponent.cpp">
+      <Filter>Source\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationComponent.cpp">
+      <Filter>Source\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -273,9 +279,6 @@
     <ClInclude Include="TestMaps.h">
       <Filter>Content\Test</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerCharacters.h">
-      <Filter>Content\Characters</Filter>
-    </ClInclude>
     <ClInclude Include="PauseMenu.h">
       <Filter>Content\Menus</Filter>
     </ClInclude>
@@ -287,6 +290,18 @@
     </ClInclude>
     <ClInclude Include="PhysicsManager.h">
       <Filter>Source\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterManager.h">
+      <Filter>Source\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon.h">
+      <Filter>Source\Base Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="MovementComponent.h">
+      <Filter>Source\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationComponent.h">
+      <Filter>Source\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

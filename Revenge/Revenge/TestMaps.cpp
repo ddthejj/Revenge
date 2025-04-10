@@ -1,6 +1,7 @@
 #include "defines.h"
 #include "TestMaps.h"
 
+#include "CharacterManager.h"
 #include "OverworldManager.h"
 #include "TextureManager.h"
 #include "Tile.h"
@@ -106,7 +107,6 @@ Room::RoomData TestRoom0::CreateRoomData()
 	return RoomData(layers, doorCount, doorData, textList);
 }
 
-
 Room::RoomData TestRoom1::CreateRoomData()
 {
 	std::vector<std::vector<std::vector<int>>> layers =
@@ -178,28 +178,9 @@ Room::RoomData TestRoom1::CreateRoomData()
 
 #pragma region Create NPC Data
 
-	NPCs.push_back(new TestNPC(200, 200, 32, 32, TextureManager::GetTexture((int)TEXTURES_TEST::TEX_T_PLAYER), .6f));
+	NPCs.push_back(new NonPlayer("TestNPC", 200, 200, 32, 32, TextureManager::GetTexture((int)TEXTURES_TEST::TEX_T_PLAYER), .6f, CharacterManager::GetCharacterData(CHARACTER_LIST::SKYTEN), 200.f));
 
 #pragma endregion
 
 	return RoomData(layers, doorCount, doorData, textList);
-}
-
-void TestNPC::CreateCharacterData()
-{
-	firstname = "Skyten";
-	lastname = "Alwestow";
-	ratio = 23;
-	startingLevel = 1;
-	std::vector<int> stats = { 1,1,1,1,1 };
-	attack = stats[0];
-	defense = stats[1];
-	mind = stats[2];
-	spirit = stats[3];
-	energy = stats[4];
-	magicType[0] = MAGIC_TYPE::WATER;
-	magicType[1] = MAGIC_TYPE::LIFE;
-	abilities = {};
-	movementMode = MOVE_MODE::RANDOM_RADIUS;
-	moveRadius = 100;
 }

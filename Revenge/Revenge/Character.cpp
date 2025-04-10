@@ -13,27 +13,74 @@
 #include "Rectangle.h"
 #include "PhysicsManager.h"
 #include "CollisionComponent.h"
-
 #include "InteractionComponent.h"
+#include "MovementComponent.h"
+#include "AnimationComponent.h"
 
-#include <random>
-#include <ctime>
-#include <cmath>
+#pragma region Character Data
+
+std::string CharacterData::GivenName(bool useNickname) const
+{
+	if (useNickname && nickname.size() > 0)
+	{
+		return nickname;
+	}
+	else
+	{
+		if (reverseName)
+		{
+			return lastName;
+		}
+		else
+		{
+			return firstName;
+		}
+	}
+}
+
+std::string CharacterData::FamilyName() const
+{
+	if (!reverseName)
+	{
+		return lastName;
+	}
+	else
+	{
+		return firstName;
+	}
+}
+
+std::string CharacterData::FullName(bool useNickname) const
+{
+	if (!reverseName)
+	{
+		return std::string(GivenName(useNickname).append(" ").append(FamilyName()).c_str());
+	}
+	else
+	{
+		return std::string(FamilyName().append(" ").append(GivenName(useNickname)).c_str());
+	}
+}
+
+#pragma endregion 
 
 #pragma region Character
 
-Character::Character(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer) : Sprite(_debugName, x, y, height, width, 0, 0, 32, 32, _texture, _layer)
+Character::Character(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer, CharacterData* _characterData) : Sprite(_debugName, x, y, height, width,0,0, height, width, _texture, _layer)
 {
+	characterData = _characterData;
+
 	AddComponent(new DynamicCollisionComponent(this, rectangle));
+	AddComponent(new AnimationComponent(this, sourceRectangle));
 }
 
 Character::~Character()
 {
 	if (active) Deactivate();
 
-	for (int i = 0; i < abilities.size(); i++)
+	for (int i = 0; i < characterData->Abilities().size(); i++)
 	{
-		SafeDelete(abilities[i]);
+		//SafeDelete(characterData->Abilities()[i]);
 	}
 }
 
@@ -42,84 +89,13 @@ void Character::Draw(SpriteBatch* spriteBatch)
 	spriteBatch->Draw(this);
 }
 
-void Character::Move(float delta_time)
-{
-	if (!IsMoving())
-	{
-		if (animTimer > 0.f)
-		{
-			// resets animation state
-			AnimateMovement(delta_time);
-		}
-		return;
-	}
-
-	if (IsMoving())
-	{
-		collided = PhysicsManager::TryMove((CollisionComponent*)GetComponentOfType(COMPONENT_TYPE::COLLISION), velocity);
-	}
-
-	AnimateMovement(delta_time);
-}
-
-void Character::AnimateMovement(float delta_time)
-{
-	if (velocity.Magnitude() > 0.f)
-	{
-		DIRECTION prevWayFacing = wayFacing;
-
-		if (std::abs(velocity.x) > std::abs(velocity.y))
-		{
-			if (velocity.x < 0)
-			{
-				wayFacing = DIRECTION::LEFT;
-			}
-			else
-			{
-				wayFacing = DIRECTION::RIGHT;
-			}
-		}
-		else
-		{
-			if (velocity.y < 0)
-			{
-				wayFacing = DIRECTION::UP;
-			}
-			else
-			{
-				wayFacing = DIRECTION::DOWN;
-			}
-		}
-
-		if (prevWayFacing != wayFacing)
-		{
-			// changed direction
-			animTimer = 0.f;
-		}
-
-		sourceRectangle->SetLocation(Point<float>((int)(animTimer / (animTimerMax / 4.f)) * sourceRectangle->Width(), (int)wayFacing * sourceRectangle->Height()));
-
-		animTimer += delta_time;
-
-		if (animTimer >= animTimerMax)
-		{
-			animTimer = 0.f;
-		}
-	}
-	else
-	{
-		// stopped
-		animTimer = 0.f;
-		sourceRectangle->SetLocation(Point<float>((int)(animTimer / (animTimerMax / 4.f)) * sourceRectangle->Width(), (int)wayFacing * sourceRectangle->Height()));
-	}
-}
-
 #pragma endregion
 
 #pragma region Player Character
 
-Player::Player(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer) : Character(_debugName, x, y, height, width, _texture, _layer)
+Player::Player(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer, CharacterData* _characterData) : Character(_debugName, x, y, height, width, _texture, _layer, _characterData)
 {
+	AddComponent(new PlayerControlMovementComponent(this, (CollisionComponent*)GetComponentOfType(COMPONENT_TYPE::COLLISION)));
 }
 
 Player::~Player()
@@ -129,7 +105,6 @@ Player::~Player()
 
 void Player::Update(float delta_time)
 {
-	Move(delta_time);
 }
 
 void Player::Freeze() 
@@ -147,54 +122,6 @@ void Player::Unfreeze()
 	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_MENU, std::bind(&Player::OnMenuCallback, this), this);
 }
 
-bool Player::UpPressedCallback()
-{
-	velocity += Point<float>(0.f, -mvmntSpeed);
-	return false;
-}
-
-bool Player::DownPressedCallback()
-{
-	velocity += Point<float>(0.f, mvmntSpeed);
-	return false;
-}
-
-bool Player::LeftPressedCallback()
-{
-	velocity += Point<float>(-mvmntSpeed, 0.f);
-	return false;
-}
-
-bool Player::RightPressedCallback()
-{
-	velocity += Point<float>(mvmntSpeed, 0.f);
-	return false;
-}
-
-bool Player::UpReleasedCallback()
-{
-	velocity -= Point<float>(0.f, -mvmntSpeed);
-	return false;
-}
-
-bool Player::DownReleasedCallback()
-{
-	velocity -= Point<float>(0.f, mvmntSpeed);
-	return false;
-}
-
-bool Player::LeftReleasedCallback()
-{
-	velocity -= Point<float>(-mvmntSpeed, 0.f);
-	return false;
-}
-
-bool Player::RightReleasedCallback()
-{
-	velocity -= Point<float>(mvmntSpeed, 0.f);
-	return false;
-}
-
 bool Player::OnInteractCallback()
 {
 	if (frozen || !active)
@@ -203,18 +130,20 @@ bool Player::OnInteractCallback()
 
 	Point<float> interactPoint;
 
-	switch (wayFacing)
+	AnimationComponent* animComponent = (AnimationComponent*)GetComponentOfType(COMPONENT_TYPE::ANIMATION);
+
+	switch (animComponent->GetWayFacing())
 	{
-	case DIRECTION::UP:
+	case AnimationComponent::DIRECTION::UP:
 		interactPoint = Point<float>(rectangle->CenterX(), rectangle->Top() - (rectangle->Height() / 3.f));
 		break;
-	case DIRECTION::DOWN:
+	case  AnimationComponent::DIRECTION::DOWN:
 		interactPoint = Point<float>(rectangle->CenterX(), rectangle->Bottom() + (rectangle->Height() / 3.f));
 		break;
-	case DIRECTION::LEFT:
+	case  AnimationComponent::DIRECTION::LEFT:
 		interactPoint = Point<float>(rectangle->Left() - (rectangle->Width() / 3.f), rectangle->CenterY());
 		break;
-	case DIRECTION::RIGHT:
+	case  AnimationComponent::DIRECTION::RIGHT:
 		interactPoint = Point<float>(rectangle->Right() + (rectangle->Width() / 3.f), rectangle->CenterY());
 		break;
 	}
@@ -231,16 +160,6 @@ bool Player::OnMenuCallback()
 
 void Player::BindCallbacks()
 {
-	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_UP, std::bind(&Player::UpPressedCallback, this), this);
-	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_DOWN, std::bind(&Player::DownPressedCallback, this), this);
-	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_LEFT, std::bind(&Player::LeftPressedCallback, this), this);
-	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_RIGHT, std::bind(&Player::RightPressedCallback, this), this);
-
-	InputManager::KeyReleasedCallbacks_Attach(KEYS::KEY_UP, std::bind(&Player::UpReleasedCallback, this), this);
-	InputManager::KeyReleasedCallbacks_Attach(KEYS::KEY_DOWN, std::bind(&Player::DownReleasedCallback, this), this);
-	InputManager::KeyReleasedCallbacks_Attach(KEYS::KEY_LEFT, std::bind(&Player::LeftReleasedCallback, this), this);
-	InputManager::KeyReleasedCallbacks_Attach(KEYS::KEY_RIGHT, std::bind(&Player::RightReleasedCallback, this), this);
-
 	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_INTERACT, std::bind(&Player::OnInteractCallback, this), this);
 	InputManager::KeyPressedCallbacks_Attach(KEYS::KEY_MENU, std::bind(&Player::OnMenuCallback, this), this);
 	ResetInputs();
@@ -248,16 +167,6 @@ void Player::BindCallbacks()
 
 void Player::UnbindCallbacks()
 {
-	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_UP, std::bind(&Player::UpPressedCallback, this), this);
-	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_DOWN, std::bind(&Player::DownPressedCallback, this), this);
-	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_LEFT, std::bind(&Player::LeftPressedCallback, this), this);
-	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_RIGHT, std::bind(&Player::RightPressedCallback, this), this);
-
-	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_UP, std::bind(&Player::UpReleasedCallback, this), this);
-	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_DOWN, std::bind(&Player::DownReleasedCallback, this), this);
-	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_LEFT, std::bind(&Player::LeftReleasedCallback, this), this);
-	InputManager::KeyReleasedCallbacks_Remove(KEYS::KEY_RIGHT, std::bind(&Player::RightReleasedCallback, this), this);
-
 	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_INTERACT, std::bind(&Player::OnInteractCallback, this), this);
 	InputManager::KeyPressedCallbacks_Remove(KEYS::KEY_MENU, std::bind(&Player::OnMenuCallback, this), this);
 
@@ -286,18 +195,22 @@ Point<float> Player::GetInteractPoint() const
 	return Point<float>();
 }
 
-
-
 #pragma endregion
 
 #pragma region NonPlayer Character
 
-NonPlayer::NonPlayer(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer) : Character(_debugName, x, y, height, width, _texture, _layer)
+NonPlayer::NonPlayer(std::string _debugName, float x, float y, float height, float width, const Texture* _texture, float _layer, CharacterData* _characterData, float _radius) : Character(_debugName, x, y, height, width, _texture, _layer, _characterData)
 {
+	/*
+	movementMode = _movementMode;
+	moveRadius = _radius;
+
 	startLocation = Point<float>(x, y);
 	moveToLocation = startLocation;
+	*/
 
 	AddComponent(new DialogueComponent(this, rectangle, std::vector<std::string>{"hello!"}));
+	AddComponent(new RandomRadiusMovementComponent(this, (CollisionComponent*)GetComponentOfType(COMPONENT_TYPE::COLLISION), _radius, 5.f));
 }
 
 NonPlayer::~NonPlayer()
@@ -307,68 +220,8 @@ NonPlayer::~NonPlayer()
 
 void NonPlayer::Update(float delta_time)
 {
-	Move(delta_time);
+
 }
 
-void NonPlayer::Move(float delta_time)
-{
-	switch (movementMode)
-	{
-	case (MOVE_MODE::NONE):
-
-		break;
-	case (MOVE_MODE::RANDOM_RADIUS):
-
-		moveTimer += delta_time;
-		if (!IsMoving())
-		{
-			if (moveTimer >= moveDelay)
-			{
-				moveTimer = 0;
-
-				//random point within radius
-
-				float r = moveRadius * std::sqrt((float)std::rand() / RAND_MAX);
-				float theta = ((float)std::rand() / RAND_MAX) * 2 * (float)std::_Pi_val;
-				float x = startLocation.x + r * std::cos(theta);
-				float y = startLocation.y + r * std::sin(theta);
-
-				moveToLocation = Point<float>(x, y);
-			}
-		}
-
-		if (IsMoving())
-		{
-			if (moveToLocation.Equals(GetPos(), mvmntSpeed))
-			{
-				SetPos(moveToLocation);
-
-				velocity = Point<float>(0.f, 0.f);
-			}
-		}
-
-		break;
-	case (MOVE_MODE::FOLLOW):
-
-		break;
-	}
-
-
-	if (moveToLocation != GetPos())
-	{
-		velocity = moveToLocation - GetPos();
-		velocity.Normalize();
-		velocity *= mvmntSpeed;
-	}
-
-	Point<float> prevPos = GetPos();
-
-	Character::Move(delta_time);
-
-	// if we collide
-	if (collided)
-	{
-		moveToLocation = GetPos();
-	}
-}
 #pragma endregion
+
